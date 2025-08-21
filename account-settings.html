@@ -239,32 +239,63 @@
             const tabs = document.querySelectorAll('.tab');
             const content = document.getElementById('settings-content');
             const tabContents = [
-                // Account Settings tab with form
-                `<h2>Account Settings</h2>
-                                <form class="settings-form" id="account-form">
-                                    <div class="form-group">
-                                        <label for="username">Username</label>
-                                        <input type="text" id="username" name="username" placeholder="Enter your username">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="description">Description</label>
-                                        <textarea id="description" name="description" placeholder="Add a short description"></textarea>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="email">Email</label>
-                                        <input type="email" id="email" name="email" placeholder="Enter your email">
-                                    </div>
-                                    <div class="form-actions">
-                                        <button type="submit" class="save-btn">Save Changes</button>
-                                    </div>
-                                    <div id="form-success" class="form-success" style="display:none;">Changes saved!</div>
-                                    <div id="form-error" class="form-error" style="display:none;">Error saving changes.</div>
-                                </form>`,
-                `<h2>Security</h2><p>Update your password, enable 2FA, and review security logs.</p>`,
-                `<h2>Profile Picture</h2><p>Change your profile image and avatar settings.</p>`,
-                `<h2>Blocked Users</h2><p>View and manage users you have blocked.</p>`,
-                `<h2>Others</h2><p>Other settings and preferences.</p>`
-            ];
+		 // Account Settings tab with form
+                 <h2>Account Settings</h2>
+                     <form class=\"settings-form\" id=\"account-form\">
+                < div class=\"form-group\">
+                < label for=\"username\">Username</label>
+                    < input type =\"text\" id=\"username\" name=\"username\" placeholder=\"Enter your username\">
+                         </div >
+                <div class=\"form-group\">
+                    < label for=\"description\">Description</label>
+                        < textarea id =\"description\" name=\"description\" placeholder=\"Add a short description\"></textarea>
+                         </div >
+                <div class=\"form-group\">
+                    < label for=\"email\">Email</label>
+                        < input type =\"email\" id=\"email\" name=\"email\" placeholder=\"Enter your email\">
+                         </div >
+                <div class=\"form-actions\">
+                    < button type =\"submit\" class=\"save-btn\">Save Changes</button>
+                         </div >
+                <div id=\"form-success\" class=\"form-success\" style=\"display:none;\">Changes saved!</div>
+                    < div id =\"form-error\" class=\"form-error\" style=\"display:none;\">Error saving changes.</div>
+                     </form >, <h2>Security</h2>
+      <form class=\"settings-form\" id=\"security-form\">
+                < div class=\"form-group\">
+                    < label for=\"current-password\">Current Password</label>
+                        < input type =\"password\" id=\"current-password\" name=\"current-password\" placeholder=\"Enter current password\">
+        </div >
+                <div class=\"form-group\">
+                    < label for=\"new-password\">New Password</label>
+                        < input type =\"password\" id=\"new-password\" name=\"new-password\" placeholder=\"Enter new password\">
+        </div >
+                <div class=\"form-group\">
+                    < label for=\"confirm-password\">Confirm New Password</label>
+                        < input type =\"password\" id=\"confirm-password\" name=\"confirm-password\" placeholder=\"Confirm new password\">
+        </div >
+                <div class=\"form-actions\">
+                    < button type =\"submit\" class=\"save-btn\">Change Password</button>
+        </div >
+      </form >      <hr>
+      <h3>Two-Factor Authentication</h3>
+      <div class=\"form-group\"><label>
+          <input type=\"checkbox\" id=\"enable-2fa\"> Enable 2FA        </label> 
+          </div>
+         <hr>
+         <h3>Logged-In Devices</h3>
+         <table border=\"1\" cellpadding=\"8\" cellspacing=\"0\" style=\"width:100%; border-collapse:collapse;\">
+           <thead>
+          <tr><th>Device</th><th>Location</th><th>Last Active</th></tr>
+           </thead>
+           <tbody>
+          <tr><td>Chrome on Windows</td><td>New York, USA</td><td>2025-08-20 14:32</td></tr>
+          <tr><td>Safari on iPhone</td><td>Fairbank, MD</td><td>2025-08-21 03:58</td></tr>
+           </tbody>
+         </table>,
+                     <h2>Profile Picture</h2><p>Change your profile image and avatar settings.</p>,
+                     <h2>Blocked Users</h2><p>View and manage users you have blocked.</p>,
+                     <h2>Others</h2><p>Other settings and preferences.</p>
+        ];
             tabs.forEach((tab, idx) => {
                 tab.addEventListener('click', function () {
                     tabs.forEach(t => t.classList.remove('active'));
