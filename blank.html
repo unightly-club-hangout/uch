@@ -53,17 +53,69 @@
             letter-spacing: 1px;
         }
 
-        #profile-icon {
+        #profile-container {
             position: absolute;
             top: 20px;
             right: 32px;
+            z-index: 100;
+        }
+
+        #profile-icon {
             width: 40px;
             height: 40px;
             border-radius: 50%;
             box-shadow: 0 0 4px #aaa;
             border: 2px solid #fff;
             background: #eee;
+            cursor: pointer;
+            transition: box-shadow 0.2s;
         }
+
+            #profile-icon:active, #profile-icon:focus {
+                box-shadow: 0 0 8px #3182ce;
+            }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 48px;
+            right: 0;
+            background: #fff;
+            color: #222;
+            min-width: 180px;
+            border-radius: 10px;
+            box-shadow: 0 4px 16px rgba(49,130,206,0.15);
+            padding: 8px 0;
+            font-size: 1rem;
+            animation: fadeInMenu 0.2s;
+        }
+
+            .dropdown-menu.show {
+                display: block;
+            }
+
+        @keyframes fadeInMenu {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .dropdown-item {
+            padding: 12px 24px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+            .dropdown-item:hover {
+                background: #f5f7fa;
+                color: var(--accent);
+            }
 
         .container {
             max-width: 500px;
@@ -140,15 +192,23 @@
                 height: 36px;
             }
 
-            #profile-icon {
+            #profile-container {
                 top: 12px;
                 right: 12px;
+            }
+
+            #profile-icon {
                 width: 32px;
                 height: 32px;
             }
 
             .header-title {
                 font-size: 1.3rem;
+            }
+
+            .dropdown-menu {
+                min-width: 140px;
+                font-size: 0.95rem;
             }
         }
     </style>
@@ -167,11 +227,44 @@
             if (credential) {
                 const payload = parseJwt(credential);
                 if (payload.picture) {
+                    // Create profile container
+                    const container = document.createElement('div');
+                    container.id = 'profile-container';
+
+                    // Create profile icon
                     const img = document.createElement('img');
                     img.id = 'profile-icon';
                     img.src = payload.picture;
                     img.alt = 'Google Profile';
-                    document.body.appendChild(img);
+                    img.tabIndex = 0;
+
+                    // Create dropdown menu
+                    const menu = document.createElement('div');
+                    menu.className = 'dropdown-menu';
+                    menu.innerHTML = `
+                            <div class="dropdown-item">Account settings</div>
+                            <div class="dropdown-item">Profile</div>
+                            <div class="dropdown-item">Friends</div>
+                            <div class="dropdown-item">Status</div>
+                        `;
+
+                    // Toggle menu on icon click
+                    img.onclick = function (e) {
+                        e.stopPropagation();
+                        menu.classList.toggle('show');
+                    };
+                    img.onblur = function () {
+                        setTimeout(() => menu.classList.remove('show'), 150);
+                    };
+
+                    // Hide menu when clicking outside
+                    document.addEventListener('click', function () {
+                        menu.classList.remove('show');
+                    });
+
+                    container.appendChild(img);
+                    container.appendChild(menu);
+                    document.body.appendChild(container);
                 }
             }
         };
