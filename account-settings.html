@@ -15,12 +15,14 @@
             --shadow: 0 4px 24px rgba(0,0,0,0.08);
             --radius: 16px;
         }
+
         body {
             margin: 0;
             font-family: 'Segoe UI', Arial, sans-serif;
             background: var(--background);
             color: var(--primary);
         }
+
         header {
             background: var(--primary);
             color: #fff;
@@ -31,6 +33,7 @@
             align-items: center;
             justify-content: center;
         }
+
         .header-icon {
             position: absolute;
             top: 16px;
@@ -42,11 +45,13 @@
             background: #fff;
             object-fit: contain;
         }
+
         .header-title {
             font-size: 2rem;
             font-weight: 700;
             letter-spacing: 1px;
         }
+
         .settings-layout {
             display: flex;
             max-width: 900px;
@@ -57,10 +62,19 @@
             min-height: 480px;
             animation: fadeIn 0.8s;
         }
+
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(30px);}
-            to { opacity: 1; transform: translateY(0);}
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
+
         .settings-tabs {
             width: 220px;
             background: #f5f7fa;
@@ -72,6 +86,7 @@
             align-items: flex-end;
             padding: 32px 0 32px 0;
         }
+
         .tab {
             width: 180px;
             padding: 16px 24px;
@@ -85,20 +100,94 @@
             cursor: pointer;
             transition: background 0.18s, color 0.18s;
         }
-        .tab.active, .tab:hover {
-            background: var(--accent);
-            color: #fff;
-        }
+
+            .tab.active, .tab:hover {
+                background: var(--accent);
+                color: #fff;
+            }
+
         .settings-content {
             flex: 1;
             padding: 40px 32px;
             min-height: 400px;
         }
+
+        .settings-form {
+            max-width: 400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        label {
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--primary);
+        }
+
+        input[type="text"], input[type="email"], textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: #f5f7fa;
+            color: #222;
+            transition: border 0.2s;
+        }
+
+            input[type="text"]:focus, input[type="email"]:focus, textarea:focus {
+                border-color: var(--accent);
+                outline: none;
+            }
+
+        textarea {
+            min-height: 60px;
+            resize: vertical;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .save-btn {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 28px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 8px rgba(49,130,206,0.08);
+        }
+
+            .save-btn:hover {
+                background: var(--accent-hover);
+                box-shadow: 0 4px 16px rgba(49,130,206,0.15);
+            }
+
+        .form-success {
+            color: #38a169;
+            font-weight: 500;
+            margin-top: 12px;
+        }
+
         @media (max-width: 800px) {
             .settings-layout {
                 flex-direction: column;
                 max-width: 98vw;
             }
+
             .settings-tabs {
                 flex-direction: row;
                 width: 100%;
@@ -108,6 +197,7 @@
                 align-items: flex-start;
                 padding: 0 0 0 0;
             }
+
             .tab {
                 width: auto;
                 padding: 12px 18px;
@@ -115,6 +205,7 @@
                 border-radius: 8px 8px 0 0;
                 text-align: center;
             }
+
             .settings-content {
                 padding: 24px 12px;
             }
@@ -125,7 +216,26 @@
             const tabs = document.querySelectorAll('.tab');
             const content = document.getElementById('settings-content');
             const tabContents = [
-                `<h2>Account Settings</h2><p>Manage your account details, email, and preferences here.</p>`,
+                // Account Settings tab with form
+                `<h2>Account Settings</h2>
+                    <form class="settings-form" id="account-form">
+                        <div class="form-group">
+                            <label for="username">Username</label>
+                            <input type="text" id="username" name="username" placeholder="Enter your username" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Description</label>
+                            <textarea id="description" name="description" placeholder="Add a short description"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="save-btn">Save Changes</button>
+                        </div>
+                        <div id="form-success" class="form-success" style="display:none;">Changes saved!</div>
+                    </form>`,
                 `<h2>Security</h2><p>Update your password, enable 2FA, and review security logs.</p>`,
                 `<h2>Profile Picture</h2><p>Change your profile image and avatar settings.</p>`,
                 `<h2>Blocked Users</h2><p>View and manage users you have blocked.</p>`,
@@ -136,11 +246,28 @@
                     tabs.forEach(t => t.classList.remove('active'));
                     tab.classList.add('active');
                     content.innerHTML = tabContents[idx];
+                    if (idx === 0) setupAccountForm();
                 });
             });
             // Set default tab
             tabs[0].classList.add('active');
             content.innerHTML = tabContents[0];
+            setupAccountForm();
+
+            // Form handler
+            function setupAccountForm() {
+                const form = document.getElementById('account-form');
+                if (form) {
+                    form.onsubmit = function (e) {
+                        e.preventDefault();
+                        // Simulate save
+                        document.getElementById('form-success').style.display = 'block';
+                        setTimeout(() => {
+                            document.getElementById('form-success').style.display = 'none';
+                        }, 2000);
+                    };
+                }
+            }
         });
     </script>
 </head>
