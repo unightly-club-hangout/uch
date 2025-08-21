@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login with Google</title>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script>
+        function handleCredentialResponse(response) {
+            // Save the credential (JWT) and redirect
+            localStorage.setItem('google_credential', response.credential);
+            window.location.href = "blank.html";
+        }
+        window.onload = function () {
+            google.accounts.id.initialize({
+                client_id: "90008544107-puntiddkae4hctcec08mghl6e9nhvs4k.apps.googleusercontent.com",
+                callback: handleCredentialResponse
+            });
+            google.accounts.id.renderButton(
+                document.getElementById("g_id_signin"),
+                { theme: "outline", size: "large" }
+            );
+        };
+    </script>
+</head>
+<body>
+    <h2>Login</h2>
+    <div id="g_id_signin"></div>
+</body>
+</html>
