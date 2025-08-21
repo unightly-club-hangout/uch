@@ -3,8 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <title>Login to UCH</title>
+    <link rel="icon" type="image/x-icon" href="unightly-icon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        :root {
+            --primary: #2d3748;
+            --accent: #3182ce;
+            --accent-hover: #2563eb;
+            --background: #f5f7fa;
+            --container-bg: #fff;
+            --shadow: 0 4px 24px rgba(0,0,0,0.08);
+            --radius: 16px;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: var(--background);
+            color: var(--primary);
+        }
+
+        header {
+            background: var(--primary);
+            color: #fff;
+            padding: 0;
+            position: relative;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .header-icon {
+            position: absolute;
+            top: 16px;
+            left: 32px;
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            box-shadow: 0 0 8px #2222;
+            background: #fff;
+            object-fit: contain;
+        }
+
+        .header-title {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 60px auto 0 auto;
+            background: var(--container-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 48px 32px 40px 32px;
+            text-align: center;
+            animation: fadeIn 0.8s;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5em;
+            color: var(--accent);
+        }
+
+        p {
+            font-size: 1.15rem;
+            color: #444;
+            margin-bottom: 2em;
+        }
+
+        .cta-btn {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 14px 36px;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 0 2px 8px rgba(49,130,206,0.08);
+            transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+        }
+
+            .cta-btn:hover {
+                background: var(--accent-hover);
+                box-shadow: 0 4px 16px rgba(49,130,206,0.15);
+                transform: translateY(-2px) scale(1.03);
+            }
+
+        @media (max-width: 600px) {
+            .container {
+                margin: 32px 8px 0 8px;
+                padding: 32px 12px;
+            }
+
+            header {
+                height: 64px;
+            }
+
+            .header-icon {
+                top: 8px;
+                left: 12px;
+                width: 36px;
+                height: 36px;
+            }
+
+            .header-title {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script>
+        // Redirect to blank.html if user is already logged in
+        if (localStorage.getItem('google_credential')) {
+            window.location.href = "blank.html";
+        }
+
         function handleCredentialResponse(response) {
             // Save the credential (JWT) and redirect
             localStorage.setItem('google_credential', response.credential);
@@ -23,7 +157,17 @@
     </script>
 </head>
 <body>
-    <h2>Login</h2>
-    <div id="g_id_signin"></div>
+    <header>
+        <img src="unightly-icon.ico" alt="Unightly Icon" class="header-icon">
+        <span class="header-title">UCH Website</span>
+    </header>
+    <div class="container">
+        <h1>Login to UCH</h1>
+        <p>
+            Sign in to access Unightly Club Hangout.<br>
+            Enjoy a modern, secure, and stylish experience.
+        </p>
+        <div id="g_id_signin"></div>
+    </div>
 </body>
 </html>
