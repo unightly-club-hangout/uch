@@ -182,6 +182,12 @@
             margin-top: 12px;
         }
 
+        .form-error {
+            color: #e53e3e;
+            font-weight: 500;
+            margin-top: 12px;
+        }
+
         @media (max-width: 800px) {
             .settings-layout {
                 flex-direction: column;
@@ -218,24 +224,25 @@
             const tabContents = [
                 // Account Settings tab with form
                 `<h2>Account Settings</h2>
-                    <form class="settings-form" id="account-form">
-                        <div class="form-group">
-                            <label for="username">Username</label>
-                            <input type="text" id="username" name="username" placeholder="Enter your username" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="description">Description</label>
-                            <textarea id="description" name="description" placeholder="Add a short description"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Email</label>
-                            <input type="email" id="email" name="email" placeholder="Enter your email" required>
-                        </div>
-                        <div class="form-actions">
-                            <button type="submit" class="save-btn">Save Changes</button>
-                        </div>
-                        <div id="form-success" class="form-success" style="display:none;">Changes saved!</div>
-                    </form>`,
+                            <form class="settings-form" id="account-form">
+                                <div class="form-group">
+                                    <label for="username">Username</label>
+                                    <input type="text" id="username" name="username" placeholder="Enter your username" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="description">Description</label>
+                                    <textarea id="description" name="description" placeholder="Add a short description"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">Email</label>
+                                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                                </div>
+                                <div class="form-actions">
+                                    <button type="submit" class="save-btn">Save Changes</button>
+                                </div>
+                                <div id="form-success" class="form-success" style="display:none;">Changes saved!</div>
+                                <div id="form-error" class="form-error" style="display:none;">Error saving changes.</div>
+                            </form>`,
                 `<h2>Security</h2><p>Update your password, enable 2FA, and review security logs.</p>`,
                 `<h2>Profile Picture</h2><p>Change your profile image and avatar settings.</p>`,
                 `<h2>Blocked Users</h2><p>View and manage users you have blocked.</p>`,
@@ -254,17 +261,38 @@
             content.innerHTML = tabContents[0];
             setupAccountForm();
 
-            // Form handler
+            // Form handler with API call
             function setupAccountForm() {
                 const form = document.getElementById('account-form');
                 if (form) {
-                    form.onsubmit = function (e) {
+                    form.onsubmit = async function (e) {
                         e.preventDefault();
-                        // Simulate save
-                        document.getElementById('form-success').style.display = 'block';
-                        setTimeout(() => {
-                            document.getElementById('form-success').style.display = 'none';
-                        }, 2000);
+                        document.getElementById('form-success').style.display = 'none';
+                        document.getElementById('form-error').style.display = 'none';
+                        // You may want to get UserId from session/auth
+                        const data = {
+                            userId: "", // Set this from your auth/session if available
+                            username: form.username.value,
+                            description: form.description.value,
+                            email: form.email.value
+                        };
+                        try {
+                            const response = await fetch('/api/account/update', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(data)
+                            });
+                            if (response.ok) {
+                                document.getElementById('form-success').style.display = 'block';
+                                setTimeout(() => {
+                                    document.getElementById('form-success').style.display = 'none';
+                                }, 2000);
+                            } else {
+                                document.getElementById('form-error').style.display = 'block';
+                            }
+                        } catch (err) {
+                            document.getElementById('form-error').style.display = 'block';
+                        }
                     };
                 }
             }
