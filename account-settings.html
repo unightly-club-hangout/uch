@@ -239,54 +239,54 @@
             const tabs = document.querySelectorAll('.tab');
             const content = document.getElementById('settings-content');
             const tabContents = [
+                `<h2>Profile</h2>
+                    `< h2 > Account Settings</h2 >
+                <form class="settings-form" id="account-form">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" name="username" placeholder="Enter your username">
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea id="description" name="description" placeholder="Add a short description"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" placeholder="Enter your email">
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="save-btn">Save Changes</button>
+                    </div>
+                    <div id="form-success" class="form-success" style="display:none;">Changes saved!</div>
+                    <div id="form-error" class="form-error" style="display:none;">Error saving changes.</div>
+                </form>`,
 
-                `<h2>Account Settings</h2>
-         <form class="settings-form" id="account-form">
-           <div class="form-group">
-             <label for="username">Username</label>
-             <input type="text" id="username" name="username" placeholder="Enter your username">
-           </div>
-           <div class="form-group">
-             <label for="description">Description</label>
-             <textarea id="description" name="description" placeholder="Add a short description"></textarea>
-           </div>
-           <div class="form-group">
-             <label for="email">Email</label>
-             <input type="email" id="email" name="email" placeholder="Enter your email">
-           </div>
-           <div class="form-actions">
-             <button type="submit" class="save-btn">Save Changes</button>
-           </div>
-           <div id="form-success" class="form-success" style="display:none;">Changes saved!</div>
-           <div id="form-error" class="form-error" style="display:none;">Error saving changes.</div>
-         </form>`,
-
-                // Security tab
-                `<h2>Security</h2>
-         <form class="settings-form" id="security-form">
-           <div class="form-group">
-             <label for="current-password">Current Password</label>
-             <input type="password" id="current-password" name="current-password" placeholder="Enter current password">
-           </div>
-           <div class="form-group">
-             <label for="new-password">New Password</label>
-             <input type="password" id="new-password" name="new-password" placeholder="Enter new password">
-           </div>
-           <div class="form-group">
-             <label for="confirm-password">Confirm New Password</label>
-             <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm new password">
-           </div>
-           <div class="form-actions">
-             <button type="submit" class="save-btn">Change Password</button>
-           </div>
-         </form>
-         <hr>
-         <h3>Two-Factor Authentication</h3>
-         <div class="form-group">
-           <label>
-             <input type="checkbox" id="enable-2fa"> Enable 2FA
-           </label>
-         </div>
-         <hr>
-         <h3>Logged-In Devices</h3>
-         <table border="1" cellpadding="8" cellspacing="0" style="width:100%; border-collapse:
+                    // Security tab
+                    `< h2 > Security</h2 >
+             <form class="settings-form" id="security-form">
+               <div class="form-group">
+                 <label for="current-password">Current Password</label>
+                 <input type="password" id="current-password" name="current-password" placeholder="Enter current password">
+               </div>
+               <div class="form-group">
+                 <label for="new-password">New Password</label>
+                 <input type="password" id="new-password" name="new-password" placeholder="Enter new password">
+               </div>
+               <div class="form-group">
+                 <label for="confirm-password">Confirm New Password</label>
+                 <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm new password">
+               </div>
+               <div class="form-actions">
+                 <button type="submit" class="save-btn">Change Password</button>
+               </div>
+             </form>
+             <hr>
+             <h3>Two-Factor Authentication</h3>
+             <div class="form-group">
+               <label>
+                 <input type="checkbox" id="enable-2fa"> Enable 2FA
+               </label>
+             </div>
+             <hr>
+             <h3>Logged-In Devices</h3>
+             <table border="1" cellpadding="8" cellspacing="0" style="width:100%; border-collapse:
