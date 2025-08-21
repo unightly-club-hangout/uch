@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Welcome | Landing Page</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="unightly-icon.png">
     <style>
         body {
             margin: 0;
@@ -19,6 +21,19 @@
             font-size: 2rem;
             font-weight: 600;
             letter-spacing: 1px;
+            position: relative;
+        }
+
+        .header-icon {
+            position: absolute;
+            top: 12px;
+            left: 24px;
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            box-shadow: 0 0 8px #2222;
+            background: #fff;
+            object-fit: contain;
         }
 
         .container {
@@ -87,12 +102,13 @@
 </head>
 <body>
     <header>
+        <img src="unightly-icon.png" alt="Unightly Icon" class="header-icon">
         UCH Website
     </header>
     <div class="container">
         <h1>Welcome to UCH!</h1>
         <p>
-            This is your landing page. Explore our features, learn more about us, or get started now.
+            This is the website for Unightly Club Hangout.
         </p>
         <a href="#" class="cta-btn">Get Started</a>
     </div>
