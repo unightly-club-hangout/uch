@@ -238,15 +238,17 @@
                     img.alt = 'Google Profile';
                     img.tabIndex = 0;
 
-                    // Create dropdown menu
-                    const menu = document.createElement('div');
-                    menu.className = 'dropdown-menu';
+                    // In blank.html, inside the menu.innerHTML:
                     menu.innerHTML = `
-                            <div class="dropdown-item">Account settings</div>
-                            <div class="dropdown-item">Profile</div>
-                            <div class="dropdown-item">Friends</div>
-                            <div class="dropdown-item">Status</div>
-                        `;
+                        <div class="dropdown-item" id="account-settings-link">Account settings</div>
+                        <div class="dropdown-item">Profile</div>
+                        <div class="dropdown-item">Friends</div>
+                        <div class="dropdown-item">Status</div>
+                   `;
+                    // After menu creation:
+                    menu.querySelector('#account-settings-link').onclick = function (e) {
+                        window.location.href = 'account-settings.html';
+                    };
 
                     // Toggle menu on icon click
                     img.onclick = function (e) {
