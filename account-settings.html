@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Account Settings | UCH</title>
-    <link rel="icon" type="image/x-icon" href="unightly-icon.ico?v=2">
+    <link rel="icon" type="image/x-icon" href="unightly-icon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         :root {
@@ -144,7 +144,7 @@
             transition: border 0.2s;
         }
 
-            input[type="text":focus, input[type="email"]:focus, textarea:focus {
+            input[type="text"]:focus, input[type="email"]:focus, textarea:focus {
                 border-color: var(--accent);
                 outline: none;
             }
@@ -199,8 +199,6 @@
             color: #888;
             cursor: pointer;
             transition: color 0.2s;
-            z-index: 10;
-            height: auto;
         }
 
             .close-button:hover {
@@ -276,7 +274,7 @@
                 });
             });
             // Set default tab
-            tabs[0.classList.add('active');
+            tabs[0].classList.add('active');
             content.innerHTML = tabContents[0];
             setupAccountForm();
 
@@ -324,6 +322,9 @@
         <span class="header-title">UCH Website</span>
     </header>
     <div class="settings-layout">
+        <button class="close-button" onclick="window.location.href='blank.html'">
+            &times;
+        </button>
         <nav class="settings-tabs">
             <button class="tab">Account settings</button>
             <button class="tab">Security</button>
@@ -334,10 +335,6 @@
         <section class="settings-content" id="settings-content">
             <!-- Tab content will appear here -->
         </section>
-        <button class="close-button" onclick="window.location.href='blank.html'">
-            &times;
-        </button>
     </div>
 </body>
 </html>
-
