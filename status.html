@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>User Status | UCH</title>
@@ -25,9 +26,7 @@
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      /* Fixed: Align items to the start */
       justify-content: flex-start;
-      /* Align content to the start */
       min-height: 100vh;
     }
 
@@ -40,11 +39,8 @@
       box-shadow: var(--shadow);
       z-index: 10;
       display: flex;
-      /* Use flexbox for header */
       justify-content: space-between;
-      /* Space items out */
       align-items: center;
-      /* Align items vertically */
     }
 
     .header-icon {
@@ -283,15 +279,42 @@
           // Create profile container
           const container = document.createElement('div');
           container.id = 'profile-container';
+          container.style.position = 'absolute';
+          container.style.top = '20px';
+          container.style.right = '32px';
+          container.style.zIndex = '100';
           // Create profile icon
           const img = document.createElement('img');
           img.id = 'profile-icon';
           img.src = payload.picture;
           img.alt = 'Google Profile';
           img.tabIndex = 0;
+          img.style.width = '40px';
+          img.style.height = '40px';
+          img.style.borderRadius = '50%';
+          img.style.boxShadow = '0 0 4px #aaa';
+          img.style.border = '2px solid #fff';
+          img.style.background = '#eee';
+          img.style.cursor = 'pointer';
+          img.style.transition = 'box-shadow 0.2s';
+          img.onblur = function() {
+            setTimeout(() => menu.classList.remove('show'), 150);
+          };
           // Create dropdown menu
           const menu = document.createElement('div');
           menu.className = 'dropdown-menu';
+          menu.style.display = 'none';
+          menu.style.position = 'absolute';
+          menu.style.top = '48px';
+          menu.style.right = '0';
+          menu.style.background = 'var(--container-bg)';
+          menu.style.color = 'var(--primary)';
+          menu.style.minWidth = '180px';
+          menu.style.borderRadius = 'var(--radius)';
+          menu.style.boxShadow = 'var(--shadow)';
+          menu.style.padding = '8px 0';
+          menu.style.fontSize = '1rem';
+          menu.style.animation = 'fadeInMenu 0.2s';
           menu.innerHTML = `
           <div class="dropdown-item" id="account-settings-link">Account settings</div>
           <div class="dropdown-item">Profile</div>
@@ -303,9 +326,6 @@
           img.onclick = function(e) {
             e.stopPropagation();
             menu.classList.toggle('show');
-          };
-          img.onblur = function() {
-            setTimeout(() => menu.classList.remove('show'), 150);
           };
           // Hide menu when clicking outside
           document.addEventListener('click', function() {
@@ -360,26 +380,31 @@
       function populateData() {
         const userId = "test"; // Change to the actual userID after Login is working
         const user = userData.find(entry => entry.userID === userId);
-        statusContainer.innerHTML = `
-<h1>User Status</h1>
-<p>Here's the current status for <strong>${user.username}</strong>:</p>
-<div class="status-item">
-<span class="status-label">Username:</span>
-<span class="status-value">${user.username}</span>
-</div>
-<div class="status-item">
-<span class="status-label">Status:</span>
-<span class="status-value">${user.status}</span>
-</div>
-<div class="status-item">
-<span class="status-label">Warnings:</span>
-<span class="status-value">${user.warnings}</span>
-</div>
-<div class="status-item">
-<span class="status-label">Notes:</span>
-<span class="status-value">${user.notes}</span>
-</div>
-`
+
+        if (user) {
+          statusContainer.innerHTML = `
+            <h1>User Status</h1>
+            <p>Here's the current status for <strong>${user.username}</strong>:</p>
+            <div class="status-item">
+              <span class="status-label">Username:</span>
+              <span class="status-value">${user.username}</span>
+            </div>
+            <div class="status-item">
+              <span class="status-label">Status:</span>
+              <span class="status-value">${user.status}</span>
+            </div>
+            <div class="status-item">
+              <span class="status-label">Warnings:</span>
+              <span class="status-value">${user.warnings}</span>
+            </div>
+            <div class="status-item">
+              <span class="status-label">Notes:</span>
+              <span class="status-value">${user.notes}</span>
+            </div>
+          `;
+        } else {
+          statusContainer.innerHTML = `<p>User status not found.</p>`;
+        }
       }
       loadData()
     };
