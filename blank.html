@@ -6,6 +6,7 @@
   <title>Welcome | UCH Main</title>
   <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="unightly-icon.ico">
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
@@ -35,7 +36,7 @@
       height: auto;
       display: flex;
       align-items: center;
-      justify-content: flex-start;
+      justify-content: space-between;
       box-shadow: var(--shadow);
     }
 
@@ -125,6 +126,20 @@
       border-top: 1px solid rgba(75, 85, 99, 0.4);
       margin-top: 6px;
       color: #fca5a5;
+    }
+
+    .dropdown-item.disabled {
+      color: #6b7280;
+      /* Grey out the text */
+      cursor: not-allowed;
+      /* Change the cursor */
+    }
+
+    .dropdown-item.disabled:hover {
+      background: none;
+      /* Remove hover effect */
+      color: #6b7280;
+      /* Keep greyed out */
     }
 
     /* New Feed Styles */
@@ -244,7 +259,7 @@
           <div class="dropdown-item" id="account-settings-link">Account settings</div>
           <div class="dropdown-item">Profile</div>
           <div class="dropdown-item">Friends</div>
-          <div class="dropdown-item" id="status-link">Status</div>
+          <div class="dropdown-item disabled" id="status-link">Status</div>
           <div class="dropdown-item signout" id="signout-link">Sign Out</div>
           `;
           // Toggle menu on icon click
@@ -265,11 +280,12 @@
             menu.classList.remove('show');
             window.location.href = 'account-settings.html';
           };
-          // Status click
+          // Status click - PREVENT ACTION
           menu.querySelector('#status-link').onclick = function(e) {
+            e.preventDefault();
             e.stopPropagation();
             menu.classList.remove('show');
-            window.location.href = 'status.html';
+            return false;
           };
           // Sign out click
           menu.querySelector('#signout-link').onclick = function(e) {
@@ -282,12 +298,10 @@
           document.body.appendChild(container);
         }
       }
-      // Load posts from local storage
+      // Load existing posts from local storage
       let posts = JSON.parse(localStorage.getItem('posts') || '[]');
-
       const feedContainer = document.getElementById('feed-container');
       renderPosts(posts, feedContainer);
-
       // Post Submission
       const postForm = document.getElementById('post-form');
       postForm.addEventListener('submit', function(e) {
@@ -295,9 +309,7 @@
         const postText = document.getElementById('post-text').value.trim();
         const fileInput = document.getElementById('file-input');
         const file = fileInput.files[0];
-
         let mediaUrl = null;
-
         if (file) {
           const fileType = file.type;
           if (fileType.startsWith('image/') || fileType.startsWith('video/')) {
@@ -308,7 +320,6 @@
             return;
           }
         }
-
         if (postText !== '' || mediaUrl) {
           const newPost = {
             id: Date.now(),
@@ -323,7 +334,6 @@
           fileInput.value = ''; // Clear the file input
         }
       });
-
       function renderPosts(posts, feedContainer) {
         feedContainer.innerHTML = `
           <h1>Welcome to the UCH Feed!</h1>
@@ -333,11 +343,9 @@
             <button type="submit" id="post-button">Post</button>
           </form>
         `;
-
         posts.forEach(post => {
           const postElement = document.createElement('div');
           postElement.className = 'post';
-
           let postContent = '';
           if (post.text) {
             postContent += `<div class="post-content">${post.text}</div>`;
@@ -349,7 +357,6 @@
               postContent += `<video src="${post.mediaUrl}" class="post-video" controls></video>`;
             }
           }
-
           postElement.innerHTML = postContent;
           feedContainer.appendChild(postElement);
         });
