@@ -275,11 +275,12 @@
       const credential = localStorage.getItem('google_credential');
       let img;
       let menu;
+      let container;
       if (credential) {
         const payload = parseJwt(credential);
         if (payload.picture) {
           // Create profile container
-          const container = document.createElement('div');
+          container = document.createElement('div');
           container.id = 'profile-container';
           container.style.position = 'absolute';
           container.style.top = '20px';
@@ -321,9 +322,11 @@
           <div class="dropdown-item" id="status-link">Status</div>
           <div class="dropdown-item signout" id="signout-link">Sign Out</div>
           `;
+          // Append everything to the container
           container.appendChild(img);
           container.appendChild(menu);
-          document.body.appendChild(container);
+          // Append the container to the header
+          document.querySelector('header').appendChild(container);
           // Toggle menu on icon click
           img.onclick = function(e) {
             e.stopPropagation();
