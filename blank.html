@@ -127,100 +127,90 @@
       color: #fca5a5;
     }
 
-    .container {
-      max-width: 500px;
-      margin: 60px auto 0 auto;
+    /* New Feed Styles */
+    #feed-container {
+      max-width: 700px;
+      margin: 40px auto;
+      padding: 20px;
       background: var(--container-bg);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
-      padding: 48px 32px 40px 32px;
-      text-align: center;
-      animation: fadeIn 0.8s;
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    h1 {
-      font-size: 2.2rem;
-      font-weight: 700;
-      margin-bottom: 0.5em;
-      color: var(--accent);
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    }
-
-    p {
-      font-size: 1.15rem;
       color: var(--primary);
-      margin-bottom: 2em;
-      opacity: 0.8;
     }
 
-    .cta-btn {
-      display: inline-block;
-      margin-top: 8px;
-      padding: 14px 36px;
+    #post-form {
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #post-text {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid rgba(75, 85, 99, 0.6);
+      border-radius: 6px;
+      background: rgba(45, 55, 72, 0.3);
+      color: var(--primary);
+      font-size: 1rem;
+      resize: vertical;
+      /* Allow vertical resizing */
+    }
+
+    #file-input {
+      margin-bottom: 10px;
+      color: var(--primary);
+    }
+
+    #post-button {
       background: var(--accent);
       color: #fff;
       border: none;
       border-radius: 8px;
+      padding: 10px 20px;
       font-size: 1.1rem;
-      font-weight: 600;
+      font-weight: 500;
       cursor: pointer;
-      text-decoration: none;
+      transition: background 0.2s, box-shadow 0.2s;
       box-shadow: 0 4px 12px rgba(96, 165, 250, 0.4);
-      transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
     }
 
-    .cta-btn:hover {
+    #post-button:hover {
       background: var(--accent-hover);
       box-shadow: 0 6px 18px rgba(59, 130, 246, 0.5);
-      transform: translateY(-2px) scale(1.03);
     }
 
+    .post {
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: var(--radius);
+      background: rgba(45, 55, 72, 0.6);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      word-wrap: break-word;
+      /* Prevent long words from breaking the layout */
+    }
+
+    .post-content {
+      margin-bottom: 10px;
+    }
+
+    .post-image,
+    .post-video {
+      max-width: 100%;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+
+    .post-video {
+      max-height: 400px;
+      /* Limit video height */
+    }
+
+    /* Responsive Styles */
     @media (max-width: 600px) {
-      .container {
-        margin: 32px 16px;
-        padding: 32px 24px;
-      }
-
-      header {
-        height: 64px;
-      }
-
-      .header-icon {
-        top: 8px;
-        left: 12px;
-        width: 36px;
-        height: 36px;
-      }
-
-      #profile-container {
-        top: 12px;
-        right: 12px;
-      }
-
-      #profile-icon {
-        width: 32px;
-        height: 32px;
-      }
-
-      .header-title {
-        font-size: 1.3rem;
-      }
-
-      .dropdown-menu {
-        min-width: 140px;
-        font-size: 0.95rem;
+      #feed-container {
+        margin: 20px;
+        padding: 15px;
       }
     }
   </style>
@@ -292,6 +282,78 @@
           document.body.appendChild(container);
         }
       }
+      // Load posts from local storage
+      let posts = JSON.parse(localStorage.getItem('posts') || '[]');
+
+      const feedContainer = document.getElementById('feed-container');
+      renderPosts(posts, feedContainer);
+
+      // Post Submission
+      const postForm = document.getElementById('post-form');
+      postForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const postText = document.getElementById('post-text').value.trim();
+        const fileInput = document.getElementById('file-input');
+        const file = fileInput.files[0];
+
+        let mediaUrl = null;
+
+        if (file) {
+          const fileType = file.type;
+          if (fileType.startsWith('image/') || fileType.startsWith('video/')) {
+            mediaUrl = URL.createObjectURL(file);
+          } else {
+            alert('Invalid file type. Only images and videos are allowed.');
+            fileInput.value = ''; // Clear the file input
+            return;
+          }
+        }
+
+        if (postText !== '' || mediaUrl) {
+          const newPost = {
+            id: Date.now(),
+            text: postText,
+            mediaUrl: mediaUrl,
+            mediaType: file ? file.type : null
+          };
+          posts.push(newPost);
+          localStorage.setItem('posts', JSON.stringify(posts));
+          renderPosts(posts, feedContainer);
+          document.getElementById('post-text').value = ''; // Clear the text input
+          fileInput.value = ''; // Clear the file input
+        }
+      });
+
+      function renderPosts(posts, feedContainer) {
+        feedContainer.innerHTML = `
+          <h1>Welcome to the UCH Feed!</h1>
+          <form id="post-form">
+            <textarea id="post-text" placeholder="What's on your mind?" rows="4"></textarea>
+            <input type="file" id="file-input" accept="image/*, video/*">
+            <button type="submit" id="post-button">Post</button>
+          </form>
+        `;
+
+        posts.forEach(post => {
+          const postElement = document.createElement('div');
+          postElement.className = 'post';
+
+          let postContent = '';
+          if (post.text) {
+            postContent += `<div class="post-content">${post.text}</div>`;
+          }
+          if (post.mediaUrl) {
+            if (post.mediaType.startsWith('image/')) {
+              postContent += `<img src="${post.mediaUrl}" alt="Post Image" class="post-image">`;
+            } else if (post.mediaType.startsWith('video/')) {
+              postContent += `<video src="${post.mediaUrl}" class="post-video" controls></video>`;
+            }
+          }
+
+          postElement.innerHTML = postContent;
+          feedContainer.appendChild(postElement);
+        });
+      }
     };
   </script>
 </head>
@@ -301,13 +363,9 @@
     <img src="unightly-icon.ico" alt="Unightly Icon" class="header-icon">
     <span class="header-title">UCH Website</span>
   </header>
-  <div class="container">
-    <h1>Welcome to UCH!</h1>
-    <p>
-      This is the website for Unightly Club Hangout.<br>
-      Enjoy a modern, secure, and stylish experience.
-    </p>
-    <a href="#" class="cta-btn">Get Started</a>
+  <!-- Feed Container -->
+  <div id="feed-container">
+    <!-- Posts will be loaded here -->
   </div>
 </body>
 
