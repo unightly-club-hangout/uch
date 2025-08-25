@@ -273,6 +273,8 @@
     }
     window.onload = function() {
       const credential = localStorage.getItem('google_credential');
+      let img;
+      let menu;
       if (credential) {
         const payload = parseJwt(credential);
         if (payload.picture) {
@@ -284,7 +286,7 @@
           container.style.right = '32px';
           container.style.zIndex = '100';
           // Create profile icon
-          const img = document.createElement('img');
+          img = document.createElement('img');
           img.id = 'profile-icon';
           img.src = payload.picture;
           img.alt = 'Google Profile';
@@ -297,11 +299,8 @@
           img.style.background = '#eee';
           img.style.cursor = 'pointer';
           img.style.transition = 'box-shadow 0.2s';
-          img.onblur = function() {
-            setTimeout(() => menu.classList.remove('show'), 150);
-          };
           // Create dropdown menu
-          const menu = document.createElement('div');
+          menu = document.createElement('div');
           menu.className = 'dropdown-menu';
           menu.style.display = 'none';
           menu.style.position = 'absolute';
@@ -322,11 +321,17 @@
           <div class="dropdown-item" id="status-link">Status</div>
           <div class="dropdown-item signout" id="signout-link">Sign Out</div>
           `;
+          container.appendChild(img);
+          container.appendChild(menu);
+          document.body.appendChild(container);
           // Toggle menu on icon click
           img.onclick = function(e) {
             e.stopPropagation();
             menu.classList.toggle('show');
           };
+          img.addEventListener('blur', function() {
+            setTimeout(() => menu.classList.remove('show'), 150);
+          });
           // Hide menu when clicking outside
           document.addEventListener('click', function() {
             menu.classList.remove('show');
@@ -349,9 +354,6 @@
             localStorage.removeItem('google_credential');
             window.location.href = 'index.html';
           };
-          container.appendChild(img);
-          container.appendChild(menu);
-          document.body.appendChild(container);
         }
       }
       const statusContainer = document.querySelector('.container');
