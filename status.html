@@ -25,8 +25,10 @@
       color: var(--primary);
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      align-items: flex-start;
+      /* Align items to the start */
+      justify-content: flex-start;
+      /* Align content to the start */
       min-height: 100vh;
     }
 
@@ -38,6 +40,12 @@
       width: 100%;
       box-shadow: var(--shadow);
       z-index: 10;
+      display: flex;
+      /* Use flexbox for header */
+      justify-content: space-between;
+      /* Space items out */
+      align-items: center;
+      /* Align items vertically */
     }
 
     .header-icon {
@@ -57,9 +65,6 @@
     }
 
     #profile-container {
-      position: absolute;
-      top: 20px;
-      right: 32px;
       z-index: 100;
     }
 
