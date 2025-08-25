@@ -1,460 +1,340 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <title>Account Settings | UCH</title>
-  <link rel="icon" type="image/x-icon" href="unightly-icon.ico">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    :root {
-      --primary: #2d3748;
-      --accent: #3182ce;
-      --accent-hover: #2563eb;
-      --background: #f5f7fa;
-      --container-bg: #fff;
-      --shadow: 0 4px 24px rgba(0,0,0,0.08);
-      --radius: 16px;
-    }
-
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', Arial, sans-serif;
-      background: var(--background);
-      color: var(--primary);
-    }
-
-    header {
-      background: var(--primary);
-      color: #fff;
-      padding: 0;
-      position: relative;
-      height: 80px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .header-icon {
-      position: absolute;
-      top: 16px;
-      left: 32px;
-      width: 48px;
-      height: 48px;
-      border-radius: 12px;
-      box-shadow: 0 0 8px #2222;
-      background: #fff;
-      object-fit: contain;
-    }
-
-    .header-title {
-      font-size: 2rem;
-      font-weight: 700;
-      letter-spacing: 1px;
-    }
-
-    .settings-layout {
-      display: flex;
-      max-width: 900px;
-      margin: 48px auto 0 auto;
-      background: var(--container-bg);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      min-height: 480px;
-      animation: fadeIn 0.8s;
-      position: relative;
-      /* Add this */
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .settings-tabs {
-      width: 220px;
-      background: #f5f7fa;
-      border-top-left-radius: var(--radius);
-      border-bottom-left-radius: var(--radius);
-      border-right: 1px solid #e2e8f0;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      padding: 32px 0 32px 0;
-    }
-
-    .tab {
-      width: 180px;
-      padding: 16px 24px;
-      margin-bottom: 8px;
-      background: none;
-      border: none;
-      border-radius: 8px 0 0 8px;
-      font-size: 1.08rem;
-      color: var(--primary);
-      text-align: right;
-      cursor: pointer;
-      transition: background 0.18s, color 0.18s;
-    }
-
-    .tab.active,
-    .tab:hover {
-      background: var(--accent);
-      color: #fff;
-    }
-
-    .settings-content {
-      flex: 1;
-      padding: 40px 32px;
-      min-height: 400px;
-    }
-
-    .settings-form {
-      max-width: 400px;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
-    }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-    }
-
-    label {
-      font-weight: 500;
-      margin-bottom: 8px;
-      color: var(--primary);
-    }
-
-    input[type="text"],
-    input[type="email"],
-    textarea,
-    input[type="file"] {
-      width: 100%;
-      padding: 10px 12px;
-      border: 1px solid #cbd5e1;
-      border-radius: 8px;
-      font-size: 1rem;
-      background: #f5f7fa;
-      color: #222;
-      transition: border 0.2s;
-      box-sizing: border-box; /* Add this line */
-    }
-
-    input[type="text"]:focus,
-    input[type="email"]:focus,
-    textarea:focus,
-    input[type="file"]:focus {
-      border-color: var(--accent);
-      outline: none;
-    }
-
-    textarea {
-      min-height: 60px;
-      resize: vertical;
-    }
-
-    .form-actions {
-      display: flex;
-      justify-content: flex-end;
-    }
-
-    .save-btn {
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      padding: 12px 28px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.2s, box-shadow 0.2s;
-      box-shadow: 0 2px 8px rgba(49, 130, 206, 0.08);
-    }
-
-    .save-btn:hover {
-      background: var(--accent-hover);
-      box-shadow: 0 4px 16px rgba(49, 130, 206, 0.15);
-    }
-
-    .form-success {
-      color: #38a169;
-      font-weight: 500;
-      margin-top: 12px;
-    }
-
-    .form-error {
-      color: #e53e3e;
-      font-weight: 500;
-      margin-top: 12px;
-    }
-
-    .close-button {
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      background: none;
-      border: none;
-      font-size: 1.5rem;
-      color: #888;
-      cursor: pointer;
-      transition: color 0.2s;
-    }
-
-    .close-button:hover {
-      color: var(--accent);
-    }
-
-    @media (max-width: 800px) {
-      .settings-layout {
-        flex-direction: column;
-        max-width: 98vw;
-      }
-
-      .settings-tabs {
-        flex-direction: row;
-        width: 100%;
-        border-right: none;
-        border-bottom: 1px solid #e2e8f0;
-        border-radius: var(--radius) var(--radius) 0 0;
-        align-items: flex-start;
-        padding: 0 0 0 0;
-      }
-
-      .tab {
-        width: auto;
-        padding: 12px 18px;
-        margin-bottom: 0;
-        border-radius: 8px 8px 0 0;
-        text-align: center;
-      }
-
-      .settings-content {
-        padding: 24px 12px;
-      }
-    }
-  </style>
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const tabs = document.querySelectorAll('.tab');
-      const content = document.getElementById('settings-content');
-      const headerIcon = document.querySelector('.header-icon'); // Select the header icon
-      let currentProfileImage = headerIcon.src; // Store the initial profile image URL
-      const tabContents = [{
-          // Account Settings tab with form
-          title: 'Account Settings',
-          content: `
-          <h2>Account Settings</h2>
-          <form class="settings-form" id="account-form">
-          <div class="form-group">
-          <label for="username">Username</label>
-          <input type="text" id="username" name="username" placeholder="Enter your username">
-          </div>
-          <div class="form-group">
-          <label for="description">Description</label>
-          <textarea id="description" name="description" placeholder="Add a short description"></textarea>
-          </div>
-          <div class="form-group">
-          <label for="email">Email</label>
-          <input type="email" id="email" name="email" placeholder="Enter your email">
-          </div>
-          <div class="form-actions">
-          <button type="submit" class="save-btn">Save Changes</button>
-          </div>
-          <div id="form-success" class="form-success" style="display:none;">Changes saved!</div>
-          <div id="form-error" class="form-error" style="display:none;"></div>
-          </form>
-          `,
-          setup: setupAccountForm
-        },
-        {
-          title: 'Security',
-          content: `<h2>Security</h2><p>Update your password, enable 2FA, and review security logs.</p>`,
-          setup: null
-        },
-        {
-          title: 'Profile Picture',
-          content: `
-          <h2>Profile Picture</h2>
-          <p>Customize your profile image.</p>
-          <form id="profile-picture-form" class="settings-form">
-          <div class="form-group">
-          <label for="profile-image">Upload New Image</label>
-          <input type="file" id="profile-image" name="profile-image" accept="image/*">
-          </div>
-          <div class="form-actions">
-          <button type="submit" class="save-btn">Upload</button>
-          </div>
-          <div id="upload-success" class="form-success" style="display:none;">Profile picture updated!</div>
-          <div id="upload-error" class="form-error" style="display:none;"></div>
-          </form>
-          `,
-          setup: setupProfilePictureForm
-        },
-        {
-          title: 'Blocked Users',
-          content: `<h2>Blocked Users</h2><p>View and manage users you have blocked.</p>`,
-          setup: null
-        },
-        {
-          title: 'Others',
-          content: `<h2>Others</h2><p>Other settings and preferences.</p>`,
-          setup: null
+    <meta charset="UTF-8">
+    <title>Account Settings | UCH</title>
+    <link rel="icon" type="image/x-icon" href="unightly-icon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        :root {
+            --primary: #2d3748;
+            --accent: #3182ce;
+            --accent-hover: #2563eb;
+            --background: #f5f7fa;
+            --container-bg: #fff;
+            --shadow: 0 4px 24px rgba(0,0,0,0.08);
+            --radius: 16px;
         }
-      ;
 
-      function showTab(index) {
-        tabs.forEach(t => t.classList.remove('active'));
-        tabs[index].classList.add('active');
-        content.innerHTML = tabContents[index].content;
-        if (tabContents[index].setup) {
-          tabContents[index].setup();
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: var(--background);
+            color: var(--primary);
         }
-      }
-      tabs.forEach((tab, idx) => {
-        tab.addEventListener('click', function() {
-          showTab(idx);
-        });
-      });
-      // Set default tab
-      showTab(0);
 
-      function setupAccountForm() {
-        const form = document.getElementById('account-form');
-        if (form) {
-          form.onsubmit = async function(e) {
-            e.preventDefault();
-            document.getElementById('form-success').style.display = 'none';
-            document.getElementById('form-error').style.display = 'none';
-            const data = {
-              userId: "", // Set this from your auth/session if available
-              username: form.username.value,
-              description: form.description.value,
-              email: form.email.value
-            };
-            try {
-              const response = await fetch('/api/account/update', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-              });
-              if (response.ok) {
-                document.getElementById('form-success').style.display = 'block';
-                setTimeout(() => {
-                  document.getElementById('form-success').style.display = 'none';
-                }, 2000);
-              } else {
-                const errorElement = document.getElementById('form-error');
-                errorElement.innerText = 'Error saving changes.';
-                errorElement.style.display = 'block';
-                setTimeout(() => {
-                  errorElement.style.display = 'none';
-                }, 10000);
-              }
-            } catch (err) {
-              const errorElement = document.getElementById('form-error');
-              errorElement.innerText = 'Error saving changes.';
-              errorElement.style.display = 'block';
-              setTimeout(() => {
-                errorElement.style.display = 'none';
-              }, 10000);
+        header {
+            background: var(--primary);
+            color: #fff;
+            padding: 0;
+            position: relative;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .header-icon {
+            position: absolute;
+            top: 16px;
+            left: 32px;
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            box-shadow: 0 0 8px #2222;
+            background: #fff;
+            object-fit: contain;
+        }
+
+        .header-title {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .settings-layout {
+            display: flex;
+            max-width: 900px;
+            margin: 48px auto 0 auto;
+            background: var(--container-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            min-height: 480px;
+            animation: fadeIn 0.8s;
+            position: relative; /* Add this */
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
             }
-          };
-        }
-      }
 
-      function setupProfilePictureForm() {
-        const form = document.getElementById('profile-picture-form');
-        if (form) {
-          form.onsubmit = async function(e) {
-            e.preventDefault();
-            document.getElementById('upload-success').style.display = 'none';
-            document.getElementById('upload-error').style.display = 'none';
-            const imageInput = document.getElementById('profile-image');
-            const imageFile = imageInput.files[0];
-            if (!imageFile) {
-              const errorElement = document.getElementById('upload-error');
-              errorElement.innerText = 'Please select an image.';
-              errorElement.style.display = 'block';
-              setTimeout(() => {
-                errorElement.style.display = 'none';
-              }, 5000);
-              return;
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
-            const formData = new FormData();
-            formData.append('profile-image', imageFile);
-            try {
-              const response = await fetch('/api/profile/update-image', {
-                method: 'POST',
-                body: formData
-              });
-              if (response.ok) {
-                document.getElementById('upload-success').style.display = 'block';
-                setTimeout(() => {
-                  document.getElementById('upload-success').style.display = 'none';
-                }, 2000);
-                // Update the header icon with the new image
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                  headerIcon.src = event.target.result; // Update header icon
-                  currentProfileImage = event.target.result; // Update the stored URL
+        }
+
+        .settings-tabs {
+            width: 220px;
+            background: #f5f7fa;
+            border-top-left-radius: var(--radius);
+            border-bottom-left-radius: var(--radius);
+            border-right: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            padding: 32px 0 32px 0;
+        }
+
+        .tab {
+            width: 180px;
+            padding: 16px 24px;
+            margin-bottom: 8px;
+            background: none;
+            border: none;
+            border-radius: 8px 0 0 8px;
+            font-size: 1.08rem;
+            color: var(--primary);
+            text-align: right;
+            cursor: pointer;
+            transition: background 0.18s, color 0.18s;
+        }
+
+            .tab.active, .tab:hover {
+                background: var(--accent);
+                color: #fff;
+            }
+
+        .settings-content {
+            flex: 1;
+            padding: 40px 32px;
+            min-height: 400px;
+        }
+
+        .settings-form {
+            max-width: 400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        label {
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--primary);
+        }
+
+        input[type="text"], input[type="email"], textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: #f5f7fa;
+            color: #222;
+            transition: border 0.2s;
+        }
+
+            input[type="text"]:focus, input[type="email"]:focus, textarea:focus {
+                border-color: var(--accent);
+                outline: none;
+            }
+
+        textarea {
+            min-height: 60px;
+            resize: vertical;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .save-btn {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 28px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 8px rgba(49,130,206,0.08);
+        }
+
+            .save-btn:hover {
+                background: var(--accent-hover);
+                box-shadow: 0 4px 16px rgba(49,130,206,0.15);
+            }
+
+        .form-success {
+            color: #38a169;
+            font-weight: 500;
+            margin-top: 12px;
+        }
+
+        .form-error {
+            color: #e53e3e;
+            font-weight: 500;
+            margin-top: 12px;
+        }
+
+        .close-button {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #888;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+            .close-button:hover {
+                color: var(--accent);
+            }
+
+        @media (max-width: 800px) {
+            .settings-layout {
+                flex-direction: column;
+                max-width: 98vw;
+            }
+
+            .settings-tabs {
+                flex-direction: row;
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid #e2e8f0;
+                border-radius: var(--radius) var(--radius) 0 0;
+                align-items: flex-start;
+                padding: 0 0 0 0;
+            }
+
+            .tab {
+                width: auto;
+                padding: 12px 18px;
+                margin-bottom: 0;
+                border-radius: 8px 8px 0 0;
+                text-align: center;
+            }
+
+            .settings-content {
+                padding: 24px 12px;
+            }
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const tabs = document.querySelectorAll('.tab');
+            const content = document.getElementById('settings-content');
+            const tabContents = [
+                // Account Settings tab with form
+                `<h2>Account Settings</h2>
+                                <form class="settings-form" id="account-form">
+                                    <div class="form-group">
+                                        <label for="username">Username</label>
+                                        <input type="text" id="username" name="username" placeholder="Enter your username">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="description">Description</label>
+                                        <textarea id="description" name="description" placeholder="Add a short description"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="email">Email</label>
+                                        <input type="email" id="email" name="email" placeholder="Enter your email">
+                                    </div>
+                                    <div class="form-actions">
+                                        <button type="submit" class="save-btn">Save Changes</button>
+                                    </div>
+                                    <div id="form-success" class="form-success" style="display:none;">Changes saved!</div>
+                                    <div id="form-error" class="form-error" style="display:none;">Error saving changes.</div>
+                                </form>`,
+                `<h2>Security</h2><p>Update your password, enable 2FA, and review security logs.</p>`,
+                `<h2>Profile Picture</h2><p>Change your profile image and avatar settings.</p>`,
+                `<h2>Blocked Users</h2><p>View and manage users you have blocked.</p>`,
+                `<h2>Others</h2><p>Other settings and preferences.</p>`
+            ];
+            tabs.forEach((tab, idx) => {
+                tab.addEventListener('click', function () {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    content.innerHTML = tabContents[idx];
+                    if (idx === 0) setupAccountForm();
+                });
+            });
+            // Set default tab
+            tabs[0].classList.add('active');
+            content.innerHTML = tabContents[0];
+            setupAccountForm();
+
+            // Form handler with API call
+            function setupAccountForm() {
+                const form = document.getElementById('account-form');
+                if (form) {
+                    form.onsubmit = async function (e) {
+                        e.preventDefault();
+                        document.getElementById('form-success').style.display = 'none';
+                        document.getElementById('form-error').style.display = 'none';
+                        // You may want to get UserId from session/auth
+                        const data = {
+                            userId: "", // Set this from your auth/session if available
+                            username: form.username.value,
+                            description: form.description.value,
+                            email: form.email.value
+                        };
+                        try {
+                            const response = await fetch('/api/account/update', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(data)
+                            });
+                            if (response.ok) {
+                                document.getElementById('form-success').style.display = 'block';
+                                setTimeout(() => {
+                                    document.getElementById('form-success').style.display = 'none';
+                                }, 2000);
+                            } else {
+                                document.getElementById('form-error').style.display = 'block';
+                            }
+                        } catch (err) {
+                            document.getElementById('form-error').style.display = 'block';
+                        }
+                    };
                 }
-                reader.readAsDataURL(imageFile);
-              } else {
-                const errorElement = document.getElementById('upload-error');
-                errorElement.innerText = 'Error uploading image.';
-                errorElement.style.display = 'block';
-                setTimeout(() => {
-                  errorElement.style.display = 'none';
-                }, 10000);
-              }
-            } catch (err) {
-              const errorElement = document.getElementById('upload-error');
-              errorElement.innerText = 'Error uploading image.';
-              errorElement.style.display = 'block';
-              setTimeout(() => {
-                errorElement.style.display = 'none';
-              }, 10000);
             }
-          };
-        }
-      }
-    });
-  </script>
+        });
+    </script>
 </head>
-
 <body>
-  <header>
-    <img src="unightly-icon.ico" alt="Unightly Icon" class="header-icon">
-    <span class="header-title">UCH Website</span>
-  </header>
-  <div class="settings-layout">
-    <button class="close-button" onclick="window.location.href='blank.html'">
-      &times;
-    </button>
-    <nav class="settings-tabs">
-      <button class="tab">Account settings</button>
-      <button class="tab">Security</button>
-      <button class="tab">Profile picture</button>
-      <button class="tab">Blocked users</button>
-      <button class="tab">Others</button>
-    </nav>
-    <section class="settings-content" id="settings-content">
-      <!-- Tab content will appear here -->
-    </section>
-  </div>
+    <header>
+        <img src="unightly-icon.ico" alt="Unightly Icon" class="header-icon">
+        <span class="header-title">UCH Website</span>
+    </header>
+    <div class="settings-layout">
+        <button class="close-button" onclick="window.location.href='blank.html'">
+            &times;
+        </button>
+        <nav class="settings-tabs">
+            <button class="tab">Account settings</button>
+            <button class="tab">Security</button>
+            <button class="tab">Profile picture</button>
+            <button class="tab">Blocked users</button>
+            <button class="tab">Others</button>
+        </nav>
+        <section class="settings-content" id="settings-content">
+            <!-- Tab content will appear here -->
+        </section>
+    </div>
 </body>
-
 </html>
