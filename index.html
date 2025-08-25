@@ -1,212 +1,284 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Login to UCH</title>
-    <link rel="icon" type="image/x-icon" href="unightly-icon.ico">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        :root {
-            --primary: #2d3748;
-            --accent: #3182ce;
-            --accent-hover: #2563eb;
-            --background: #f5f7fa;
-            --container-bg: #fff;
-            --shadow: 0 4px 24px rgba(0,0,0,0.08);
-            --radius: 16px;
+  <meta charset="UTF-8">
+  <title>Login to UCH</title>
+  <link rel="icon" type="image/x-icon" href="unightly-icon.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #e0f2fe;
+      --accent: #60a5fa;
+      --accent-hover: #3b82f6;
+      --background: #0f172a;
+      /* Dark background */
+      --container-bg: rgba(30, 41, 59, 0.8);
+      /* Semi-transparent container */
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      --radius: 12px;
+      --font-family: 'Poppins', sans-serif;
+      --gradient: linear-gradient(to right, #6366f1, #a855f7);
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--font-family);
+      background: var(--background);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Animated background */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 200%;
+      height: 100%;
+      background: var(--gradient);
+      opacity: 0.3;
+      z-index: -1;
+      animation: wave 10s linear infinite;
+    }
+
+    @keyframes wave {
+      0% {
+        transform: translateX(0);
+      }
+
+      100% {
+        transform: translateX(-50%);
+      }
+    }
+
+    header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(30, 41, 59, 0.9);
+      /* Semi-transparent header */
+      color: var(--primary);
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      box-shadow: var(--shadow);
+      z-index: 10;
+    }
+
+    .header-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      margin-right: 16px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.3);
+      background: #fff;
+      object-fit: contain;
+    }
+
+    .header-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .container {
+      max-width: 480px;
+      background: var(--container-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 48px 32px;
+      text-align: center;
+      animation: fadeIn 1s;
+      z-index: 5;
+      /* Ensure container is above the animated background */
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5em;
+      color: var(--primary);
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    p {
+      font-size: 1.1rem;
+      color: var(--primary);
+      margin-bottom: 2em;
+      opacity: 0.8;
+    }
+
+    .login-divider {
+      margin: 32px 0 24px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .login-divider span {
+      background: #4b5563;
+      height: 1px;
+      width: 40%;
+      display: inline-block;
+    }
+
+    .login-divider label {
+      margin: 0 16px;
+      color: #9ca3af;
+      font-size: 1rem;
+      font-weight: 500;
+    }
+
+    .cta-btn {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 14px 36px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 0 4px 12px rgba(96, 165, 250, 0.4);
+      transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+    }
+
+    .cta-btn:hover {
+      background: var(--accent-hover);
+      box-shadow: 0 6px 18px rgba(59, 130, 246, 0.5);
+      transform: translateY(-2px) scale(1.03);
+    }
+
+    .google-signin-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    /* Style the Google Sign-In button directly */
+    #g_id_signin {
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      border-radius: 6px;
+    }
+
+    .login-footer {
+      margin-top: 32px;
+      color: #9ca3af;
+      font-size: 0.95rem;
+      opacity: 0.9;
+    }
+
+    .login-footer a {
+      color: var(--accent);
+      text-decoration: underline;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        margin: 32px 16px;
+        padding: 32px 24px;
+      }
+
+      header {
+        padding: 16px;
+      }
+
+      .header-icon {
+        width: 32px;
+        height: 32px;
+        margin-right: 12px;
+      }
+
+      .header-title {
+        font-size: 1.25rem;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+
+      p {
+        font-size: 1rem;
+      }
+
+      .cta-btn {
+        padding: 12px 30px;
+        font-size: 1rem;
+      }
+    }
+  </style>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script>
+    // Redirect to blank.html if user is already logged in
+    if (localStorage.getItem('google_credential')) {
+      window.location.href = "blank.html";
+    }
+
+    function handleCredentialResponse(response) {
+      // Save the credential (JWT) and redirect
+      localStorage.setItem('google_credential', response.credential);
+      window.location.href = "blank.html";
+    }
+
+    window.onload = function() {
+      google.accounts.id.initialize({
+        client_id: "90008544107-puntiddkae4hctcec08mghl6e9nhvs4k.apps.googleusercontent.com",
+        callback: handleCredentialResponse
+      });
+      google.accounts.id.renderButton(
+        document.getElementById("g_id_signin"), {
+          theme: "outline",
+          size: "large",
+          width: "350" // Set a specific width for the button
         }
-
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background: var(--background);
-            color: var(--primary);
-        }
-
-        header {
-            background: var(--primary);
-            color: #fff;
-            padding: 0;
-            position: relative;
-            height: 80px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .header-icon {
-            position: absolute;
-            top: 16px;
-            left: 32px;
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            box-shadow: 0 0 8px #2222;
-            background: #fff;
-            object-fit: contain;
-        }
-
-        .header-title {
-            font-size: 2rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-        }
-
-        .container {
-            max-width: 500px;
-            margin: 60px auto 0 auto;
-            background: var(--container-bg);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            padding: 48px 32px 40px 32px;
-            text-align: center;
-            animation: fadeIn 0.8s;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        h1 {
-            font-size: 2.2rem;
-            font-weight: 700;
-            margin-bottom: 0.5em;
-            color: var(--accent);
-        }
-
-        p {
-            font-size: 1.15rem;
-            color: #444;
-            margin-bottom: 2em;
-        }
-
-        .login-divider {
-            margin: 32px 0 24px 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-            .login-divider span {
-                background: #e2e8f0;
-                height: 1px;
-                width: 40%;
-                display: inline-block;
-            }
-
-            .login-divider label {
-                margin: 0 16px;
-                color: #888;
-                font-size: 1rem;
-                font-weight: 500;
-            }
-
-        .cta-btn {
-            display: inline-block;
-            margin-top: 8px;
-            padding: 14px 36px;
-            background: var(--accent);
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-            box-shadow: 0 2px 8px rgba(49,130,206,0.08);
-            transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
-        }
-
-            .cta-btn:hover {
-                background: var(--accent-hover);
-                box-shadow: 0 4px 16px rgba(49,130,206,0.15);
-                transform: translateY(-2px) scale(1.03);
-            }
-
-        .google-signin-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .login-footer {
-            margin-top: 32px;
-            color: #888;
-            font-size: 0.95rem;
-        }
-
-        @media (max-width: 600px) {
-            .container {
-                margin: 32px 8px 0 8px;
-                padding: 32px 12px;
-            }
-
-            header {
-                height: 64px;
-            }
-
-            .header-icon {
-                top: 8px;
-                left: 12px;
-                width: 36px;
-                height: 36px;
-            }
-
-            .header-title {
-                font-size: 1.3rem;
-            }
-        }
-    </style>
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <script>
-        // Redirect to blank.html if user is already logged in
-        if (localStorage.getItem('google_credential')) {
-            window.location.href = "blank.html";
-        }
-
-        function handleCredentialResponse(response) {
-            // Save the credential (JWT) and redirect
-            localStorage.setItem('google_credential', response.credential);
-            window.location.href = "blank.html";
-        }
-        window.onload = function () {
-            google.accounts.id.initialize({
-                client_id: "90008544107-puntiddkae4hctcec08mghl6e9nhvs4k.apps.googleusercontent.com",
-                callback: handleCredentialResponse
-            });
-            google.accounts.id.renderButton(
-                document.getElementById("g_id_signin"),
-                { theme: "outline", size: "large" }
-            );
-        };
-    </script>
+      );
+    };
+  </script>
 </head>
+
 <body>
-    <header>
-        <img src="unightly-icon.ico" alt="Unightly Icon" class="header-icon">
-        <span class="header-title">UCH Website</span>
-    </header>
-    <div class="container">
-        <h1>Login to UCH</h1>
-        <p>
-            Sign in to access Unightly Club Hangout.<br>
-            Enjoy a modern, secure, and stylish experience.
-        </p>
-        <div class="google-signin-wrapper">
-            <div id="g_id_signin"></div>
-        </div>
-        <div class="login-footer">
-            <span>By signing in, you agree to our <a href="#" style="color:var(--accent);text-decoration:underline;">Terms</a> and <a href="#" style="color:var(--accent);text-decoration:underline;">Privacy Policy</a>.</span>
-        </div>
+  <header>
+    <img src="unightly-icon.ico" alt="Unightly Icon" class="header-icon">
+    <span class="header-title">UCH Website</span>
+  </header>
+  <div class="container">
+    <h1>Welcome to UCH</h1>
+    <p>
+      Sign in to access Unightly Club Hangout.<br>
+      Experience a modern, secure, and stylish online community.
+    </p>
+    <div class="google-signin-wrapper">
+      <p style="color:#CBD5E1; margin-bottom: 12px;">To access the website, please login below.</p>
+      <div id="g_id_signin"></div>
     </div>
+    <div class="login-footer">
+      <span>By signing in, you agree to our <a href="#" style="color:var(--accent);text-decoration:underline;">Terms</a> and <a href="#" style="color:var(--accent);text-decoration:underline;">Privacy Policy</a>.</span>
+    </div>
+  </div>
 </body>
+
 </html>
