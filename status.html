@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>User Status | UCH</title>
@@ -179,127 +180,62 @@
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const statusContainer = document.querySelector('.container');
-      let statusData = {}; // Store the status data
+      let userData;
 
-      // Function to fetch user status data from the API
-      async function fetchUserStatus() {
-        try {
-          // Replace 'YOUR_USER_ID' with the actual user ID (e.g., from localStorage)
-          const userId = 'user123'; // Example: hardcoded user ID
-          const response = await fetch('/api/user/status', {
-            headers: {
-              'user-id': userId // Send user ID in the header (for demonstration)
-            }
-          });
+      // This is our main worker
+      async function loadData() {
+        const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSAe4QpwhrAKISXsS81EjhsIGuww3A6zW2w9C7231DBOp4PImMRbmcU2-FbbC8K2hcCSTD02yIhibmA/pubhtml";
+        const response = await fetch(url);
+        const data = await response.text();
 
-          if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+        // Parse the CSV data
+        const lines = data.split('\n');
+        const headers = lines[0].split(',');
+        const results = [];
+        for (let i = 1; i < lines.length; i++) {
+          const obj = {};
+          const currentLine = lines[i].split(',');
+          for (let j = 0; j < headers.length; j++) {
+            obj[headers[j].trim()] = currentLine[j] ? currentLine[j].trim() : '';
           }
+          results.push(obj);
+        }
 
-          statusData = await response.json(); // Store the fetched data
+        userData = results
+        populateData()
+      }
+      // Populate the data into the html after it is parsed
+      function populateData() {
+        const userId = "test"; // Change to the actual userID after Login is working
+        const user = userData.find(entry => entry.userID === userId);
 
-          // Update the status items on the page
-          statusContainer.innerHTML = `
+        statusContainer.innerHTML = `
             <h1>User Status</h1>
-            <p>Here's the current status for <strong>${statusData.username}</strong>:</p>
+            <p>Here's the current status for <strong>${user.username}</strong>:</p>
 
             <div class="status-item">
               <span class="status-label">Username:</span>
-              <span class="status-value">${statusData.username}</span>
+              <span class="status-value">${user.username}</span>
             </div>
 
             <div class="status-item">
               <span class="status-label">Status:</span>
-              <span class="status-value">${statusData.status}</span>
+              <span class="status-value">${user.status}</span>
             </div>
 
             <div class="status-item">
               <span class="status-label">Warnings:</span>
-              <span class="status-value">${statusData.warnings}</span>
+              <span class="status-value">${user.warnings}</span>
             </div>
 
             <div class="status-item">
               <span class="status-label">Notes:</span>
-              <span class="status-value">${statusData.notes}</span>
+              <span class="status-value">${user.notes}</span>
             </div>
-            <form id="update-status-form" class="update-form">
-                <div class="form-group">
-                    <label for="username">Username:</label>
-                    <input type="text" id="username" name="username" value="${statusData.username}">
-                </div>
-                <div class="form-group">
-                    <label for="status">Status:</label>
-                    <select id="status" name="status">
-                        <option value="Active" ${statusData.status === 'Active' ? 'selected' : ''}>Active</option>
-                        <option value="Inactive" ${statusData.status === 'Inactive' ? 'selected' : ''}>Inactive</option>
-                        <option value="Banned" ${statusData.status === 'Banned' ? 'selected' : ''}>Banned</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="warnings">Warnings:</label>
-                    <input type="number" id="warnings" name="warnings" value="${statusData.warnings}">
-                </div>
-                <div class="form-group">
-                    <label for="notes">Notes:</label>
-                    <textarea id="notes" name="notes">${statusData.notes}</textarea>
-                </div>
-                <button type="submit" class="update-btn">Update Status</button>
-            </form>
-          `;
-
-          // Set up the form submission after the content is loaded
-          setupUpdateForm();
-        } catch (error) {
-          console.error('Error fetching user status:', error);
-          statusContainer.innerHTML = `
-            <h1>Error</h1>
-            <p>Failed to load user status. Please try again later.</p>
-          `;
-        }
+            `
       }
 
-      function setupUpdateForm() {
-        const updateForm = document.getElementById('update-status-form');
-        updateForm.addEventListener('submit', async function(event) {
-          event.preventDefault();
-
-          // Get the updated values from the form
-          const username = document.getElementById('username').value;
-          const status = document.getElementById('status').value;
-          const warnings = document.getElementById('warnings').value;
-          const notes = document.getElementById('notes').value;
-
-          try {
-            // Make a POST request to the API endpoint
-            const response = await fetch('/api/user/updateStatus', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'user-id': 'user123' // Replace with the actual user ID
-              },
-              body: JSON.stringify({
-                username: username,
-                status: status,
-                warnings: warnings,
-                notes: notes
-              })
-            });
-
-            if (response.ok) {
-              alert('User status updated successfully!');
-              fetchUserStatus(); // Refresh the status data
-            } else {
-              throw new Error('Failed to update user status');
-            }
-          } catch (error) {
-            console.error('Error updating user status:', error);
-            alert('Failed to update user status. Please try again.');
-          }
-        });
-      }
-
-      // Call the function to fetch user status when the page loads
-      fetchUserStatus();
+      loadData()
     });
   </script>
 </head>
