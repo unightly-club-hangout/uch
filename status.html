@@ -373,35 +373,34 @@
           }
           results.push(obj);
         }
-        userData = results
-        populateData()
+        userData = results;
+        populateData();
       }
       // Populate the data into the html after it is parsed
       function populateData() {
         const userId = "test"; // Change to the actual userID after Login is working
         const user = userData.find(entry => entry.userID === userId);
-
         if (user) {
           statusContainer.innerHTML = `
-            <h1>User Status</h1>
-            <p>Here's the current status for <strong>${user.username}</strong>:</p>
-            <div class="status-item">
-              <span class="status-label">Username:</span>
-              <span class="status-value">${user.username}</span>
-            </div>
-            <div class="status-item">
-              <span class="status-label">Status:</span>
-              <span class="status-value">${user.status}</span>
-            </div>
-            <div class="status-item">
-              <span class="status-label">Warnings:</span>
-              <span class="status-value">${user.warnings}</span>
-            </div>
-            <div class="status-item">
-              <span class="status-label">Notes:</span>
-              <span class="status-value">${user.notes}</span>
-            </div>
-          `;
+<h1>User Status</h1>
+<p>Here's the current status for <strong>${user.username}</strong>:</p>
+<div class="status-item">
+<span class="status-label">Username:</span>
+<span class="status-value">${user.username}</span>
+</div>
+<div class="status-item">
+<span class="status-label">Status:</span>
+<span class="status-value">${user.status}</span>
+</div>
+<div class="status-item">
+<span class="status-label">Warnings:</span>
+<span class="status-value">${user.warnings}</span>
+</div>
+<div class="status-item">
+<span class="status-label">Notes:</span>
+<span class="status-value">${user.notes}</span>
+</div>
+`;
         } else {
           statusContainer.innerHTML = `<p>User status not found.</p>`;
         }
