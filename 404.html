@@ -1,95 +1,166 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <title>404 | Page Not Found</title>
-    <link rel="icon" type="image/x-icon" href="unightly-icon.ico">
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background: #2d3748;
-            color: #fff;
-        }
-        header {
-            background: #2d3748;
-            color: #fff;
-            padding: 24px 0 16px 0;
-            text-align: center;
-            font-size: 2rem;
-            font-weight: 600;
-            letter-spacing: 1px;
-            position: relative;
-        }
-        .header-icon {
-            position: absolute;
-            top: 12px;
-            left: 24px;
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            box-shadow: 0 0 8px #2222;
-            background: #fff;
-            object-fit: contain;
-        }
-        .container {
-            max-width: 500px;
-            margin: 60px auto 0 auto;
-            background: #fff;
-            color: #222;
-            border-radius: 12px;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.12);
-            padding: 40px 32px;
-            text-align: center;
-        }
-        .error-code {
-            font-size: 5rem;
-            font-weight: 700;
-            color: #3182ce;
-            margin-bottom: 0.5em;
-        }
-        .cta-btn {
-            display: inline-block;
-            margin-top: 32px;
-            padding: 14px 32px;
-            background: #3182ce;
-            color: #fff;
-            border: none;
-            border-radius: 6px;
-            font-size: 1.1rem;
-            font-weight: 500;
-            cursor: pointer;
-            text-decoration: none;
-            transition: background 0.2s;
-        }
-        .cta-btn:hover {
-            background: #2563eb;
-        }
-        .sparkle {
-            font-size: 2rem;
-            color: #f6e05e;
-            vertical-align: middle;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>404 | Page Not Found</title>
+  <link rel="icon" type="image/x-icon" href="unightly-icon.ico">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #e0f2fe;
+      --accent: #60a5fa;
+      --accent-hover: #3b82f6;
+      --background: #0f172a;
+      --container-bg: rgba(30, 41, 59, 0.8);
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      --radius: 12px;
+      --font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--font-family);
+      background: var(--background);
+      color: var(--primary);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+    }
+
+    header {
+      background: rgba(30, 41, 59, 0.9);
+      color: var(--primary);
+      padding: 20px;
+      position: relative;
+      width: 100%;
+      box-shadow: var(--shadow);
+      z-index: 10;
+    }
+
+    .header-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      margin-right: 16px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.3);
+      background: #fff;
+      object-fit: contain;
+    }
+
+    .header-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .container {
+      max-width: 500px;
+      background: var(--container-bg);
+      color: var(--primary);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 40px 32px;
+      margin-top: 40px;
+    }
+
+    .error-code {
+      font-size: 6rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 0.5em;
+      text-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 600;
+      margin-bottom: 0.5em;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    p {
+      font-size: 1.1rem;
+      opacity: 0.8;
+    }
+
+    .cta-btn {
+      display: inline-block;
+      margin-top: 32px;
+      padding: 14px 32px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 0 4px 12px rgba(96, 165, 250, 0.4);
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+
+    .cta-btn:hover {
+      background: var(--accent-hover);
+      box-shadow: 0 6px 18px rgba(59, 130, 246, 0.5);
+    }
+
+    .sparkle {
+      font-size: 2rem;
+      color: #f6e05e;
+      vertical-align: middle;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        max-width: 90%;
+        padding: 32px 24px;
+        margin-top: 32px;
+      }
+
+      .error-code {
+        font-size: 4rem;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+
+      p {
+        font-size: 1rem;
+      }
+
+      .cta-btn {
+        padding: 12px 24px;
+        font-size: 1rem;
+      }
+    }
+  </style>
 </head>
+
 <body>
-    <header>
-        <img src="unightly-icon.ico" alt="Unightly Icon" class="header-icon">
-        UCH Website
-    </header>
-    <div class="container">
-        <div class="error-code">404</div>
-        <div>
-            <span class="sparkle">&#10024;</span>
-            <h1>Oops! Lost in the Night</h1>
-            <span class="sparkle">&#10024;</span>
-        </div>
-        <p>
-            The page you’re looking for isn’t here.<br>
-            Maybe it’s out clubbing with the Unightly crew.<br>
-            Let’s get you back to the party!
-        </p>
-        <a href="blank.html" class="cta-btn">Back to Home</a>
+  <header>
+    <img src="unightly-icon.ico" alt="Unightly Icon" class="header-icon">
+    <span class="header-title">UCH Website</span>
+  </header>
+  <div class="container">
+    <div class="error-code">404</div>
+    <div>
+      <span class="sparkle">âœ¨</span>
+      <h1>Oops! Lost in the Night</h1>
+      <span class="sparkle">âœ¨</span>
     </div>
+    <p>
+      The page you're looking for isn't here.<br>
+      Maybe it's out clubbing with the Unightly crew.<br>
+      Let's get you back to the party!
+    </p>
+    <a href="blank.html" class="cta-btn">Back to Home</a>
+  </div>
 </body>
+
 </html>
