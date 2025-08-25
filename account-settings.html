@@ -261,7 +261,19 @@
                                     <div id="form-error" class="form-error" style="display:none;">Error saving changes.</div>
                                 </form>`,
                 `<h2>Security</h2><p>Update your password, enable 2FA, and review security logs.</p>`,
-                `<h2>Profile Picture</h2><p>Change your profile image and avatar settings.</p>`,
+                `<h2>Profile Picture</h2>
+                        <p>Customize your profile image.</p>
+                        <form id="profile-picture-form" class="settings-form">
+                            <div class="form-group">
+                                <label for="profile-image">Upload New Image</label>
+                                <input type="file" id="profile-image" name="profile-image" accept="image/*">
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="save-btn">Upload</button>
+                            </div>
+                            <div id="upload-success" class="form-success" style="display:none;">Profile picture updated!</div>
+                            <div id="upload-error" class="form-error" style="display:none;"></div>
+                        </form>`,
                 `<h2>Blocked Users</h2><p>View and manage users you have blocked.</p>`,
                 `<h2>Others</h2><p>Other settings and preferences.</p>`
             ];
