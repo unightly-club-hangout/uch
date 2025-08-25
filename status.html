@@ -184,7 +184,7 @@
 
       // This is our main worker
       async function loadData() {
-        const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSAe4QpwhrAKISXsS81EjhsIGuww3A6zW2w9C7231DBOp4PImMRbmcU2-FbbC8K2hcCSTD02yIhibmA/pubhtml";
+        const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSAe4QpwhrAKISXsS81EjhsIGuww3A6zW2w9C7231DBOp4PImMRbmcU2-FbbC8K2hcCSTD02yIhibmA/pub?output=csv";
         const response = await fetch(url);
         const data = await response.text();
 
