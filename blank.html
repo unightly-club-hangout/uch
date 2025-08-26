@@ -196,6 +196,24 @@
       box-shadow: 0 6px 18px rgba(59, 130, 246, 0.5);
     }
 
+    #preview-container {
+      max-width: 100%;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      overflow: hidden;
+      /* Ensure content stays within the container */
+    }
+
+    #preview-image,
+    #preview-video {
+      max-width: 100%;
+      /* Make the preview responsive */
+      max-height: 300px;
+      /* Limit the maximum height of the preview */
+      object-fit: contain;
+      /* Maintain aspect ratio */
+    }
+
     .post {
       padding: 15px;
       margin-bottom: 15px;
@@ -374,40 +392,66 @@
       renderPosts(posts, feedContainer, isAuthorized, userPicture, userName);
       // Post Submission
       const postForm = document.getElementById('post-form');
+      const fileInput = document.getElementById('file-input');
+      const previewContainer = document.getElementById('preview-container');
+      const postText = document.getElementById('post-text');
+      let mediaUrl = null;
+      let fileType = null
+      // Event listener for file input changes
+      fileInput.addEventListener('change', function() {
+        const file = fileInput.files[0];
+        if (file) {
+          fileType = file.type;
+          if (fileType.startsWith('image/') || fileType.startsWith('video/')) {
+            mediaUrl = URL.createObjectURL(file);
+            //Display the correct format
+
+            let previewContent = '';
+            if (fileType.startsWith('image/')) {
+              previewContent = `<img src="${mediaUrl}" alt="Post Image" id="preview-image">`;
+            } else if (fileType.startsWith('video/')) {
+              previewContent = `<video src="${mediaUrl}" id="preview-video" controls></video>`;
+            }
+            previewContainer.innerHTML = previewContent;
+          } else {
+            alert('Invalid file type. Only images and videos are allowed.');
+            fileInput.value = '';
+            previewContainer.innerHTML = ''; // Clear the preview
+            mediaUrl = null;
+            fileType = null
+            return;
+          }
+        } else {
+          previewContainer.innerHTML = '';
+          mediaUrl = null;
+          fileType = null
+        }
+      });
       //Check if a user Email is authorized.
       function isUserAuthorized(userEmail, authorizedEmails) {
         return authorizedEmails.includes(userEmail);
       }
       postForm.addEventListener('submit', function(e) {
         e.preventDefault();
-        const postText = document.getElementById('post-text').value.trim();
-        const fileInput = document.getElementById('file-input');
-        const file = fileInput.files[0];
-        let mediaUrl = null;
-        if (file) {
-          const fileType = file.type;
-          if (fileType.startsWith('image/') || fileType.startsWith('video/')) {
-            mediaUrl = URL.createObjectURL(file);
-          } else {
-            alert('Invalid file type. Only images and videos are allowed.');
-            fileInput.value = ''; // Clear the file input
-            return;
-          }
-        }
-        if (postText !== '' || mediaUrl) {
+        const text = postText.value.trim();
+
+        if (text !== '' || mediaUrl) {
           const newPost = {
             id: Date.now(),
-            text: postText,
+            text: text,
             mediaUrl: mediaUrl,
-            mediaType: file ? file.type : null,
+            mediaType: fileType,
             userName: userName,
             userPicture: userPicture,
           };
           posts.push(newPost);
           localStorage.setItem('posts', JSON.stringify(posts));
           renderPosts(posts, feedContainer, authorizedEmails.includes(userEmail), userPicture, userName);
-          document.getElementById('post-text').value = ''; // Clear the text input
+          postText.value = ''; // Clear the text input
           fileInput.value = ''; // Clear the file input
+          previewContainer.innerHTML = ''; // Clear the preview
+          mediaUrl = null;
+          fileType = null
         }
       });
 
@@ -423,6 +467,7 @@
           formHTML = `
 <form id="post-form">
 <textarea id="post-text" placeholder="What's on your mind?" rows="4"></textarea>
+<div id="preview-container"></div>
 <input type="file" id="file-input" accept="image/*, video/*">
 <button type="submit" id="post-button">Post</button>
 </form>
@@ -434,8 +479,33 @@
           <h1>Welcome to the UCH Feed!</h1>
           ${formHTML}
 `;
-        if (isAuthorized) {
-          const postForm = document.getElementById('post-form');
+        const postForm = document.getElementById('post-form');
+        // Reattach the file input logic if the form is rendered
+        if (postForm) {
+          const fileInput = document.getElementById('file-input');
+          const previewContainer = document.getElementById('preview-container');
+          fileInput.addEventListener('change', function() {
+            const file = fileInput.files[0];
+            if (file) {
+              const fileType = file.type;
+              if (fileType.startsWith('image/') || fileType.startsWith('video/')) {
+                const mediaUrl = URL.createObjectURL(file);
+                let previewContent = '';
+                if (fileType.startsWith('image/')) {
+                  previewContent = `<img src="${mediaUrl}" alt="Post Image" id="preview-image">`;
+                } else if (fileType.startsWith('video/')) {
+                  previewContent = `<video src="${mediaUrl}" id="preview-video" controls></video>`;
+                }
+                previewContainer.innerHTML = previewContent;
+              } else {
+                alert('Invalid file type. Only images and videos are allowed.');
+                fileInput.value = '';
+                previewContainer.innerHTML = '';
+              }
+            } else {
+              previewContainer.innerHTML = '';
+            }
+          });
           postForm.addEventListener('submit', function(e) {
             e.preventDefault();
             const postText = document.getElementById('post-text').value.trim();
@@ -481,9 +551,9 @@
             postContent += `<div class="post-content">${post.text}</div>`;
           }
           if (post.mediaUrl) {
-            if (post.mediaType.startsWith('image/')) {
+            if (post.mediaType && post.mediaType.startsWith('image/')) {
               postContent += `<img src="${post.mediaUrl}" alt="Post Image" class="post-image">`;
-            } else if (post.mediaType.startsWith('video/')) {
+            } else if (post.mediaType && post.mediaType.startsWith('video/')) {
               postContent += `<video src="${post.mediaUrl}" class="post-video" controls></video>`;
             }
           }
