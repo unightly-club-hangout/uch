@@ -319,20 +319,10 @@
       return JSON.parse(jsonPayload);
     }
     window.onload = async function() {
-      const credential = localStorage.getItem('google_credential');
-      let authorizedEmails = [];
-      try {
-        authorizedEmails = await fetchAuthorizedEmails();
-      } catch (error) {
-        console.error("Failed to load authorized users:", error);
-        // Handle the error appropriately, e.g., display a message to the user
-      }
       let img;
       let menu;
       let container;
-      let userEmail;
-      let userName;
-      let userPicture;
+      const credential = localStorage.getItem('google_credential');
       if (credential) {
         const payload = parseJwt(credential);
         if (payload.picture) {
@@ -509,18 +499,16 @@
         });
       }
     };
-  </script>
+</script>
 </head>
-
 <body>
-  <header>
-    <img src="unightly-icon.ico" alt="Unightly Icon" class="header-icon">
-    <span class="header-title">UCH Website</span>
-  </header>
-  <!-- Feed Container -->
-  <div id="feed-container">
-    <!-- Posts will be loaded here -->
-  </div>
+<header>
+<img src="unightly-icon.ico" alt="Unightly Icon" class="header-icon">
+<span class="header-title">UCH Website</span>
+</header>
+<!-- Feed Container -->
+<div id="feed-container">
+<!-- Posts will be loaded here -->
+</div>
 </body>
-
 </html>
