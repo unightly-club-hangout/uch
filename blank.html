@@ -294,7 +294,23 @@
       }
     }
   </style>
+   <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-database.js"></script>
   <script>
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+  apiKey: "AIzaSyAXbIvGZn0vQpRlrBhL6RFyGg-NGGDpTSY",
+  authDomain: "unightly-club-hangout-56361.firebaseapp.com",
+  databaseURL: "https://unightly-club-hangout-56361-default-rtdb.firebaseio.com",
+  projectId: "unightly-club-hangout-56361",
+  storageBucket: "unightly-club-hangout-56361.firebasestorage.app",
+  messagingSenderId: "41004307513",
+  appId: "1:41004307513:web:d511cfba74cc008c96a9e8",
+  measurementId: "G-6JZ4GR0CGC"
+};
+    // Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
     const GITHUB_RAW_URL = 'https://raw.githubusercontent.com/silentmason/Unightly-Club-Hangout/refs/heads/main/UCHstaff.json'; // Replace with your raw GitHub URL
     async function fetchAuthorizedEmails() {
       try {
@@ -319,10 +335,20 @@
       return JSON.parse(jsonPayload);
     }
     window.onload = async function() {
+      const credential = localStorage.getItem('google_credential');
+      let authorizedEmails = [];
+      try {
+        authorizedEmails = await fetchAuthorizedEmails();
+      } catch (error) {
+        console.error("Failed to load authorized users:", error);
+        // Handle the error appropriately, e.g., display a message to the user
+      }
       let img;
       let menu;
       let container;
-      const credential = localStorage.getItem('google_credential');
+      let userEmail;
+      let userName;
+      let userPicture;
       if (credential) {
         const payload = parseJwt(credential);
         if (payload.picture) {
@@ -384,11 +410,18 @@
           userPicture = payload.picture;
         }
       }
-      // Load existing posts from local storage
-      let posts = JSON.parse(localStorage.getItem('posts') || '[]');
+          // Load existing posts from Firebase
       const feedContainer = document.getElementById('feed-container');
       let isAuthorized = authorizedEmails.includes(userEmail);
-      renderPosts(posts, feedContainer, isAuthorized, userPicture, userName);
+      const postsRef = db.ref('posts');
+      postsRef.on('value', (snapshot) => {
+        const data = snapshot.val();
+        const posts = data ? Object.entries(data).map(([id, value]) => ({
+          id: id,
+          ...value
+        })) : [];
+        renderPosts(posts, feedContainer, isAuthorized, userPicture, userName);
+      });
       // Post Submission
       const postForm = document.getElementById('post-form');
       const fileInput = document.getElementById('file-input');
@@ -425,33 +458,31 @@
           fileType = null
         }
       });
-      function isUserAuthorized(userEmail, authorizedEmails) {
-        return authorizedEmails.includes(userEmail);
-      }
       postForm.addEventListener('submit', function(e) {
         e.preventDefault();
-        const text = postText.value.trim();
-        if (text !== '' || mediaUrl) {
+        if (postText.value.trim() !== '' || mediaUrl) {
           const newPost = {
-            id: Date.now(),
-            text: text,
+            text: postText.value.trim(),
             mediaUrl: mediaUrl,
             mediaType: fileType,
             userName: userName,
             userPicture: userPicture,
+            timestamp: firebase.database.ServerValue.TIMESTAMP // Add timestamp
           };
-          posts.push(newPost);
-          localStorage.setItem('posts', JSON.stringify(posts));
-          renderPosts(posts, feedContainer, authorizedEmails.includes(userEmail), userPicture, userName);
-          postText.value = ''; // Clear the text input
-          fileInput.value = ''; // Clear the file input
+          db.ref('posts').push(newPost).then(() => {
+            postText.value = '';
+            fileInput.value = '';
+            previewContainer.innerHTML = '';
+            mediaUrl = null;
+            fileType = null
+          }).catch((error) => {
+            console.error("Error adding image", error)
+          })
         }
       });
 
       function deletePost(postId) {
-        posts = posts.filter(post => post.id !== postId);
-        localStorage.setItem('posts', JSON.stringify(posts));
-        renderPosts(posts, feedContainer, isAuthorized, userPicture, userName); // Re-render the feed
+        db.ref('posts').child(postId).remove();
       }
 
       function renderPosts(posts, feedContainer, isAuthorized, userPicture, userName) {
@@ -472,14 +503,46 @@
           <h1>Welcome to the UCH Feed!</h1>
           ${formHTML}
 `;
-        posts.forEach(post => {
-          const postElement = document.createElement('div');
-          postElement.className = 'post';
+        if (isAuthorized) {
+          const postForm = document.getElementById('post-form');
+          postForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const postText = document.getElementById('post-text').value.trim();
+            const fileInput = document.getElementById('file-input');
+            const file = fileInput.files[0];
+            let mediaUrl = null;
+            if (file) {
+              const fileType = file.type;
+              if (fileType.startsWith('image/') || fileType.startsWith('video/')) {
+                mediaUrl = URL.createObjectURL(file);
+              } else {
+                alert('Invalid file type. Only images and videos are allowed.');
+                fileInput.value = ''; // Clear the file input
+                return;
+              }
+            }
+            if (postText !== '' || mediaUrl) {
+              const newPost = {
+                id: Date.now(),
+                text: postText,
+                mediaUrl: mediaUrl,
+                mediaType: file ? file.type : null,
+                userName: userName,
+                userPicture: userPicture,
+              };
+              postsRef.push(newPost)
+              document.getElementById('post-text').value = ''; // Clear the text input
+              fileInput.value = ''; // Clear the file input
+            }
+          });
+        }
+        feedContainer.innerHTML += `
+        ${posts.map(post => {
+          let postContent = "";
           let postHeader = `<div class="post-header">
           <img src="${post.userPicture}" alt="${post.userName}"'s Profile Picture">
           <p>${post.userName}</p>
-          </div>`
-          let postContent = '';
+          </div>`;
           if (post.text) {
             postContent += `<div class="post-content">${post.text}</div>`;
           }
@@ -494,21 +557,25 @@
           if (isAuthorized) {
             deleteButtonHTML = `<button class="delete-btn" data-id="${post.id}" onclick="deletePost('${post.id}')">x</button>`;
           }
-          postElement.innerHTML = postHeader + postContent + deleteButtonHTML;
-          feedContainer.appendChild(postElement);
-        });
+          return `<div class="post">${postHeader}
+          ${postContent}
+          ${deleteButtonHTML}</div>`
+        }).join('')}
+`
       }
     };
-</script>
+  </script>
 </head>
+
 <body>
-<header>
-<img src="unightly-icon.ico" alt="Unightly Icon" class="header-icon">
-<span class="header-title">UCH Website</span>
-</header>
-<!-- Feed Container -->
-<div id="feed-container">
-<!-- Posts will be loaded here -->
-</div>
+  <header>
+    <img src="unightly-icon.ico" alt="Unightly Icon" class="header-icon">
+    <span class="header-title">UCH Website</span>
+  </header>
+  <!-- Feed Container -->
+  <div id="feed-container">
+    <!-- Posts will be loaded here -->
+  </div>
 </body>
+
 </html>
