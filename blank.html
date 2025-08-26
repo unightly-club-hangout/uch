@@ -231,7 +231,7 @@
     }
   </style>
   <script>
-    const GITHUB_RAW_URL = 'YOUR_GITHUB_RAW_LINK_HERE'; // Replace with your raw GitHub URL
+    const GITHUB_RAW_URL = '["silentmason1@gmail.com", "admin@unightly.com", "moderator@uch.net"]'; // Replace with your raw GitHub URL
     async function fetchAuthorizedEmails() {
       try {
         const response = await fetch(GITHUB_RAW_URL);
@@ -378,7 +378,7 @@
 </form>
 `;
         } else {
-          formHTML = `<p>You are not authorized to post.</p>`;
+          formHTML = `<p> .</p>`;
         }
         feedContainer.innerHTML = `
           <h1>Welcome to the UCH Feed!</h1>
