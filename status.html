@@ -39,7 +39,7 @@
       box-shadow: var(--shadow);
       z-index: 10;
       display: flex;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
     }
 
@@ -62,7 +62,7 @@
     #profile-container {
       position: absolute;
       top: 20px;
-      right: 16px;
+      right: 32px;
       z-index: 100;
     }
 
@@ -252,10 +252,8 @@
       }
 
       #profile-container {
-        position: absolute;
-        top: 20px;
-        right: 32px;
-        z-index: 100;
+        top: 12px;
+        right: 12px;
       }
 
       #profile-icon {
@@ -286,7 +284,8 @@
           container.id = 'profile-container';
           container.style.position = 'absolute';
           container.style.top = '20px';
-          container.style.right = '32px';
+          container.style.left = '32px';
+          /*Move profile 16px from the left*/
           container.style.zIndex = '100';
           // Create profile icon
           img = document.createElement('img');
