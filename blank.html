@@ -37,7 +37,6 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      /* Centers the content horizontally */
       box-shadow: var(--shadow);
     }
 
@@ -56,9 +55,6 @@
       font-weight: 600;
       letter-spacing: 0.5px;
       text-align: center;
-      /* Fixed: Centers the text */
-      flex-grow: 1;
-      /* Allow title to take up remaining space */
     }
 
     #profile-container {
@@ -235,6 +231,21 @@
     }
   </style>
   <script>
+    const GITHUB_RAW_URL = 'YOUR_GITHUB_RAW_LINK_HERE'; // Replace with your raw GitHub URL
+    async function fetchAuthorizedEmails() {
+      try {
+        const response = await fetch(GITHUB_RAW_URL);
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
+        return data;
+      } catch (error) {
+        console.error('Failed to fetch authorized emails:', error);
+        return [];
+      }
+    }
+
     function parseJwt(token) {
       var base64Url = token.split('.')[1];
       var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -243,22 +254,33 @@
       }).join(''));
       return JSON.parse(jsonPayload);
     }
-    window.onload = function() {
+    window.onload = async function() {
       const credential = localStorage.getItem('google_credential');
+      let authorizedEmails = [];
+      try {
+        authorizedEmails = await fetchAuthorizedEmails();
+      } catch (error) {
+        console.error("Failed to load authorized users:", error);
+        // Handle the error appropriately, e.g., display a message to the user
+      }
+      let img;
+      let menu;
+      let container;
+      let userEmail;
       if (credential) {
         const payload = parseJwt(credential);
         if (payload.picture) {
           // Create profile container
-          const container = document.createElement('div');
+          container = document.createElement('div');
           container.id = 'profile-container';
           // Create profile icon
-          const img = document.createElement('img');
+          img = document.createElement('img');
           img.id = 'profile-icon';
           img.src = payload.picture;
           img.alt = 'Google Profile';
           img.tabIndex = 0;
           // Create dropdown menu
-          const menu = document.createElement('div');
+          menu = document.createElement('div');
           menu.className = 'dropdown-menu';
           menu.innerHTML = `
 <div class="dropdown-item" id="account-settings-link">Account settings</div>
@@ -301,14 +323,19 @@
           container.appendChild(img);
           container.appendChild(menu);
           document.body.appendChild(container);
+          userEmail = payload.email;
         }
       }
       // Load existing posts from local storage
       let posts = JSON.parse(localStorage.getItem('posts') || '[]');
       const feedContainer = document.getElementById('feed-container');
-      renderPosts(posts, feedContainer);
+      renderPosts(posts, feedContainer, authorizedEmails.includes(userEmail));
       // Post Submission
       const postForm = document.getElementById('post-form');
+      //Check if a user Email is authorized.
+      function isUserAuthorized(userEmail, authorizedEmails) {
+        return authorizedEmails.includes(userEmail);
+      }
       postForm.addEventListener('submit', function(e) {
         e.preventDefault();
         const postText = document.getElementById('post-text').value.trim();
@@ -334,20 +361,29 @@
           };
           posts.push(newPost);
           localStorage.setItem('posts', JSON.stringify(posts));
-          renderPosts(posts, feedContainer);
+          renderPosts(posts, feedContainer, authorizedEmails.includes(userEmail));
           document.getElementById('post-text').value = ''; // Clear the text input
           fileInput.value = ''; // Clear the file input
         }
       });
-      function renderPosts(posts, feedContainer) {
+
+      function renderPosts(posts, feedContainer, isAuthorized) {
+        let formHTML = '';
+        if (isAuthorized) {
+          formHTML = `
+<form id="post-form">
+<textarea id="post-text" placeholder="What's on your mind?" rows="4"></textarea>
+<input type="file" id="file-input" accept="image/*, video/*">
+<button type="submit" id="post-button">Post</button>
+</form>
+`;
+        } else {
+          formHTML = `<p>You are not authorized to post.</p>`;
+        }
         feedContainer.innerHTML = `
           <h1>Welcome to the UCH Feed!</h1>
-          <form id="post-form">
-            <textarea id="post-text" placeholder="What's on your mind?" rows="4"></textarea>
-            <input type="file" id="file-input" accept="image/*, video/*">
-            <button type="submit" id="post-button">Post</button>
-          </form>
-        `;
+          ${formHTML}
+`;
         posts.forEach(post => {
           const postElement = document.createElement('div');
           postElement.className = 'post';
