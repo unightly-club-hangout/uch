@@ -207,6 +207,19 @@
       position: relative;
     }
 
+    .post-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .post-header img {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+
     .post-content {
       margin-bottom: 10px;
     }
@@ -223,6 +236,29 @@
       /* Limit video height */
     }
 
+    .delete-btn {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background: #e53e3e;
+      /* Red color */
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .delete-btn:hover {
+      background: #c53030;
+      /* Darker red */
+    }
+
     /* Responsive Styles */
     @media (max-width: 600px) {
       #feed-container {
@@ -232,31 +268,19 @@
     }
   </style>
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby_FeojQ5rhBvY7VueplZpoGv90eOAx6YyCLWAq8cYsaTyrm7tO6zXig3_OkHwIP9igpA/exec";
-
-    function insertPost(text, mediaUrl, mediaType, userName, userPicture) {
-      google.script.run.doPost(text, mediaUrl, mediaType, userName, userPicture)
-    }
-
-    function loadPosts() {
-      google.script.run.getPosts()
-        .then(function(posts) {
-          const feedContainer = document.getElementById('feed-container');
-          renderPosts(posts, feedContainer);
-        })
-    }
-
-    function deletePost(postId) {
-      google.script.run.deletePost(postId);
-    }
-
-    function toBase64(file) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = error => reject(error);
-        reader.readAsDataURL(file);
-      });
+    const GITHUB_RAW_URL = 'https://raw.githubusercontent.com/silentmason/Unightly-Club-Hangout/refs/heads/main/UCHstaff.json'; // Replace with your raw GitHub URL
+    async function fetchAuthorizedEmails() {
+      try {
+        const response = await fetch(GITHUB_RAW_URL);
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
+        return data;
+      } catch (error) {
+        console.error('Failed to fetch authorized emails:', error);
+        return [];
+      }
     }
 
     function parseJwt(token) {
@@ -267,11 +291,21 @@
       }).join(''));
       return JSON.parse(jsonPayload);
     }
-    window.onload = function() {
+    window.onload = async function() {
+      const credential = localStorage.getItem('google_credential');
+      let authorizedEmails = [];
+      try {
+        authorizedEmails = await fetchAuthorizedEmails();
+      } catch (error) {
+        console.error("Failed to load authorized users:", error);
+        // Handle the error appropriately, e.g., display a message to the user
+      }
       let img;
       let menu;
       let container;
-      const credential = localStorage.getItem('google_credential');
+      let userEmail;
+      let userName;
+      let userPicture;
       if (credential) {
         const payload = parseJwt(credential);
         if (payload.picture) {
@@ -285,7 +319,7 @@
           img.alt = 'Google Profile';
           img.tabIndex = 0;
           // Create dropdown menu
-          menu = document.createElement('div');
+          const menu = document.createElement('div');
           menu.className = 'dropdown-menu';
           menu.innerHTML = `
 <div class="dropdown-item" id="account-settings-link">Account settings</div>
@@ -328,70 +362,168 @@
           container.appendChild(img);
           container.appendChild(menu);
           document.body.appendChild(container);
+          userEmail = payload.email;
+          userName = payload.name;
+          userPicture = payload.picture;
         }
       }
+      // Load existing posts from local storage
       let posts = JSON.parse(localStorage.getItem('posts') || '[]');
       const feedContainer = document.getElementById('feed-container');
-      renderPosts(posts, feedContainer);
+      let isAuthorized = authorizedEmails.includes(userEmail);
+      renderPosts(posts, feedContainer, isAuthorized, userPicture, userName);
       // Post Submission
       const postForm = document.getElementById('post-form');
-      postForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const postText = document.getElementById('post-text').value.trim();
-        const fileInput = document.getElementById('file-input');
+      const fileInput = document.getElementById('file-input');
+      const previewContainer = document.getElementById('preview-container');
+      const postText = document.getElementById('post-text');
+      let mediaUrl = null;
+      let fileType = null
+      // Event listener for file input changes
+      fileInput.addEventListener('change', function() {
         const file = fileInput.files[0];
-        let mediaUrl = null;
-        let mediaType = null
         if (file) {
-          const fileType = file.type;
+          fileType = file.type;
           if (fileType.startsWith('image/') || fileType.startsWith('video/')) {
             mediaUrl = URL.createObjectURL(file);
+            //Display the correct format
+            let previewContent = '';
+            if (fileType.startsWith('image/')) {
+              previewContent = `<img src="${mediaUrl}" alt="Post Image" id="preview-image">`;
+            } else if (fileType.startsWith('video/')) {
+              previewContent = `<video src="${mediaUrl}" id="preview-video" controls></video>`;
+            }
+            previewContainer.innerHTML = previewContent;
           } else {
             alert('Invalid file type. Only images and videos are allowed.');
-            fileInput.value = ''; // Clear the file input
+            fileInput.value = '';
+            previewContainer.innerHTML = ''; // Clear the preview
+            mediaUrl = null;
+            fileType = null
             return;
           }
+        } else {
+          previewContainer.innerHTML = '';
+          mediaUrl = null;
+          fileType = null
         }
-        if (postText !== '' || mediaUrl) {
+      });
+      postForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const text = postText.value.trim();
+        if (text !== '' || mediaUrl) {
           const newPost = {
-            text: postText,
+            id: Date.now(),
+            text: text,
             mediaUrl: mediaUrl,
             mediaType: fileType,
             userName: userName,
             userPicture: userPicture,
           };
-          insertPost(text, mediaUrl, mediaType, userName, userPicture)
-          document.getElementById('post-text').value = ''; // Clear the text input
+          posts.push(newPost);
+          localStorage.setItem('posts', JSON.stringify(posts));
+          renderPosts(posts, feedContainer, authorizedEmails.includes(userEmail), userPicture, userName);
+          postText.value = ''; // Clear the text input
           fileInput.value = ''; // Clear the file input
+          previewContainer.innerHTML = ''; // Clear the preview
+          mediaUrl = null;
+          fileType = null
         }
       });
 
-      function renderPosts(posts, feedContainer) {
-        feedContainer.innerHTML = `
-<h1>Welcome to the UCH Feed!</h1>
+      function deletePost(postId) {
+        posts = posts.filter(post => post.id !== postId);
+        localStorage.setItem('posts', JSON.stringify(posts));
+        renderPosts(posts, feedContainer, isAuthorized, userPicture, userName); // Re-render the feed
+      }
+
+      function renderPosts(posts, feedContainer, isAuthorized, userPicture, userName) {
+        let formHTML = '';
+        if (isAuthorized) {
+          formHTML = `
 <form id="post-form">
 <textarea id="post-text" placeholder="What's on your mind?" rows="4"></textarea>
+<div id="preview-container"></div>
 <input type="file" id="file-input" accept="image/*, video/*">
 <button type="submit" id="post-button">Post</button>
 </form>
 `;
+        } else {
+          formHTML = `<p>Official UCH Staff may post .</p>`;
+        }
+        feedContainer.innerHTML = `
+          <h1>Welcome to the UCH Feed!</h1>
+          ${formHTML}
+`;
+        if (isAuthorized) {
+          const postForm = document.getElementById('post-form');
+          postForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const postText = document.getElementById('post-text').value.trim();
+            const fileInput = document.getElementById('file-input');
+            const file = fileInput.files[0];
+            let mediaUrl = null;
+            if (file) {
+              const fileType = file.type;
+              if (fileType.startsWith('image/') || fileType.startsWith('video/')) {
+                mediaUrl = URL.createObjectURL(file);
+              } else {
+                alert('Invalid file type. Only images and videos are allowed.');
+                fileInput.value = ''; // Clear the file input
+                return;
+              }
+            }
+            if (postText !== '' || mediaUrl) {
+              const newPost = {
+                id: Date.now(),
+                text: postText,
+                mediaUrl: mediaUrl,
+                mediaType: file ? file.type : null,
+                userName: userName,
+                userPicture: userPicture,
+              };
+              posts.push(newPost);
+              localStorage.setItem('posts', JSON.stringify(posts));
+              renderPosts(posts, feedContainer, isAuthorized, userPicture, userName);
+              document.getElementById('post-text').value = ''; // Clear the text input
+              fileInput.value = ''; // Clear the file input
+            }
+          });
+        }
         posts.forEach(post => {
           const postElement = document.createElement('div');
           postElement.className = 'post';
+          let postHeader = `<div class="post-header">
+          <img src="${post.userPicture}" alt="${post.userName}"'s Profile Picture">
+          <p>${post.userName}</p>
+          </div>`
           let postContent = '';
           if (post.text) {
             postContent += `<div class="post-content">${post.text}</div>`;
           }
           if (post.mediaUrl) {
-            if (post.mediaType.startsWith('image/')) {
+            if (post.mediaType && post.mediaType.startsWith('image/')) {
               postContent += `<img src="${post.mediaUrl}" alt="Post Image" class="post-image">`;
-            } else if (post.mediaType.startsWith('video/')) {
+            } else if (post.mediaType && post.mediaType.startsWith('video/')) {
               postContent += `<video src="${post.mediaUrl}" class="post-video" controls></video>`;
             }
           }
-          postElement.innerHTML = postContent;
+          let deleteButtonHTML = '';
+          if (isAuthorized) {
+            deleteButtonHTML = `<button class="delete-btn" data-id="${post.id}">x</button>`;
+          }
+          postElement.innerHTML = postHeader + postContent + deleteButtonHTML;
           feedContainer.appendChild(postElement);
         });
+        // Attach event listeners to delete buttons (have to do it after they are added to the DOM)
+        if (isAuthorized) {
+          document.querySelectorAll('.post .delete-btn').forEach(button => {
+            button.addEventListener('click', function(e) {
+              const postId = Number(this.dataset.id);
+              deletePost(postId);
+            });
+          });
+        }
       }
     };
   </script>
