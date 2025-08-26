@@ -62,8 +62,10 @@
     #profile-container {
       position: absolute;
       top: 20px;
-      right: 22px;
+      right: 27px;
       z-index: 100;
+      cursor: pointer;
+      /* Change cursor to indicate it's clickable */
     }
 
     #profile-icon {
@@ -317,25 +319,22 @@
           menu.style.fontSize = '1rem';
           menu.style.animation = 'fadeInMenu 0.2s';
           menu.innerHTML = `
-<div class="dropdown-item" id="account-settings-link">Account settings</div>
-<div class="dropdown-item">Profile</div>
-<div class="dropdown-item">Friends</div>
-<div class="dropdown-item" id="status-link">Status</div>
-<div class="dropdown-item signout" id="signout-link">Sign Out</div>
-`;
+          <div class="dropdown-item" id="account-settings-link">Account settings</div>
+          <div class="dropdown-item">Profile</div>
+          <div class="dropdown-item">Friends</div>
+          <div class="dropdown-item" id="status-link">Status</div>
+          <div class="dropdown-item signout" id="signout-link">Sign Out</div>
+          `;
           // Append everything to the container
           container.appendChild(img);
           container.appendChild(menu);
           // Append the container to the header
           document.querySelector('header').appendChild(container);
           // Toggle menu on icon click
-          img.onclick = function(e) {
+          container.onclick = function(e) {
             e.stopPropagation();
             menu.classList.toggle('show');
           };
-          img.addEventListener('blur', function() {
-            setTimeout(() => menu.classList.remove('show'), 150);
-          });
           // Hide menu when clicking outside
           document.addEventListener('click', function() {
             menu.classList.remove('show');
