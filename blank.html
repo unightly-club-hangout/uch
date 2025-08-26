@@ -267,23 +267,7 @@
       }
     }
   </style>
-  <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-database.js"></script>
   <script>
-    // Your web app's Firebase configuration
-   const firebaseConfig = {
-    apiKey: "AIzaSyAXbIvGZn0vQpRlrBhL6RFyGg-NGGDpTSY",
-    authDomain: "unightly-club-hangout-56361.firebaseapp.com",
-    databaseURL: "https://unightly-club-hangout-56361-default-rtdb.firebaseio.com",
-    projectId: "unightly-club-hangout-56361",
-    storageBucket: "unightly-club-hangout-56361.firebasestorage.app",
-    messagingSenderId: "41004307513",
-    appId: "1:41004307513:web:d511cfba74cc008c96a9e8",
-    measurementId: "G-6JZ4GR0CGC"
-  };
-    // Initialize Firebase
-    const app = firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
     const GITHUB_RAW_URL = 'https://raw.githubusercontent.com/silentmason/Unightly-Club-Hangout/refs/heads/main/UCHstaff.json'; // Replace with your raw GitHub URL
     async function fetchAuthorizedEmails() {
       try {
@@ -315,7 +299,6 @@
       } catch (error) {
         console.error("Failed to load authorized users:", error);
         // Handle the error appropriately, e.g., display a message to the user
-        displayMessage("Failed to load authorized user, please try again")
       }
       let img;
       let menu;
@@ -384,22 +367,11 @@
           userPicture = payload.picture;
         }
       }
-
-      function deletePost(postId) {
-        db.ref('posts').child(postId).remove();
-      }
-      // Load existing posts from Firebase
+      // Load existing posts from local storage
+      let posts = JSON.parse(localStorage.getItem('posts') || '[]');
       const feedContainer = document.getElementById('feed-container');
       let isAuthorized = authorizedEmails.includes(userEmail);
-      const postsRef = db.ref('posts');
-      postsRef.on('value', (snapshot) => {
-        const data = snapshot.val();
-        const posts = data ? Object.entries(data).map(([id, value]) => ({
-          id: id,
-          ...value
-        })) : [];
-        renderPosts(posts, feedContainer, isAuthorized, userPicture, userName);
-      });
+      renderPosts(posts, feedContainer, isAuthorized, userPicture, userName);
       // Post Submission
       const postForm = document.getElementById('post-form');
       const fileInput = document.getElementById('file-input');
@@ -417,7 +389,7 @@
               if (fileType.startsWith('image/')) {
                 previewContent = `<img src="${mediaUrl}" alt="Post Image" id="preview-image">`;
               } else if (fileType.startsWith('video/')) {
-                previewContent = `<video src="${mediaUrl}" id="preview-video" controls></video>`;
+                previewContent = `<video src="${mediaUrl}" alt="Post Video" id="preview-video" controls></video>`;
               }
               previewContainer.innerHTML = previewContent;
             }
@@ -436,28 +408,37 @@
           fileType = null
         }
       });
+      function isUserAuthorized(userEmail, authorizedEmails) {
+        return authorizedEmails.includes(userEmail);
+      }
       postForm.addEventListener('submit', function(e) {
         e.preventDefault();
-        if (postText.value.trim() !== '' || mediaUrl) {
+        const text = postText.value.trim();
+        if (text !== '' || mediaUrl) {
           const newPost = {
-            text: postText.value.trim(),
+            id: Date.now(),
+            text: text,
             mediaUrl: mediaUrl,
             mediaType: fileType,
             userName: userName,
             userPicture: userPicture,
-            timestamp: firebase.database.ServerValue.TIMESTAMP // Add timestamp
           };
-          db.ref('posts').push(newPost).then(() => {
-            postText.value = '';
-            fileInput.value = '';
-            previewContainer.innerHTML = '';
-            mediaUrl = null;
-            fileType = null
-          }).catch((error) => {
-            console.error("Error adding image", error)
-          })
+          posts.push(newPost);
+          localStorage.setItem('posts', JSON.stringify(posts));
+          renderPosts(posts, feedContainer, authorizedEmails.includes(userEmail), userPicture, userName);
+          postText.value = ''; // Clear the text input
+          fileInput.value = ''; // Clear the file input
+          previewContainer.innerHTML = ''; // Clear the preview
+          mediaUrl = null;
+          fileType = null
         }
       });
+
+      function deletePost(postId) {
+        posts = posts.filter(post => post.id !== postId);
+        localStorage.setItem('posts', JSON.stringify(posts));
+        renderPosts(posts, feedContainer, isAuthorized, userPicture, userName); // Re-render the feed
+      }
 
       function renderPosts(posts, feedContainer, isAuthorized, userPicture, userName) {
         let formHTML = '';
@@ -519,3 +500,4 @@
 </body>
 
 </html>
+The google profile image and name is missing, can you add it back?
