@@ -251,73 +251,53 @@
     }
   </style>
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
       const tabs = document.querySelectorAll('.tab');
       const content = document.getElementById('settings-content');
       const headerIcon = document.querySelector('.header-icon');
       let currentProfileImage = headerIcon.src;
       const tabContents = [{
-          title: 'Account Settings',
-          content: `
-          <h2>Account Settings</h2>
-          <form class="settings-form" id="account-form">
-          <div class="form-group">
-          <label for="username">Username</label>
-          <input type="text" id="username" name="username" placeholder="Enter your username">
-          </div>
-          <div class="form-group">
-          <label for="description">Description</label>
-          <textarea id="description" name="description" placeholder="Add a short description"></textarea>
-          </div>
-          <div class="form-group">
-          <label for="email">Email</label>
-          <input type="email" id="email" name="email" placeholder="Enter your email">
-          </div>
-          <div class="form-actions">
-          <button type="submit" class="save-btn">Save Changes</button>
-          </div>
-          <div id="form-success" class="form-success" style="display:none;">Changes saved!</div>
-          <div id="form-error" class="form-error" style="display:none;"></div>
-          </form>
-          `,
-          setup: setupAccountForm
-        },
-        {
-          title: 'Security',
-          content: `<h2>Security</h2><p>Update your password, enable 2FA, and review security logs.</p>`,
-          setup: null
-        },
-        {
-          title: 'Profile Picture',
-          content: `
-          <h2>Profile Picture</h2>
-          <p>Customize your profile image.</p>
-          <form id="profile-picture-form" class="settings-form">
-          <div class="form-group">
-          <label for="profile-image">Upload New Image</label>
-          <input type="file" id="profile-image" name="profile-image" accept="image/*">
-          </div>
-          <div class="form-actions">
-          <button type="submit" class="save-btn">Upload</button>
-          </div>
-          <div id="upload-success" class="form-success" style="display:none;">Profile picture updated!</div>
-          <div id="upload-error" class="form-error" style="display:none;"></div>
-          </form>
-          `,
-          setup: setupProfilePictureForm
-        },
-        {
-          title: 'Blocked Users',
-          content: `<h2>Blocked Users</h2><p>View and manage users you have blocked.</p>`,
-          setup: null
-        },
-        {
-          title: 'Others',
-          content: `<h2>Others</h2><p>Other settings and preferences.</p>`,
-          setup: null
-        }
+        title: 'Account Settings',
+        content: `
+<h2>Account Settings</h2>
+<form class="settings-form" id="account-form">
+<div class="form-group">
+<label for="username">Username</label>
+<input type="text" id="username" name="username" placeholder="Enter your username">
+</div>
+<div class="form-group">
+<label for="description">Description</label>
+<textarea id="description" name="description" placeholder="Add a short description"></textarea>
+</div>
+<div class="form-group">
+<label for="email">Email</label>
+<input type="email" id="email" name="email" placeholder="Enter your email">
+</div>
+<div class="form-actions">
+<button type="submit" class="save-btn">Save Changes</button>
+</div>
+<div id="form-success" class="form-success" style="display:none;">Changes saved!</div>
+<div id="form-error" class="form-error" style="display:none;"></div>
+</form>
+`,
+        setup: setupAccountForm
+      },
+      {
+        title: 'Security',
+        content: `<h2>Security</h2><p>Update your password, enable 2FA, and review security logs.</p>`,
+        setup: null
+      },
+      {
+        title: 'Blocked Users',
+        content: `<h2>Blocked Users</h2><p>View and manage users you have blocked.</p>`,
+        setup: null
+      },
+      {
+        title: 'Others',
+        content: `<h2>Others</h2><p>Other settings and preferences.</p>`,
+        setup: null
+      }
       ];
-
       function showTab(index) {
         tabs.forEach(t => t.classList.remove('active'));
         tabs[index].classList.add('active');
@@ -326,19 +306,17 @@
           tabContents[index].setup();
         }
       }
-
       tabs.forEach((tab, idx) => {
-        tab.addEventListener('click', function() {
+        tab.addEventListener('click', function () {
           showTab(idx);
         });
       });
       // Set default tab
       showTab(0);
-
       function setupAccountForm() {
         const form = document.getElementById('account-form');
         if (form) {
-          form.onsubmit = async function(e) {
+          form.onsubmit = async function (e) {
             e.preventDefault();
             document.getElementById('form-success').style.display = 'none';
             document.getElementById('form-error').style.display = 'none';
@@ -380,63 +358,6 @@
           };
         }
       }
-
-      function setupProfilePictureForm() {
-        const form = document.getElementById('profile-picture-form');
-        if (form) {
-          form.onsubmit = async function(e) {
-            e.preventDefault();
-            document.getElementById('upload-success').style.display = 'none';
-            document.getElementById('upload-error').style.display = 'none';
-            const imageInput = document.getElementById('profile-image');
-            const imageFile = imageInput.files[0];
-            if (!imageFile) {
-              const errorElement = document.getElementById('upload-error');
-              errorElement.innerText = 'Please select an image.';
-              errorElement.style.display = 'block';
-              setTimeout(() => {
-                errorElement.style.display = 'none';
-              }, 5000);
-              return;
-            }
-            const formData = new FormData();
-            formData.append('profile-image', imageFile);
-            try {
-              const response = await fetch('/api/profile/update-image', {
-                method: 'POST',
-                body: formData
-              });
-              if (response.ok) {
-                document.getElementById('upload-success').style.display = 'block';
-                setTimeout(() => {
-                  document.getElementById('upload-success').style.display = 'none';
-                }, 2000);
-                // Update the header icon with the new image
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                  headerIcon.src = event.target.result; // Update header icon
-                  currentProfileImage = event.target.result; // Update the stored URL
-                }
-                reader.readAsDataURL(imageFile);
-              } else {
-                const errorElement = document.getElementById('upload-error');
-                errorElement.innerText = 'Error uploading image.';
-                errorElement.style.display = 'block';
-                setTimeout(() => {
-                  errorElement.style.display = 'none';
-                }, 10000);
-              }
-            } catch (err) {
-              const errorElement = document.getElementById('upload-error');
-              errorElement.innerText = 'Error uploading image.';
-              errorElement.style.display = 'block';
-              setTimeout(() => {
-                errorElement.style.display = 'none';
-              }, 10000);
-            }
-          };
-        }
-      }
     });
   </script>
 </head>
@@ -453,7 +374,6 @@
     <nav class="settings-tabs">
       <button class="tab">Account settings</button>
       <button class="tab">Security</button>
-      <button class="tab">Profile picture</button>
       <button class="tab">Blocked users</button>
       <button class="tab">Others</button>
     </nav>
