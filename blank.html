@@ -267,7 +267,23 @@
       }
     }
   </style>
+  <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-database.js"></script>
   <script>
+    // Your web app's Firebase configuration
+   const firebaseConfig = {
+    apiKey: "AIzaSyAXbIvGZn0vQpRlrBhL6RFyGg-NGGDpTSY",
+    authDomain: "unightly-club-hangout-56361.firebaseapp.com",
+    databaseURL: "https://unightly-club-hangout-56361-default-rtdb.firebaseio.com",
+    projectId: "unightly-club-hangout-56361",
+    storageBucket: "unightly-club-hangout-56361.firebasestorage.app",
+    messagingSenderId: "41004307513",
+    appId: "1:41004307513:web:d511cfba74cc008c96a9e8",
+    measurementId: "G-6JZ4GR0CGC"
+  };
+    // Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
     const GITHUB_RAW_URL = 'https://raw.githubusercontent.com/silentmason/Unightly-Club-Hangout/refs/heads/main/UCHstaff.json'; // Replace with your raw GitHub URL
     async function fetchAuthorizedEmails() {
       try {
@@ -299,6 +315,7 @@
       } catch (error) {
         console.error("Failed to load authorized users:", error);
         // Handle the error appropriately, e.g., display a message to the user
+        displayMessage("Failed to load authorized user, please try again")
       }
       let img;
       let menu;
@@ -319,7 +336,7 @@
           img.alt = 'Google Profile';
           img.tabIndex = 0;
           // Create dropdown menu
-          const menu = document.createElement('div');
+          menu = document.createElement('div');
           menu.className = 'dropdown-menu';
           menu.innerHTML = `
 <div class="dropdown-item" id="account-settings-link">Account settings</div>
@@ -367,37 +384,48 @@
           userPicture = payload.picture;
         }
       }
-      // Load existing posts from local storage
-      let posts = JSON.parse(localStorage.getItem('posts') || '[]');
+
+      function deletePost(postId) {
+        db.ref('posts').child(postId).remove();
+      }
+      // Load existing posts from Firebase
       const feedContainer = document.getElementById('feed-container');
       let isAuthorized = authorizedEmails.includes(userEmail);
-      renderPosts(posts, feedContainer, isAuthorized, userPicture, userName);
+      const postsRef = db.ref('posts');
+      postsRef.on('value', (snapshot) => {
+        const data = snapshot.val();
+        const posts = data ? Object.entries(data).map(([id, value]) => ({
+          id: id,
+          ...value
+        })) : [];
+        renderPosts(posts, feedContainer, isAuthorized, userPicture, userName);
+      });
       // Post Submission
       const postForm = document.getElementById('post-form');
       const fileInput = document.getElementById('file-input');
       const previewContainer = document.getElementById('preview-container');
       const postText = document.getElementById('post-text');
-      let mediaUrl = null;
-      let fileType = null
-      // Event listener for file input changes
       fileInput.addEventListener('change', function() {
         const file = fileInput.files[0];
         if (file) {
           fileType = file.type;
           if (fileType.startsWith('image/') || fileType.startsWith('video/')) {
-            mediaUrl = URL.createObjectURL(file);
-            //Display the correct format
-            let previewContent = '';
-            if (fileType.startsWith('image/')) {
-              previewContent = `<img src="${mediaUrl}" alt="Post Image" id="preview-image">`;
-            } else if (fileType.startsWith('video/')) {
-              previewContent = `<video src="${mediaUrl}" id="preview-video" controls></video>`;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+              mediaUrl = e.target.result;
+              let previewContent = '';
+              if (fileType.startsWith('image/')) {
+                previewContent = `<img src="${mediaUrl}" alt="Post Image" id="preview-image">`;
+              } else if (fileType.startsWith('video/')) {
+                previewContent = `<video src="${mediaUrl}" id="preview-video" controls></video>`;
+              }
+              previewContainer.innerHTML = previewContent;
             }
-            previewContainer.innerHTML = previewContent;
+            reader.readAsDataURL(file); // Read file as Data URL
           } else {
             alert('Invalid file type. Only images and videos are allowed.');
             fileInput.value = '';
-            previewContainer.innerHTML = ''; // Clear the preview
+            previewContainer.innerHTML = '';
             mediaUrl = null;
             fileType = null
             return;
@@ -410,32 +438,26 @@
       });
       postForm.addEventListener('submit', function(e) {
         e.preventDefault();
-        const text = postText.value.trim();
-        if (text !== '' || mediaUrl) {
+        if (postText.value.trim() !== '' || mediaUrl) {
           const newPost = {
-            id: Date.now(),
-            text: text,
+            text: postText.value.trim(),
             mediaUrl: mediaUrl,
             mediaType: fileType,
             userName: userName,
             userPicture: userPicture,
+            timestamp: firebase.database.ServerValue.TIMESTAMP // Add timestamp
           };
-          posts.push(newPost);
-          localStorage.setItem('posts', JSON.stringify(posts));
-          renderPosts(posts, feedContainer, authorizedEmails.includes(userEmail), userPicture, userName);
-          postText.value = ''; // Clear the text input
-          fileInput.value = ''; // Clear the file input
-          previewContainer.innerHTML = ''; // Clear the preview
-          mediaUrl = null;
-          fileType = null
+          db.ref('posts').push(newPost).then(() => {
+            postText.value = '';
+            fileInput.value = '';
+            previewContainer.innerHTML = '';
+            mediaUrl = null;
+            fileType = null
+          }).catch((error) => {
+            console.error("Error adding image", error)
+          })
         }
       });
-
-      function deletePost(postId) {
-        posts = posts.filter(post => post.id !== postId);
-        localStorage.setItem('posts', JSON.stringify(posts));
-        renderPosts(posts, feedContainer, isAuthorized, userPicture, userName); // Re-render the feed
-      }
 
       function renderPosts(posts, feedContainer, isAuthorized, userPicture, userName) {
         let formHTML = '';
@@ -455,41 +477,6 @@
           <h1>Welcome to the UCH Feed!</h1>
           ${formHTML}
 `;
-        if (isAuthorized) {
-          const postForm = document.getElementById('post-form');
-          postForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const postText = document.getElementById('post-text').value.trim();
-            const fileInput = document.getElementById('file-input');
-            const file = fileInput.files[0];
-            let mediaUrl = null;
-            if (file) {
-              const fileType = file.type;
-              if (fileType.startsWith('image/') || fileType.startsWith('video/')) {
-                mediaUrl = URL.createObjectURL(file);
-              } else {
-                alert('Invalid file type. Only images and videos are allowed.');
-                fileInput.value = ''; // Clear the file input
-                return;
-              }
-            }
-            if (postText !== '' || mediaUrl) {
-              const newPost = {
-                id: Date.now(),
-                text: postText,
-                mediaUrl: mediaUrl,
-                mediaType: file ? file.type : null,
-                userName: userName,
-                userPicture: userPicture,
-              };
-              posts.push(newPost);
-              localStorage.setItem('posts', JSON.stringify(posts));
-              renderPosts(posts, feedContainer, isAuthorized, userPicture, userName);
-              document.getElementById('post-text').value = ''; // Clear the text input
-              fileInput.value = ''; // Clear the file input
-            }
-          });
-        }
         posts.forEach(post => {
           const postElement = document.createElement('div');
           postElement.className = 'post';
@@ -510,20 +497,11 @@
           }
           let deleteButtonHTML = '';
           if (isAuthorized) {
-            deleteButtonHTML = `<button class="delete-btn" data-id="${post.id}">x</button>`;
+            deleteButtonHTML = `<button class="delete-btn" data-id="${post.id}" onclick="deletePost('${post.id}')">x</button>`;
           }
           postElement.innerHTML = postHeader + postContent + deleteButtonHTML;
           feedContainer.appendChild(postElement);
         });
-        // Attach event listeners to delete buttons (have to do it after they are added to the DOM)
-        if (isAuthorized) {
-          document.querySelectorAll('.post .delete-btn').forEach(button => {
-            button.addEventListener('click', function(e) {
-              const postId = Number(this.dataset.id);
-              deletePost(postId);
-            });
-          });
-        }
       }
     };
   </script>
