@@ -366,10 +366,11 @@
       messagingSenderId: "41004307513",
       appId: "1:41004307513:web:d511cfba74cc008c96a9e8",
     };
-    let app
+    let app;
     let db;
     let storage;
     let auth;
+    let authorizedEmails = [];
     try {
       // Initialize Firebase
       app = firebase.initializeApp(firebaseConfig);
@@ -382,19 +383,21 @@
       // Handle the error appropriately (e.g., display an error message to the user)
     }
     const GITHUB_RAW_URL = 'https://raw.githubusercontent.com/silentmason/Unightly-Club-Hangout/refs/heads/main/UCHstaff.json';
+
     async function fetchAuthorizedEmails() {
       try {
         const response = await fetch(GITHUB_RAW_URL);
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
-        const data = await response.json();
-        return data;
+        authorizedEmails = await response.json();
+        console.log("Authorized emails fetched successfully:", authorizedEmails);
       } catch (error) {
         console.error('Failed to fetch authorized emails:', error);
-        return;
+        authorizedEmails = []; // Ensure authorizedEmails is an array even on failure
       }
     }
+
     function parseJwt(token) {
       var base64Url = token.split('.')[1];
       var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -403,6 +406,7 @@
       }).join(''));
       return JSON.parse(jsonPayload);
     }
+
     window.onload = async function () {
       let img;
       let menu;
@@ -472,17 +476,14 @@
           userPicture = payload.picture;
         }
       }
-      // Load existing posts from local storage
-      let authorizedEmails = []; // Define authorizedEmails in a broader scope
-      try {
-        authorizedEmails = await fetchAuthorizedEmails(); // Fetch authorized emails
-      } catch (error) {
-        console.error('Failed to fetch authorized emails:', error);
-      }
       const feedContainer = document.getElementById('feed-container');
-      let isAuthorized = authorizedEmails.includes(userEmail);
-      let formHTML = '';
 
+      // Load authorized emails and then render the page
+      await fetchAuthorizedEmails();
+
+      let isAuthorized = authorizedEmails.includes(userEmail);
+
+      let formHTML = '';
       if (isAuthorized) {
         formHTML = `
           <form id="post-form">
@@ -503,120 +504,53 @@
         <h1>Welcome to the UCH Feed!</h1>
         ${formHTML}
       `;
-      // Function to render posts from Firebase
-      async function renderPostsFromFirebase(feedContainer, isAuthorized, userPicture, userName) {
-        if (!db) {
-          console.error("Firebase database not initialized.");
-          return;
-        }
-        const postsRef = db.ref('posts');
-        try {
-          postsRef.on('value', (snapshot) => {
-            const posts = snapshot.val();
-            if (posts) {
-              const postsArray = Object.entries(posts).map(([key, value]) => ({
-                ...value,
-                id: key
-              })); // Include the key as the ID
-              renderPostsContent(postsArray, feedContainer, isAuthorized, userPicture, userName);
-            } else {
-              renderPostsContent([], feedContainer, isAuthorized, userPicture, userName); // Render empty feed
-            }
-          }, (error) => {
-            console.error("Error fetching posts from Firebase:", error);
-          });
-        } catch (error) {
-          console.error("Error in renderPostsFromFirebase:", error);
-        }
-      }
-      // Initial rendering of posts
-      if (db) {
-        renderPostsFromFirebase(feedContainer, isAuthorized, userPicture, userName);
-      }
-
-      function renderPostsContent(posts, feedContainer, isAuthorized, userPicture, userName) {
-        let postsHTML = '';
-        posts.forEach(post => {
-          const postElement = document.createElement('div');
-          postElement.className = 'post';
-          let postHeader = `<div class="post-header">
-<img src="${post.userPicture}" alt="${post.userName}"'s Profile Picture">
-<p>${post.userName}</p>
-</div>`;
-          let postContent = '';
-          if (post.text) {
-            postContent += `<div class="post-content">${post.text}</div>`;
-          }
-          if (post.mediaUrl) {
-            if (post.mediaType && post.mediaType.startsWith('image/')) {
-              postContent += `<img src="${post.mediaUrl}" alt="Post Image" class="post-image">`;
-            } else if (post.mediaType && post.mediaType.startsWith('video/')) {
-              postContent += `<video src="${post.mediaUrl}" alt="Post Video" controls class="post-video"></video>`;
-            }
-          }
-          let deleteButtonHTML = '';
-          if (isAuthorized) {
-            deleteButtonHTML = `<button class="delete-btn" data-id="${post.id}" onclick="deletePost('${post.id}')">x</button>`;
-          }
-          postElement.innerHTML = postHeader + postContent + deleteButtonHTML;
-          postsHTML += postElement.outerHTML;
-
-        });
-        feedContainer.innerHTML += postsHTML;
-      }
-      // Attach event listener to trigger file input
-      document.addEventListener('click', function (e) {
-        if (e.target && e.target.classList.contains('file-input-button')) {
-          document.getElementById('file-input').click();
-        }
-      });
-      // Post Submission
-      const postForm = document.getElementById('post-form');
-      if (postForm && isAuthorized) { // Check if postForm exists before adding the event listener
-        const fileInput = document.getElementById('file-input');
-        const previewContainer = document.getElementById('preview-container');
-        const postText = document.getElementById('post-text');
-        fileInput.addEventListener('change', function () {
-          const file = fileInput.files[0];
-          if (file) {
-            fileType = file.type;
-            if (fileType.startsWith('image/')) {
-              const reader = new FileReader();
-              reader.onload = function (e) {
-                mediaUrl = e.target.result;
-                let previewContent = '';
-                if (fileType.startsWith('image/')) {
-                  previewContent = `<img src="${mediaUrl}" alt="Post Image" id="preview-image">`;
-                } else if (fileType.startsWith('video/')) {
-                  previewContent = `<video src="${mediaUrl}" alt="Post Video" controls></video>`;
-                }
-                previewContainer.innerHTML = previewContent;
-              };
-              reader.readAsDataURL(file); // Read file as Data URL
-            } else if (fileType.startsWith('video/')) {
-              const reader = new FileReader();
-              reader.onload = function (e) {
-                mediaUrl = e.target.result;
-                let previewContent = '';
-                previewContent = `<video src="${mediaUrl}" alt="Post Video" controls></video>`;
-                previewContainer.innerHTML = previewContent;
-              };
-              reader.readAsDataURL(file);
-            }
-            else {
-              alert('Invalid file type. Only images and videos are allowed.');
-              fileInput.value = '';
-              previewContainer.innerHTML = '';
-              mediaUrl = null;
-              fileType = null;
-              return;
-            }
-          } else {
-            previewContainer.innerHTML = '';
-            mediaUrl = null;
-            fileType = null;
-          }
-        });
+        // Post Submission
+        const postForm = document.getElementById('post-form');
+        if (postForm) {
+		const fileInput = document.getElementById('file-input');
+		const previewContainer = document.getElementById('preview-container');
+		const postText = document.getElementById('post-text');
+		fileInput.addEventListener('change', function () {
+		const file = fileInput.files[0];
+		if (file) {
+		fileType = file.type;
+		if (fileType.startsWith('image/')) {
+		const reader = new FileReader();
+		reader.onload = function (e) {
+		mediaUrl = e.target.result;
+		let previewContent = '';
+		if (fileType.startsWith('image/')) {
+		previewContent = `<img src="${mediaUrl}" alt="Post Image" id="preview-image">`;
+		} else if (fileType.startsWith('video/')) {
+		previewContent = `<video src="${mediaUrl}" alt="Post Video" controls></video>`;
+		}
+		previewContainer.innerHTML = previewContent;
+		};
+		reader.readAsDataURL(file); // Read file as Data URL
+		} else if (fileType.startsWith('video/')) {
+		const reader = new FileReader();
+		reader.onload = function (e) {
+		mediaUrl = e.target.result;
+		let previewContent = '';
+		previewContent = `<video src="${mediaUrl}" alt="Post Video" controls></video>`;
+		previewContainer.innerHTML = previewContent;
+		};
+		reader.readAsDataURL(file);
+		}
+		else {
+		alert('Invalid file type. Only images and videos are allowed.');
+		fileInput.value = '';
+		previewContainer.innerHTML = '';
+		mediaUrl = null;
+		fileType = null;
+		return;
+		}
+		} else {
+		previewContainer.innerHTML = '';
+		mediaUrl = null;
+		fileType = null;
+		}
+		});
         postForm.addEventListener('submit', async function (e) {
           e.preventDefault();
           const text = postText.value.trim();
@@ -662,21 +596,81 @@
           }
         });
       }
-      function deletePost(postId) {
+	function deletePost(postId) {
         //remove
         //posts = posts.filter(post => post.id !== postId);
         //localStorage.setItem('posts', JSON.stringify(posts));
         //renderPosts(posts, feedContainer, isAuthorized, userPicture, userName); // Re-render the feed
+    }
+		// Function to render posts from Firebase
+	  async function renderPostsFromFirebase(feedContainer, isAuthorized, userPicture, userName) {
+        if (!db) {
+          console.error("Firebase database not initialized.");
+          return;
+        }
+
+        const postsRef = db.ref('posts');
+
+        try {
+          const snapshot = await postsRef.once('value'); // Use .once to get data once
+
+          const posts = snapshot.val();
+          let postsArray = [];
+
+          if (posts) {
+            postsArray = Object.entries(posts).map(([key, value]) => ({
+              ...value,
+              id: key,
+            })); // Include the key as the ID
+          }
+
+          renderPostsContent(postsArray, feedContainer, isAuthorized, userPicture, userName);
+        } catch (error) {
+          console.error("Error fetching posts from Firebase:", error);
+        }
       }
-      // Attach event listeners to delete buttons (have to do it after they are added to the DOM)
+
+      //Load posts
+      renderPostsFromFirebase(feedContainer, isAuthorized, userPicture, userName)
+
+      function renderPostsContent(posts, feedContainer, isAuthorized, userPicture, userName) {
+        let postsHTML = '';
+        posts.forEach(post => {
+          const postElement = document.createElement('div');
+          postElement.className = 'post';
+          let postHeader = `<div class="post-header">
+<img src="${post.userPicture}" alt="${post.userName}"'s Profile Picture">
+<p>${post.userName}</p>
+</div>`;
+          let postContent = '';
+          if (post.text) {
+            postContent += `<div class="post-content">${post.text}</div>`;
+          }
+          if (post.mediaUrl) {
+            if (post.mediaType && post.mediaType.startsWith('image/')) {
+              postContent += `<img src="${post.mediaUrl}" alt="Post Image" class="post-image">`;
+            } else if (post.mediaType && post.mediaType.startsWith('video/')) {
+              postContent += `<video src="${post.mediaUrl}" alt="Post Video" controls class="post-video"></video>`;
+            }
+          }
+          let deleteButtonHTML = '';
+          if (isAuthorized) {
+            deleteButtonHTML = `<button class="delete-btn" data-id="${post.id}" onclick="deletePost('${post.id}')">x</button>`;
+          }
+          postElement.innerHTML = postHeader + postContent + deleteButtonHTML;
+          postsHTML += postElement.outerHTML;
+        });
+        feedContainer.innerHTML += postsHTML;
+      }
+		      // Attach event listeners to delete buttons (have to do it after they are added to the DOM)
       // Attach event listeners to delete buttons (have to do it after they are added to the DOM)
       //if (isAuthorized) { //Ensure authorized user can delete
-      //  document.querySelectorAll('.post .delete-btn').forEach(button => {
-      //    button.addEventListener('click', function (e) {
-      //      const postId = Number(this.dataset.id);
-      //      deletePost(postId);
-      //    });
-      //  });
+      // document.querySelectorAll('.post .delete-btn').forEach(button => {
+      // button.addEventListener('click', function (e) {
+      // const postId = Number(this.dataset.id);
+      // deletePost(postId);
+      // });
+      // });
       //}
     };
   </script>
