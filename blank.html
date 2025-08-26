@@ -36,7 +36,7 @@
       height: auto;
       display: flex;
       align-items: center;
-      justify-content: center;
+      justify-content: space-between;
       box-shadow: var(--shadow);
     }
 
@@ -265,6 +265,33 @@
         margin: 20px;
         padding: 15px;
       }
+
+      header {
+        padding: 16px;
+        /* Reduce padding for smaller screens */
+      }
+
+      .header-icon {
+        width: 32px;
+        height: 32px;
+        margin-right: 8px;
+        /* Reduce margin for smaller screens */
+      }
+
+      .header-title {
+        font-size: 1.2rem;
+        /* Reduce font size for smaller screens */
+      }
+
+      #profile-container {
+        top: 12px;
+        right: 12px;
+      }
+
+      #profile-icon {
+        width: 32px;
+        height: 32px;
+      }
     }
   </style>
   <script>
@@ -279,7 +306,7 @@
         return data;
       } catch (error) {
         console.error('Failed to fetch authorized emails:', error);
-        return [];
+        return
       }
     }
 
@@ -312,12 +339,23 @@
           // Create profile container
           container = document.createElement('div');
           container.id = 'profile-container';
+          container.style.top = '20px';
+          container.style.right = '32px';
+          container.style.zIndex = '100';
           // Create profile icon
           img = document.createElement('img');
           img.id = 'profile-icon';
           img.src = payload.picture;
           img.alt = 'Google Profile';
           img.tabIndex = 0;
+          img.style.width = '40px';
+          img.style.height = '40px';
+          img.style.borderRadius = '50%';
+          img.style.boxShadow = '0 0 4px #aaa';
+          img.style.border = '2px solid #fff';
+          img.style.background = '#eee';
+          img.style.cursor = 'pointer';
+          img.style.transition = 'box-shadow 0.2s';
           // Create dropdown menu
           menu = document.createElement('div');
           menu.className = 'dropdown-menu';
@@ -389,7 +427,7 @@
               if (fileType.startsWith('image/')) {
                 previewContent = `<img src="${mediaUrl}" alt="Post Image" id="preview-image">`;
               } else if (fileType.startsWith('video/')) {
-                previewContent = `<video src="${mediaUrl}" alt="Post Video" id="preview-video" controls></video>`;
+                previewContent = `<video src="${mediaUrl}" alt="Post Video" controls></video>`;
               }
               previewContainer.innerHTML = previewContent;
             }
@@ -428,9 +466,6 @@
           renderPosts(posts, feedContainer, authorizedEmails.includes(userEmail), userPicture, userName);
           postText.value = ''; // Clear the text input
           fileInput.value = ''; // Clear the file input
-          previewContainer.innerHTML = ''; // Clear the preview
-          mediaUrl = null;
-          fileType = null
         }
       });
 
@@ -500,4 +535,4 @@
 </body>
 
 </html>
-The google profile image and name is missing, can you add it back?
+To solve this, remove `  container.style.position = 'absolute';` from the script and it should solve your error
