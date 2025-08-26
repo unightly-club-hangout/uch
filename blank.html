@@ -36,7 +36,8 @@
       height: auto;
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: center;
+      /* Centers the content horizontally */
       box-shadow: var(--shadow);
     }
 
@@ -54,6 +55,10 @@
       font-size: 1.5rem;
       font-weight: 600;
       letter-spacing: 0.5px;
+      text-align: center;
+      /* Fixed: Centers the text */
+      flex-grow: 1;
+      /* Allow title to take up remaining space */
     }
 
     #profile-container {
@@ -256,12 +261,12 @@
           const menu = document.createElement('div');
           menu.className = 'dropdown-menu';
           menu.innerHTML = `
-          <div class="dropdown-item" id="account-settings-link">Account settings</div>
-          <div class="dropdown-item">Profile</div>
-          <div class="dropdown-item">Friends</div>
-          <div class="dropdown-item disabled" id="status-link">Status</div>
-          <div class="dropdown-item signout" id="signout-link">Sign Out</div>
-          `;
+<div class="dropdown-item" id="account-settings-link">Account settings</div>
+<div class="dropdown-item">Profile</div>
+<div class="dropdown-item">Friends</div>
+<div class="dropdown-item disabled" id="status-link">Status</div>
+<div class="dropdown-item signout" id="signout-link">Sign Out</div>
+`;
           // Toggle menu on icon click
           img.onclick = function(e) {
             e.stopPropagation();
