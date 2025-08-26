@@ -207,6 +207,19 @@
       position: relative;
     }
 
+    .post-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .post-header img {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+
     .post-content {
       margin-bottom: 10px;
     }
@@ -266,7 +279,7 @@
         return data;
       } catch (error) {
         console.error('Failed to fetch authorized emails:', error);
-        return
+        return [];
       }
     }
 
@@ -291,6 +304,8 @@
       let menu;
       let container;
       let userEmail;
+      let userName;
+      let userPicture;
       if (credential) {
         const payload = parseJwt(credential);
         if (payload.picture) {
@@ -304,7 +319,7 @@
           img.alt = 'Google Profile';
           img.tabIndex = 0;
           // Create dropdown menu
-          const menu = document.createElement('div');
+          menu = document.createElement('div');
           menu.className = 'dropdown-menu';
           menu.innerHTML = `
 <div class="dropdown-item" id="account-settings-link">Account settings</div>
@@ -348,13 +363,15 @@
           container.appendChild(menu);
           document.body.appendChild(container);
           userEmail = payload.email;
+          userName = payload.name;
+          userPicture = payload.picture;
         }
       }
       // Load existing posts from local storage
       let posts = JSON.parse(localStorage.getItem('posts') || '[]');
       const feedContainer = document.getElementById('feed-container');
       let isAuthorized = authorizedEmails.includes(userEmail);
-      renderPosts(posts, feedContainer, isAuthorized);
+      renderPosts(posts, feedContainer, isAuthorized, userPicture, userName);
       // Post Submission
       const postForm = document.getElementById('post-form');
       //Check if a user Email is authorized.
@@ -382,11 +399,13 @@
             id: Date.now(),
             text: postText,
             mediaUrl: mediaUrl,
-            mediaType: file ? file.type : null
+            mediaType: file ? file.type : null,
+            userName: userName,
+            userPicture: userPicture,
           };
           posts.push(newPost);
           localStorage.setItem('posts', JSON.stringify(posts));
-          renderPosts(posts, feedContainer, authorizedEmails.includes(userEmail));
+          renderPosts(posts, feedContainer, authorizedEmails.includes(userEmail), userPicture, userName);
           document.getElementById('post-text').value = ''; // Clear the text input
           fileInput.value = ''; // Clear the file input
         }
@@ -395,10 +414,10 @@
       function deletePost(postId) {
         posts = posts.filter(post => post.id !== postId);
         localStorage.setItem('posts', JSON.stringify(posts));
-        renderPosts(posts, feedContainer, isAuthorized); // Re-render the feed
+        renderPosts(posts, feedContainer, isAuthorized, userPicture, userName); // Re-render the feed
       }
 
-      function renderPosts(posts, feedContainer, isAuthorized) {
+      function renderPosts(posts, feedContainer, isAuthorized, userPicture, userName) {
         let formHTML = '';
         if (isAuthorized) {
           formHTML = `
@@ -438,11 +457,13 @@
                 id: Date.now(),
                 text: postText,
                 mediaUrl: mediaUrl,
-                mediaType: file ? file.type : null
+                mediaType: file ? file.type : null,
+                userName: userName,
+                userPicture: userPicture,
               };
               posts.push(newPost);
               localStorage.setItem('posts', JSON.stringify(posts));
-              renderPosts(posts, feedContainer, isAuthorized);
+              renderPosts(posts, feedContainer, isAuthorized, userPicture, userName);
               document.getElementById('post-text').value = ''; // Clear the text input
               fileInput.value = ''; // Clear the file input
             }
@@ -451,6 +472,10 @@
         posts.forEach(post => {
           const postElement = document.createElement('div');
           postElement.className = 'post';
+          let postHeader = `<div class="post-header">
+          <img src="${post.userPicture}" alt="${post.userName}"'s Profile Picture">
+          <p>${post.userName}</p>
+          </div>`
           let postContent = '';
           if (post.text) {
             postContent += `<div class="post-content">${post.text}</div>`;
@@ -466,7 +491,7 @@
           if (isAuthorized) {
             deleteButtonHTML = `<button class="delete-btn" data-id="${post.id}">x</button>`;
           }
-          postElement.innerHTML = postContent + deleteButtonHTML;
+          postElement.innerHTML = postHeader + postContent + deleteButtonHTML;
           feedContainer.appendChild(postElement);
         });
         // Attach event listeners to delete buttons (have to do it after they are added to the DOM)
