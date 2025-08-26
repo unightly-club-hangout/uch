@@ -62,7 +62,7 @@
     #profile-container {
       position: absolute;
       top: 20px;
-      right: 32px;
+      right: 16px;
       z-index: 100;
     }
 
@@ -272,10 +272,10 @@
       return JSON.parse(jsonPayload);
     }
     window.onload = function() {
-      const credential = localStorage.getItem('google_credential');
       let img;
       let menu;
       let container;
+      const credential = localStorage.getItem('google_credential');
       if (credential) {
         const payload = parseJwt(credential);
         if (payload.picture) {
@@ -284,7 +284,7 @@
           container.id = 'profile-container';
           container.style.position = 'absolute';
           container.style.top = '20px';
-          container.style.left = '32px';
+          container.style.right = '16px';
           /*Move profile 16px from the left*/
           container.style.zIndex = '100';
           // Create profile icon
