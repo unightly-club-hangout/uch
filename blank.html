@@ -348,8 +348,35 @@
       }
     }
   </style>
+   <!-- The core Firebase JS SDK is always required and must be listed first -->
+   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+
+   <!-- TODO: Add SDKs for Firebase products that you want to use
+        https://firebase.google.com/docs/web/setup#available-libraries -->
+   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js"></script>
+   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
+
   <script>
-    const GITHUB_RAW_URL = 'https://raw.githubusercontent.com/silentmason/Unightly-Club-Hangout/refs/heads/main/UCHstaff.json'; // Replace with your raw GitHub URL
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+  apiKey: "AIzaSyAXbIvGZn0vQpRlrBhL6RFyGg-NGGDpTSY",
+  authDomain: "unightly-club-hangout-56361.firebaseapp.com",
+  databaseURL: "https://unightly-club-hangout-56361-default-rtdb.firebaseio.com",
+  projectId: "unightly-club-hangout-56361",
+  storageBucket: "unightly-club-hangout-56361.firebasestorage.app",
+  messagingSenderId: "41004307513",
+  appId: "1:41004307513:web:d511cfba74cc008c96a9e8",
+  measurementId: "G-6JZ4GR0CGC"
+};
+
+    // Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const storage = firebase.storage();
+    const auth = firebase.auth();
+
+    const GITHUB_RAW_URL = 'https://raw.githubusercontent.com/silentmason/Unightly-Club-Hangout/refs/heads/main/UCHstaff.json';
     async function fetchAuthorizedEmails() {
       try {
         const response = await fetch(GITHUB_RAW_URL);
@@ -377,6 +404,9 @@
       let img;
       let menu;
       let container;
+	  let userEmail;
+      let userName;
+      let userPicture;
       const credential = localStorage.getItem('google_credential');
       if (credential) {
         const payload = parseJwt(credential);
@@ -446,10 +476,32 @@
       } catch (error) {
         console.error('Failed to fetch authorized emails:', error);
       }
-      let posts = JSON.parse(localStorage.getItem('posts') || '[]');
+
       const feedContainer = document.getElementById('feed-container');
       let isAuthorized = authorizedEmails.includes(userEmail);
-      renderPosts(posts, feedContainer, isAuthorized, userPicture, userName);
+
+      // Function to render posts from Firebase
+      async function renderPostsFromFirebase(feedContainer, isAuthorized, userPicture, userName) {
+        const postsRef = db.ref('posts');
+
+		// Get the data
+		postsRef.on('value', (snapshot) => {
+			const posts = snapshot.val();
+			if (posts) {
+				const postsArray = Object.values(posts);
+				renderPosts(postsArray, feedContainer, isAuthorized, userPicture, userName);
+			} else {
+				renderPosts([], feedContainer, isAuthorized, userPicture, userName); // Render empty feed
+			}
+		  }, (error) => {
+			console.error("Error fetching posts from Firebase:", error);
+		  });
+	  }
+
+      // Initial rendering of posts
+      renderPostsFromFirebase(feedContainer, isAuthorized, userPicture, userName);
+
+
       // Post Submission
       const postForm = document.getElementById('post-form');
       const fileInput = document.getElementById('file-input');
@@ -499,23 +551,45 @@
       function isUserAuthorized(userEmail, authorizedEmails) {
         return authorizedEmails.includes(userEmail);
       }
-      postForm.addEventListener('submit', function (e) {
+      postForm.addEventListener('submit', async function (e) {
         e.preventDefault();
         const text = postText.value.trim();
         if (text !== '' || mediaUrl) {
+          // Upload media to Firebase Storage if it exists
+          let mediaUrlFirebase = null;
+          if (mediaUrl) {
+            const storageRef = storage.ref(`posts/${Date.now()}_${fileInput.files[0].name}`);
+            const uploadTask = storageRef.putString(mediaUrl, 'data_url');
+
+            mediaUrlFirebase = await uploadTask.then(async (snapshot) => {
+              return await snapshot.ref.getDownloadURL();
+            });
+          }
+
+
           const newPost = {
             id: Date.now(),
             text: text,
-            mediaUrl: mediaUrl,
+            mediaUrl: mediaUrlFirebase,
             mediaType: fileType,
             userName: userName,
             userPicture: userPicture
           };
-          posts.push(newPost);
-          localStorage.setItem('posts', JSON.stringify(posts));
-          renderPosts(posts, feedContainer, authorizedEmails.includes(userEmail), userPicture, userName);
-          postText.value = ''; // Clear the text input
-          fileInput.value = ''; // Clear the file input
+
+		  // Push post to Firebase Database
+		  db.ref('posts').push(newPost)
+		  .then(() => {
+			console.log('Post added to Firebase!');
+			postText.value = ''; // Clear the text input
+			fileInput.value = ''; // Clear the file input
+			previewContainer.innerHTML = ''; // Clear the preview
+			mediaUrl = null;
+			fileType = null;
+
+		  })
+		  .catch((error) => {
+			console.error("Error adding post to Firebase:", error);
+		  });
         }
       });
       function deletePost(postId) {
