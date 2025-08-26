@@ -365,6 +365,7 @@
       storageBucket: "unightly-club-hangout-56361.firebasestorage.app",
       messagingSenderId: "41004307513",
       appId: "1:41004307513:web:d511cfba74cc008c96a9e8",
+      measurementId: "G-6JZ4GR0CGC",
     };
     let app;
     let db;
@@ -477,12 +478,9 @@
         }
       }
       const feedContainer = document.getElementById('feed-container');
-
       // Load authorized emails and then render the page
       await fetchAuthorizedEmails();
-
       let isAuthorized = authorizedEmails.includes(userEmail);
-
       let formHTML = '';
       if (isAuthorized) {
         formHTML = `
@@ -491,7 +489,7 @@
             <div id="preview-container"></div>
             <div class="file-input-wrapper">
               <button class="file-input-button" type="button">Choose file</button>
-              <input type="file" id="file-input" accept="image/*, video/*">
+              <input type="file" id="file-input" accept="image/*, video/*" onchange="handleFileChange(event)">
             </div>
             <button type="submit" id="post-button">Post</button>
           </form>
@@ -499,67 +497,60 @@
       } else {
         formHTML = `<p>Official UCH Staff may post.</p>`;
       }
-
       feedContainer.innerHTML = `
         <h1>Welcome to the UCH Feed!</h1>
         ${formHTML}
       `;
-        // Post Submission
-        const postForm = document.getElementById('post-form');
-        if (postForm) {
-		const fileInput = document.getElementById('file-input');
-		const previewContainer = document.getElementById('preview-container');
-		const postText = document.getElementById('post-text');
-		fileInput.addEventListener('change', function () {
-		const file = fileInput.files[0];
-		if (file) {
-		fileType = file.type;
-		if (fileType.startsWith('image/')) {
-		const reader = new FileReader();
-		reader.onload = function (e) {
-		mediaUrl = e.target.result;
-		let previewContent = '';
-		if (fileType.startsWith('image/')) {
-		previewContent = `<img src="${mediaUrl}" alt="Post Image" id="preview-image">`;
-		} else if (fileType.startsWith('video/')) {
-		previewContent = `<video src="${mediaUrl}" alt="Post Video" controls></video>`;
-		}
-		previewContainer.innerHTML = previewContent;
-		};
-		reader.readAsDataURL(file); // Read file as Data URL
-		} else if (fileType.startsWith('video/')) {
-		const reader = new FileReader();
-		reader.onload = function (e) {
-		mediaUrl = e.target.result;
-		let previewContent = '';
-		previewContent = `<video src="${mediaUrl}" alt="Post Video" controls></video>`;
-		previewContainer.innerHTML = previewContent;
-		};
-		reader.readAsDataURL(file);
-		}
-		else {
-		alert('Invalid file type. Only images and videos are allowed.');
-		fileInput.value = '';
-		previewContainer.innerHTML = '';
-		mediaUrl = null;
-		fileType = null;
-		return;
-		}
-		} else {
-		previewContainer.innerHTML = '';
-		mediaUrl = null;
-		fileType = null;
-		}
-		});
+      // Post Submission
+	  // Function to handle file selection
+	  window.handleFileChange = function (event) {
+        const file = event.target.files[0];
+        const previewContainer = document.getElementById('preview-container');
+
+        if (file) {
+          fileType = file.type;
+          if (fileType.startsWith('image/') || fileType.startsWith('video/')) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+              mediaUrl = e.target.result;
+              let previewContent = '';
+              if (fileType.startsWith('image/')) {
+                previewContent = `<img src="${mediaUrl}" alt="Post Image" id="preview-image">`;
+              } else if (fileType.startsWith('video/')) {
+                previewContent = `<video src="${mediaUrl}" alt="Post Video" controls></video>`;
+              }
+              previewContainer.innerHTML = previewContent;
+            };
+            reader.readAsDataURL(file); // Read file as Data URL
+          } else {
+            alert('Invalid file type. Only images and videos are allowed.');
+            fileInput.value = '';
+            previewContainer.innerHTML = '';
+            mediaUrl = null;
+            fileType = null;
+            return;
+          }
+        } else {
+          previewContainer.innerHTML = '';
+          mediaUrl = null;
+          fileType = null;
+        }
+      }
+      const postForm = document.getElementById('post-form');
+      if (postForm) {
+        const previewContainer = document.getElementById('preview-container');
+        const postText = document.getElementById('post-text');
         postForm.addEventListener('submit', async function (e) {
           e.preventDefault();
           const text = postText.value.trim();
+          const fileInput = document.getElementById('file-input'); // Get file input inside the submit handler
+          const file = fileInput.files[0];
           if (text !== '' || mediaUrl) {
             // Upload media to Firebase Storage if it exists
             let mediaUrlFirebase = null;
             if (mediaUrl) {
               try {
-                const storageRef = storage.ref(`posts/${Date.now()}_${fileInput.files[0].name}`);
+                const storageRef = storage.ref(`posts/${Date.now()}_${file.name}`);
                 const uploadTask = storageRef.putString(mediaUrl, 'data_url');
                 mediaUrlFirebase = await uploadTask.then(async (snapshot) => {
                   return await snapshot.ref.getDownloadURL();
@@ -629,10 +620,6 @@
           console.error("Error fetching posts from Firebase:", error);
         }
       }
-
-      //Load posts
-      renderPostsFromFirebase(feedContainer, isAuthorized, userPicture, userName)
-
       function renderPostsContent(posts, feedContainer, isAuthorized, userPicture, userName) {
         let postsHTML = '';
         posts.forEach(post => {
@@ -662,16 +649,8 @@
         });
         feedContainer.innerHTML += postsHTML;
       }
-		      // Attach event listeners to delete buttons (have to do it after they are added to the DOM)
-      // Attach event listeners to delete buttons (have to do it after they are added to the DOM)
-      //if (isAuthorized) { //Ensure authorized user can delete
-      // document.querySelectorAll('.post .delete-btn').forEach(button => {
-      // button.addEventListener('click', function (e) {
-      // const postId = Number(this.dataset.id);
-      // deletePost(postId);
-      // });
-      // });
-      //}
+			//Load posts
+      renderPostsFromFirebase(feedContainer, isAuthorized, userPicture, userName)
     };
   </script>
 </head>
