@@ -372,6 +372,8 @@
     let storage;
     let auth;
     let authorizedEmails = [];
+    let fileType;
+    let mediaUrl;
     try {
       // Initialize Firebase
       app = firebase.initializeApp(firebaseConfig);
@@ -488,8 +490,8 @@
             <textarea id="post-text" placeholder="What's on your mind?" rows="4"></textarea>
             <div id="preview-container"></div>
             <div class="file-input-wrapper">
-              <button class="file-input-button" type="button">Choose file</button>
-              <input type="file" id="file-input" accept="image/*, video/*" onchange="handleFileChange(event)">
+              <button class="file-input-button" type="button" onclick="document.getElementById('file-input').click()">Choose file</button>
+              <input type="file" id="file-input" accept="image/*, video/*" onchange="handleFileChange(event)" style="display:none;">
             </div>
             <button type="submit" id="post-button">Post</button>
           </form>
@@ -502,7 +504,7 @@
         ${formHTML}
       `;
       // Post Submission
-	  // Function to handle file selection
+      // Function to handle file selection
 	  window.handleFileChange = function (event) {
         const file = event.target.files[0];
         const previewContainer = document.getElementById('preview-container');
@@ -545,10 +547,10 @@
           const text = postText.value.trim();
           const fileInput = document.getElementById('file-input'); // Get file input inside the submit handler
           const file = fileInput.files[0];
-          if (text !== '' || mediaUrl) {
+          if (text !== '' || file) { // Check if there's text or a file
             // Upload media to Firebase Storage if it exists
             let mediaUrlFirebase = null;
-            if (mediaUrl) {
+            if (file) {
               try {
                 const storageRef = storage.ref(`posts/${Date.now()}_${file.name}`);
                 const uploadTask = storageRef.putString(mediaUrl, 'data_url');
