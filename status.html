@@ -40,7 +40,6 @@
       z-index: 10;
       display: flex;
       justify-content: space-between;
-      /* Distribute items evenly */
       align-items: center;
     }
 
@@ -58,22 +57,13 @@
       font-size: 1.5rem;
       font-weight: 600;
       letter-spacing: 0.5px;
-      text-align: center;
-      /* Center the title */
-      flex-grow: 1;
-      /* Allow title to take up remaining space */
     }
 
     #profile-container {
-      position: relative;
-      /*To allow horizontal moving*/
-      top: 0;
-      right: 0;
+      position: absolute;
+      top: 20px;
+      right: 27px;
       z-index: 100;
-      display: flex;
-      /* For aligning content horizontally */
-      align-items: center;
-      /* Vertically center items */
     }
 
     #profile-icon {
@@ -141,14 +131,109 @@
       color: #fca5a5;
     }
 
-    /* Make the profile picture a flex item so we can control its width */
-    header>#profile-container {
-      flex: 0 0 auto;
-      /* Do not grow, do not shrink, base width is auto */
-      margin-left: auto;
-      /* Push it to the right */
-      position: static;
-      /* Remove absolute positioning */
+    .container {
+      max-width: 600px;
+      background: var(--container-bg);
+      color: var(--primary);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 40px 32px;
+      margin-top: 40px;
+      text-align: left;
+      /* Align text to the left */
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5em;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      /* Center the title */
+    }
+
+    p {
+      font-size: 1.1rem;
+      opacity: 0.8;
+      margin-bottom: 1.5em;
+      /* Reduce bottom margin */
+    }
+
+    .status-item {
+      padding: 12px 16px;
+      margin-bottom: 10px;
+      border-radius: var(--radius);
+      background: rgba(45, 55, 72, 0.6);
+      /* Darker background for items */
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .status-label {
+      font-weight: 600;
+      margin-right: 10px;
+      color: var(--accent);
+    }
+
+    .status-value {
+      font-style: italic;
+    }
+
+    /* Add styles for the update form */
+    .update-form {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(75, 85, 99, 0.4);
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      font-size: 1rem;
+      font-weight: 500;
+      margin-bottom: 5px;
+      color: var(--primary);
+    }
+
+    input[type="text"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid rgba(75, 85, 99, 0.6);
+      border-radius: 6px;
+      background: rgba(45, 55, 72, 0.3);
+      color: var(--primary);
+      font-size: 1rem;
+      transition: border-color 0.2s;
+    }
+
+    input[type="text"]:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--accent);
+      outline: none;
+      box-shadow: 0 0 5px rgba(96, 165, 250, 0.3);
+    }
+
+    .update-btn {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-size: 1.1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s, box-shadow 0.2s;
+      box-shadow: 0 2px 8px rgba(96, 165, 250, 0.4);
+    }
+
+    .update-btn:hover {
+      background: var(--accent-hover);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.5);
     }
 
     @media (max-width: 600px) {
@@ -164,6 +249,16 @@
 
       p {
         font-size: 1rem;
+      }
+
+      #profile-container {
+        top: 12px;
+        right: 12px;
+      }
+
+      #profile-icon {
+        width: 32px;
+        height: 32px;
       }
     }
   </style>
@@ -187,9 +282,10 @@
           // Create profile container
           container = document.createElement('div');
           container.id = 'profile-container';
-          container.style.position = 'relative';
-          container.style.top = '0px';
-          container.style.right = '0px';
+          container.style.position = 'absolute';
+          container.style.top = '20px';
+          container.style.right = '27px';
+          /*Move profile 16px from the left*/
           container.style.zIndex = '100';
           // Create profile icon
           img = document.createElement('img');
