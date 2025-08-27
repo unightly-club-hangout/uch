@@ -214,7 +214,7 @@
         <!-- Warnings Tab -->
         <div id="warnings" class="tab-content">
             <h2>Warnings</h2>
-            <button onclick="showWarningPopup()">Give Warning</button>
+            <button onclick="showUsernamePromptPopup()">Give Warning</button>
         </div>
 
         <!-- Users Tab -->
@@ -252,11 +252,18 @@
         <button onclick="confirmAction('logout')">Logout</button>
     </div>
 
+    <!-- Username Prompt Popup -->
+    <div id="username-prompt-popup" class="popup">
+        <h3>Enter Username</h3>
+        <label for="username-input">Username:</label>
+        <input type="text" id="username-input"><br>
+        <button onclick="submitUsername()">Submit</button>
+        <button onclick="hideUsernamePromptPopup()">Cancel</button>
+    </div>
+
     <!-- Warning Popup -->
     <div id="warning-popup" class="popup">
         <h3>Give Warning</h3>
-        <label for="warning-email">User Email:</label>
-        <input type="email" id="warning-email"><br><br>
         <label for="warning-reason">Reason:</label>
         <input type="text" id="warning-reason"><br>
         <button onclick="giveWarning()">Submit Warning</button>
@@ -329,6 +336,25 @@
     });
 
     // --- Warnings Tab Functions ---
+    function showUsernamePromptPopup() {
+        document.getElementById('username-prompt-popup').style.display = 'block';
+    }
+
+    function hideUsernamePromptPopup() {
+        document.getElementById('username-prompt-popup').style.display = 'none';
+    }
+
+    function submitUsername() {
+        const username = document.getElementById('username-input').value;
+        if (username) {
+            selectedUserEmail = username;  // Set the selectedUserEmail
+            hideUsernamePromptPopup();
+            showWarningPopup();  // Show the warning popup
+        } else {
+            alert("Please enter a username.");
+        }
+    }
+
     function showWarningPopup() {
         document.getElementById('warning-popup').style.display = 'block';
     }
@@ -338,13 +364,12 @@
     }
 
     function giveWarning() {
-        const email = document.getElementById('warning-email').value;
         const reason = document.getElementById('warning-reason').value;
 
         // Store warning in localStorage (SIMULATED, will be lost on refresh)
-        localStorage.setItem(`warning-${email}`, reason);
+        localStorage.setItem(`warning-${selectedUserEmail}`, reason);
 
-        alert(`Warning set for ${email}.  They will (SIMULATED) see it on their next login.`);  // Inform admin
+        alert(`Warning set for ${selectedUserEmail}.  They will (SIMULATED) see it on their next login.`);  // Inform admin
         hideWarningPopup();
     }
 
@@ -480,13 +505,24 @@
 
     // --- Warned/Suspended User Popup (Simulated) ---
     window.onload = async function() {
-        // Check for warnings
-        const credential = localStorage.getItem('google_credential');
         let userEmail = null;
+        try {
+            const credential = localStorage.getItem('google_credential');
 
-        if (credential) {
+            if (!credential) {
+                console.warn("No Google credential found in localStorage. Redirecting...");
+                window.location.href = 'blank.html';
+                return;
+            }
+
             const payload = parseJwt(credential);
             userEmail = payload.email;
+
+            if (!userEmail) {
+                console.warn("No email found in JWT payload. Redirecting...");
+                window.location.href = 'blank.html';
+                return;
+            }
 
             let warningReason = localStorage.getItem(`warning-${userEmail}`);
             if (warningReason) {
@@ -499,19 +535,30 @@
                 showUserPopup(`WARNING\nYou have been suspended by UCH staff for: ${suspensionReason}. To appeal, go to https://discord.gg/m9uA384RJk`);
                 localStorage.removeItem(`suspension-${userEmail}`); // Clear the warning
             }
+        } catch (error) {
+            console.error("Error during credential processing: ", error);
+            window.location.href = 'blank.html';
+            return;
         }
 
         // Load authorized emails
-        await fetchAuthorizedEmails();
+        try {
+            await fetchAuthorizedEmails();
+        } catch (error) {
+            console.error("Failed to fetch authorized emails: ", error);
+            window.location.href = 'blank.html';
+            return;
+        }
 
         // Check authorization status
         let isAuthorized = authorizedEmails.includes(userEmail);
 
-        // Redirect if not authorized
         if (!isAuthorized) {
+            console.log(`User ${userEmail} is not authorized. Redirecting...`);
             window.location.href = 'blank.html';
-            return; // Stop further execution
+            return;
         }
+        console.log(`User ${userEmail} is authorized.`);
 
         // Initially activate the first tab
         document.querySelector('.sidebar li').click();
@@ -527,13 +574,22 @@
     }
 
     function parseJwt(token) {
-        var base64Url = token.split('.')[1];
-        var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        var jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
-            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        }).join(''));
+        if (!token) {
+            console.error("Token is null or undefined");
+            return null;
+        }
+        try {
+            var base64Url = token.split('.')[1];
+            var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            var jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
 
-        return JSON.parse(jsonPayload);
+            return JSON.parse(jsonPayload);
+        } catch (error) {
+            console.error("Error parsing JWT:", error);
+            return null;
+        }
     }
 </script>
 
