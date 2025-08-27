@@ -479,12 +479,14 @@
     }
 
     // --- Warned/Suspended User Popup (Simulated) ---
-    window.onload = function() {
+    window.onload = async function() {
         // Check for warnings
         const credential = localStorage.getItem('google_credential');
+        let userEmail = null;
+
         if (credential) {
             const payload = parseJwt(credential);
-            const userEmail = payload.email;
+            userEmail = payload.email;
 
             let warningReason = localStorage.getItem(`warning-${userEmail}`);
             if (warningReason) {
@@ -499,6 +501,18 @@
             }
         }
 
+        // Load authorized emails
+        await fetchAuthorizedEmails();
+
+        // Check authorization status
+        let isAuthorized = authorizedEmails.includes(userEmail);
+
+        // Redirect if not authorized
+        if (!isAuthorized) {
+            window.location.href = 'blank.html';
+            return; // Stop further execution
+        }
+
         // Initially activate the first tab
         document.querySelector('.sidebar li').click();
     };
@@ -511,6 +525,7 @@
     function hideUserPopup() {
         document.getElementById('user-popup').style.display = 'none';
     }
+
     function parseJwt(token) {
         var base64Url = token.split('.')[1];
         var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
