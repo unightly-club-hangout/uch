@@ -1,4 +1,4 @@
 User-agent: *
 Disallow: /
 
-Sitemap: https://silentmason.github.io/sitemap.xml
+Sitemap: https://silentmason.github.io/uch/sitemap.xml
