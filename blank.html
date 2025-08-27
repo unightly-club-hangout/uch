@@ -419,6 +419,7 @@
             let userEmail;
             let userName;
             let userPicture;
+            let adminButton;
 
             const credential = localStorage.getItem('google_credential');
 
@@ -502,26 +503,36 @@
             let isAuthorized = authorizedEmails.includes(userEmail);
 
             // Add Admin Dashboard Button if Authorized
+            // Check if the adminButton already exists
+            adminButton = document.getElementById('adminDashboardButton');
             if (isAuthorized) {
-                let adminButton = document.createElement('a');
-                adminButton.href = 'YOUR_ADMIN_DASHBOARD_URL_HERE'; // Replace with the actual URL
-                adminButton.textContent = 'Admin Dashboard';
-                adminButton.style.cssText = `
-                    background-color: var(--accent);
-                    color: #fff;
-                    padding: 10px 15px;
-                    border-radius: var(--radius);
-                    text-decoration: none;
-                    margin-left: 20px;
-                    transition: background-color 0.2s;
-                `;
-                adminButton.onmouseover = function() {
-                    this.style.backgroundColor = 'var(--accent-hover)';
-                };
-                adminButton.onmouseout = function() {
-                    this.style.backgroundColor = 'var(--accent)';
-                };
-                document.querySelector('header').appendChild(adminButton);
+                if (!adminButton) {
+                    adminButton = document.createElement('a');
+                    adminButton.id = 'adminDashboardButton'; // Add an ID to the button
+                    adminButton.href = 'Dashboard.html'; // Replace with the actual URL
+                    adminButton.textContent = 'Admin Dashboard';
+                    adminButton.style.cssText = `
+                        background-color: var(--accent);
+                        color: #fff;
+                        padding: 10px 15px;
+                        border-radius: var(--radius);
+                        text-decoration: none;
+                        margin-left: 20px;
+                        transition: background-color 0.2s;
+                    `;
+                    adminButton.onmouseover = function () {
+                        this.style.backgroundColor = 'var(--accent-hover)';
+                    };
+                    adminButton.onmouseout = function () {
+                        this.style.backgroundColor = 'var(--accent)';
+                    };
+                    document.querySelector('header').appendChild(adminButton);
+                }
+            } else {
+                // Remove the button if the user is not authorized
+                if (adminButton) {
+                    adminButton.remove();
+                }
             }
 
             let formHTML = '';
