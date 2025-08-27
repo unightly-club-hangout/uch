@@ -347,9 +347,11 @@
     function submitUsername() {
         const username = document.getElementById('username-input').value;
         if (username) {
-            selectedUserEmail = username;  // Set the selectedUserEmail
+            // Set the selectedUserEmail
+            selectedUserEmail = username;
             hideUsernamePromptPopup();
-            showWarningPopup();  // Show the warning popup
+            showWarningPopup();
+
         } else {
             alert("Please enter a username.");
         }

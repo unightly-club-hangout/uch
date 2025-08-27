@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import AdminDashboard from './AdminDashboard';
+import AdminDashboard from './Dashboard';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
