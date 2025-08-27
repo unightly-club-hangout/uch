@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | UCH</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #e0f2fe;
+            --accent: #60a5fa;
+            --accent-hover: #3b82f6;
+            --background: #0f172a;
+            --container-bg: rgba(30, 41, 59, 0.8);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            --radius: 12px;
+            --font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            font-family: var(--font-family);
+            margin: 0;
+            background: var(--background);
+            color: var(--primary);
+        }
+
+        .dashboard-container {
+            display: flex;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: 200px;
+            background-color: var(--container-bg);
+            color: var(--primary);
+            padding: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .sidebar h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar li {
+            padding: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            border-radius: var(--radius);
+        }
+
+        .sidebar li:hover {
+            background-color: rgba(45, 55, 72, 0.6);
+            color: var(--accent);
+        }
+
+        .content {
+            flex: 1;
+            padding: 20px;
+            background: var(--container-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin: 20px;
+        }
+
+        .content h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* User List Styles */
+        #user-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        #user-list li {
+            padding: 10px;
+            border-bottom: 1px solid rgba(75, 85, 99, 0.4);
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        #user-list li:hover {
+            background-color: rgba(45, 55, 72, 0.6);
+            color: var(--accent);
+        }
+
+        /* User Details Sidebar */
+        #user-details {
+            width: 300px;
+            background: var(--container-bg);
+            padding: 20px;
+            border-left: 1px solid rgba(75, 85, 99, 0.4);
+            display: none; /* Hidden by default */
+            position: absolute;
+            top: 0;
+            right: 0;
+            height: 100%;
+            overflow: auto;
+            box-shadow: var(--shadow);
+            color: var(--primary);
+        }
+
+        #user-details.active {
+            display: block;
+        }
+
+        #user-details h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        /* Warning Popup */
+        .popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--container-bg);
+            padding: 20px;
+            border: 1px solid rgba(75, 85, 99, 0.4);
+            box-shadow: var(--shadow);
+            z-index: 1000;
+            display: none; /* Hidden by default */
+            border-radius: var(--radius);
+            color: var(--primary);
+        }
+
+        .popup label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .popup input[type="email"],
+        .popup input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(75, 85, 99, 0.6);
+            border-radius: 6px;
+            background: rgba(45, 55, 72, 0.3);
+            color: var(--primary);
+        }
+
+        .popup button {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 12px rgba(96, 165, 250, 0.4);
+            margin-top: 10px;
+        }
+
+        .popup button:hover {
+            background: var(--accent-hover);
+            box-shadow: 0 6px 18px rgba(59, 130, 246, 0.5);
+        }
+
+        /* General Button Styles */
+        button {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 12px rgba(96, 165, 250, 0.4);
+        }
+
+        button:hover {
+            background: var(--accent-hover);
+            box-shadow: 0 6px 18px rgba(59, 130, 246, 0.5);
+        }
+    </style>
+</head>
+<body>
+
+<div class="dashboard-container">
+    <div class="sidebar">
+        <h2>Admin Dashboard</h2>
+        <ul>
+            <li data-tab="warnings">Warnings</li>
+            <li data-tab="users">Users</li>
+            <li data-tab="admins">Admins</li>
+            <li data-tab="posts">Posts</li>
+        </ul>
+    </div>
+
+    <div class="content">
+
+        <!-- Warnings Tab -->
+        <div id="warnings" class="tab-content">
+            <h2>Warnings</h2>
+            <button onclick="showWarningPopup()">Give Warning</button>
+        </div>
+
+        <!-- Users Tab -->
+        <div id="users" class="tab-content">
+            <h2>Users</h2>
+            <ul id="user-list">
+                <!-- User list will be populated here -->
+            </ul>
+        </div>
+
+        <!-- Admins Tab -->
+        <div id="admins" class="tab-content">
+            <h2>Admins</h2>
+            <ul id="admin-list">
+                <!-- Admin list will be populated here -->
+            </ul>
+        </div>
+
+        <!-- Posts Tab -->
+        <div id="posts" class="tab-content">
+            <h2>Posts</h2>
+            <div id="post-list">
+                <!-- Posts will be loaded here -->
+            </div>
+        </div>
+
+    </div>
+
+    <!-- User Details Sidebar -->
+    <div id="user-details">
+        <h2>User Details</h2>
+        <p id="user-email"></p>
+        <button onclick="confirmAction('warn')">Warn</button>
+        <button onclick="confirmAction('suspend')">Suspend</button>
+        <button onclick="confirmAction('logout')">Logout</button>
+    </div>
+
+    <!-- Warning Popup -->
+    <div id="warning-popup" class="popup">
+        <h3>Give Warning</h3>
+        <label for="warning-email">User Email:</label>
+        <input type="email" id="warning-email"><br><br>
+        <label for="warning-reason">Reason:</label>
+        <input type="text" id="warning-reason"><br>
+        <button onclick="giveWarning()">Submit Warning</button>
+        <button onclick="hideWarningPopup()">Cancel</button>
+    </div>
+
+    <!-- Confirmation Popup -->
+    <div id="confirmation-popup" class="popup">
+        <p id="confirmation-message"></p>
+        <button onclick="executeAction()">Confirm</button>
+        <button onclick="hideConfirmationPopup()">Cancel</button>
+    </div>
+
+    <!-- Warned/Suspended User Popup (Simulated) -->
+    <div id="user-popup" class="popup">
+        <p id="user-popup-message"></p>
+        <button onclick="hideUserPopup()">Close</button>
+    </div>
+
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
+
+<script>
+    // Firebase configuration (same as in blank.html)
+    const firebaseConfig = {
+        apiKey: "AIzaSyAXbIvGZn0vQpRlrBhL6RFyGg-NGGDpTSY",
+        authDomain: "unightly-club-hangout-56361.firebaseapp.com",
+        databaseURL: "https://unightly-club-hangout-56361-default-rtdb.firebaseio.com",
+        projectId: "unightly-club-hangout-56361",
+        storageBucket: "unightly-club-hangout-56361.firebasestorage.app",
+        messagingSenderId: "41004307513",
+        appId: "1:41004307513:web:d511cfba74cc008c96a9e8",
+        measurementId: "G-6JZ4GR0CGC",
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // GitHub Raw URL for Admins
+    const GITHUB_RAW_URL = 'https://raw.githubusercontent.com/silentmason/Unightly-Club-Hangout/refs/heads/main/UCHstaff.json';
+
+    // Global variables
+    let selectedUserEmail = null; // To store the selected user's email
+    let currentAction = null; // To store the action to be performed (warn, suspend, logout)
+    let authorizedEmails = []; // Store the authorized admin emails
+
+    // Tab Switching
+    document.querySelectorAll('.sidebar li').forEach(item => {
+        item.addEventListener('click', function() {
+            const tab = this.dataset.tab;
+            document.querySelectorAll('.tab-content').forEach(tabContent => {
+                tabContent.classList.remove('active');
+            });
+            document.getElementById(tab).classList.add('active');
+
+            // Load content dynamically based on the tab
+            if (tab === 'users') {
+                loadUsers();
+            } else if (tab === 'admins') {
+                loadAdmins();
+            } else if (tab === 'posts') {
+                loadPosts();
+            }
+        });
+    });
+
+    // --- Warnings Tab Functions ---
+    function showWarningPopup() {
+        document.getElementById('warning-popup').style.display = 'block';
+    }
+
+    function hideWarningPopup() {
+        document.getElementById('warning-popup').style.display = 'none';
+    }
+
+    function giveWarning() {
+        const email = document.getElementById('warning-email').value;
+        const reason = document.getElementById('warning-reason').value;
+
+        // Store warning in localStorage (SIMULATED, will be lost on refresh)
+        localStorage.setItem(`warning-${email}`, reason);
+
+        alert(`Warning set for ${email}.  They will (SIMULATED) see it on their next login.`);  // Inform admin
+        hideWarningPopup();
+    }
+
+    // --- Users Tab Functions ---
+    function loadUsers() {
+        // In a real application, you would fetch this data from a database.
+        // Here, we'll use some dummy data for demonstration purposes.
+
+        // Check for warnings to show when the user logs in and shows the popup
+        const users = [
+            { email: 'user1@example.com', lastLogin: '2024-01-01' },
+            { email: 'user2@example.com', lastLogin: '2024-01-02' },
+            { email: 'user3@example.com', lastLogin: '2024-01-03' }
+        ];
+
+        const userList = document.getElementById('user-list');
+        userList.innerHTML = ''; // Clear previous list
+
+        users.forEach(user => {
+            const li = document.createElement('li');
+            li.textContent = user.email;
+            li.addEventListener('click', () => showUserDetails(user.email));
+            userList.appendChild(li);
+        });
+    }
+
+    function showUserDetails(email) {
+        selectedUserEmail = email;  // Store the selected email
+        document.getElementById('user-email').textContent = `Email: ${email}`;
+        document.getElementById('user-details').classList.add('active');
+    }
+
+    // --- Admins Tab Functions ---
+    async function loadAdmins() {
+        try {
+            const response = await fetch(GITHUB_RAW_URL);
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            authorizedEmails = await response.json();
+            console.log("Authorized emails fetched successfully:", authorizedEmails);
+            const adminList = document.getElementById('admin-list');
+            adminList.innerHTML = ''; // Clear previous list
+
+            authorizedEmails.forEach(admin => {
+                const li = document.createElement('li');
+                li.textContent = admin;
+                adminList.appendChild(li);
+            });
+
+        } catch (error) {
+            console.error('Failed to fetch authorized emails:', error);
+            authorizedEmails = []; // Ensure authorizedEmails is an array even on failure
+        }
+    }
+
+    // --- Posts Tab Functions ---
+    async function loadPosts() {
+        const postList = document.getElementById('post-list');
+
+        // Fetch posts from Firebase
+        db.ref('posts').once('value', (snapshot) => {
+            const posts = snapshot.val();
+            postList.innerHTML = ''; // Clear previous posts
+
+            if (posts) {
+                Object.entries(posts).forEach(([key, post]) => {
+                    const postDiv = document.createElement('div');
+                    postDiv.innerHTML = `
+                        <h3>${post.userName}</h3>
+                        <p>${post.text}</p>
+                        ${post.mediaUrl ? `<img src="${post.mediaUrl}" style="max-width: 200px;">` : ''}
+                    `;
+                    postList.appendChild(postDiv);
+                });
+            } else {
+                postList.textContent = 'No posts found.';
+            }
+        });
+    }
+
+    // --- Action Confirmation and Execution ---
+    function confirmAction(action) {
+        currentAction = action; // Store the action
+        let message = `Are you sure you want to ${action} ${selectedUserEmail}?`;
+        document.getElementById('confirmation-message').textContent = message;
+        document.getElementById('confirmation-popup').style.display = 'block';
+    }
+
+    function hideConfirmationPopup() {
+        document.getElementById('confirmation-popup').style.display = 'none';
+    }
+
+    function executeAction() {
+        hideConfirmationPopup();
+
+        if (currentAction === 'warn') {
+            warnUser(selectedUserEmail);
+        } else if (currentAction === 'suspend') {
+            suspendUser(selectedUserEmail);
+        } else if (currentAction === 'logout') {
+            logoutUser(selectedUserEmail);
+        }
+
+        currentAction = null; // Clear the action
+    }
+
+    function warnUser(email) {
+        const reason = prompt("Enter the reason for the warning:");
+        if (reason) {
+            // In a real application, you would store this warning in a database.
+            // For this example, we'll just display an alert.
+            localStorage.setItem(`warning-${email}`, reason);
+            alert(`User ${email} warned for: ${reason}`);
+        }
+    }
+
+    function suspendUser(email) {
+        const reason = prompt("Enter the reason for the suspension:");
+        if (reason) {
+            // In a real application, you would store this suspension in a database.
+            // For this example, we'll just display an alert.
+            localStorage.setItem(`suspension-${email}`, reason);
+            alert(`User ${email} suspended for: ${reason}`);
+        }
+    }
+
+    function logoutUser(email) {
+        // In a real application, you would invalidate the user's session on the server.
+        // For this example, we'll just display an alert.
+        alert(`User ${email} logged out (simulated).`);
+    }
+
+    // --- Warned/Suspended User Popup (Simulated) ---
+    window.onload = function() {
+        // Check for warnings
+        const credential = localStorage.getItem('google_credential');
+        if (credential) {
+            const payload = parseJwt(credential);
+            const userEmail = payload.email;
+
+            let warningReason = localStorage.getItem(`warning-${userEmail}`);
+            if (warningReason) {
+                showUserPopup(`WARNING\nYou have been warned by UCH staff for: ${warningReason}`);
+                localStorage.removeItem(`warning-${userEmail}`); // Clear the warning
+            }
+
+            let suspensionReason = localStorage.getItem(`suspension-${userEmail}`);
+            if (suspensionReason) {
+                showUserPopup(`WARNING\nYou have been suspended by UCH staff for: ${suspensionReason}. To appeal, go to https://discord.gg/m9uA384RJk`);
+                localStorage.removeItem(`suspension-${userEmail}`); // Clear the warning
+            }
+        }
+
+        // Initially activate the first tab
+        document.querySelector('.sidebar li').click();
+    };
+
+    function showUserPopup(message) {
+        document.getElementById('user-popup-message').textContent = message;
+        document.getElementById('user-popup').style.display = 'block';
+    }
+
+    function hideUserPopup() {
+        document.getElementById('user-popup').style.display = 'none';
+    }
+    function parseJwt(token) {
+        var base64Url = token.split('.')[1];
+        var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        var jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+
+        return JSON.parse(jsonPayload);
+    }
+</script>
+
+</body>
+</html>
