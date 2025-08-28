@@ -10,7 +10,7 @@
 --primary: #e0f2fe;
 --accent: #60a5fa;
 --accent-hover: #3b82f6;
---background: #0f172a;
+--background: rgb(58, 67, 88);
 --container-bg: rgba(30, 41, 59, 0.8);
 --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 --radius: 12px;
@@ -784,8 +784,6 @@ try {
 loadingText.textContent = "Loading...";
 // Load authorized emails and render posts in parallel
 await Promise.all([fetchAuthorizedEmails(), renderPostsFromFirebase(feedContainer, isAuthorized, userPicture, userName)]);
-// Update loading text on successful load
-loadingText.textContent = "Welcome to the Unightly Club Hangout!";
 } catch (error) {
 console.error("Error during initial load:", error);
 // Optionally handle the error, e.g., display an error message
@@ -796,6 +794,10 @@ loadingText.style.color = "red";
 setTimeout(() => {
 document.body.classList.add('loaded');
 document.getElementById('loading-screen').classList.add('hidden');
+// Update loading text after loading screen is hidden
+setTimeout(() => {
+loadingText.textContent = "Welcome to the Unightly Club Hangout!";
+}, 500); // A short delay to make sure the loading screen is fully hidden
 }, 5000); // 5000 milliseconds = 5 seconds
 }
 }
