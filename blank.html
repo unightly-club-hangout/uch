@@ -564,7 +564,7 @@ userPicture = payload.picture;
 }
 }
 const feedContainer = document.getElementById('feed-container');
-// Load authorized emails and then render the page
+// Load authorized emails
 await fetchAuthorizedEmails();
 let isAuthorized = authorizedEmails.includes(userEmail);
 // Add Admin Dashboard Button if Authorized
@@ -769,16 +769,23 @@ feedContainer.innerHTML += postsHTML;
 }
 //Load posts
 // Add the 'loaded' class to the body and hide the loading screen after content loads
-Promise.all([fetchAuthorizedEmails(), renderPostsFromFirebase(feedContainer, isAuthorized, userPicture, userName)])
-.then(() => {
-document.body.classList.add('loaded');
-document.getElementById('loading-screen').classList.add('hidden');
-})
-.catch(error => {
+async function loadContent() {
+try {
+// Load authorized emails and render posts in parallel
+await Promise.all([fetchAuthorizedEmails(), renderPostsFromFirebase(feedContainer, isAuthorized, userPicture, userName)]);
+} catch (error) {
 console.error("Error during initial load:", error);
 // Optionally handle the error, e.g., display an error message
 document.getElementById('loading-screen').innerHTML = '<p style="color: red;">Failed to load content. Please refresh.</p>';
-});
+} finally {
+// Ensure the loading screen is hidden after 5 seconds, regardless of load success
+setTimeout(() => {
+document.body.classList.add('loaded');
+document.getElementById('loading-screen').classList.add('hidden');
+}, 5000); // 5000 milliseconds = 5 seconds
+}
+}
+loadContent();
 };
 </script>
 </head>
