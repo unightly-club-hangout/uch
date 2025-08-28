@@ -637,7 +637,7 @@
                             userPicture: userPicture
                         };
 
-                        // Push post to Firebase Database
+                        // Push post into Firebase Database
                         try {
                             db.ref('posts').push(newPost)
                                 .then(() => {
