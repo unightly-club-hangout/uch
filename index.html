@@ -4,9 +4,10 @@
 <head>
   <meta charset="UTF-8">
   <title>Login to UCH</title>
-  <meta name="description" content="Welcome to the UCH website! Sign in to access the Unightly Club Hangout and connect with fellow members.">
-   <meta name="google-site-verification" content="MnycxIY1541Hu7A3wr_SPNJQSfoAjrfrrTOXaWyBEDo" />
-   <link rel="icon" type="image/x-icon" href="unightly-icon.ico">
+  <meta name="description"
+    content="Welcome to the UCH website! Sign in to access the Unightly Club Hangout and connect with fellow members.">
+  <meta name="google-site-verification" content="MnycxIY1541Hu7A3wr_SPNJQSfoAjrfrrTOXaWyBEDo" />
+  <link rel="icon" type="image/x-icon" href="unightly-icon.ico">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
@@ -74,7 +75,7 @@
       align-items: center;
       justify-content: flex-start;
       box-shadow: var(--shadow);
-      z-index: 10;
+      z-index: 2;
     }
 
     .header-icon {
@@ -103,6 +104,7 @@
       animation: fadeIn 1s;
       z-index: 5;
       /* Ensure container is above the animated background */
+      position: relative;
     }
 
     @keyframes fadeIn {
@@ -241,14 +243,31 @@
       left: 0;
       width: 80px;
       height: 80px;
-      background: radial-gradient(circle, rgba(96, 165, 250, 0.4), transparent);
+      background: var(--background);
+      /* Match the body background */
       border-radius: 50%;
       pointer-events: none;
       /* Prevent the glow from interfering with clicks */
-      z-index: 9999;
+      z-index: 1;
+      /* Ensure the glow is behind other elements, but above the animated background*/
+      transform: translate(-50%, -50%);
+      /* Center the glow on the cursor */
+    }
+
+    .cursor {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      pointer-events: none;
+      /* Prevent the glow from interfering with clicks */
+      z-index: 10000;
       /* Ensure the glow is on top of other elements */
       transform: translate(-50%, -50%);
       /* Center the glow on the cursor */
+      background-color: white;
     }
   </style>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -264,32 +283,37 @@
       window.location.href = "blank.html";
     }
 
-    window.onload = function() {
+    window.onload = function () {
       google.accounts.id.initialize({
         client_id: "90008544107-puntiddkae4hctcec08mghl6e9nhvs4k.apps.googleusercontent.com",
         callback: handleCredentialResponse
       });
       google.accounts.id.renderButton(
         document.getElementById("g_id_signin"), {
-          theme: "outline",
-          size: "large",
-          width: "350" // Set a specific width for the button
-        }
+        theme: "outline",
+        size: "large",
+        width: "350" // Set a specific width for the button
+      }
       );
-        // Create the glow element
-    const glow = document.createElement('div');
-    glow.classList.add('cursor-glow');
-    document.body.appendChild(glow);
-
-    // Track mouse movement
-        document.addEventListener('mousemove', (e) => {
+      // Create the glow element
+      const glow = document.createElement('div');
+      glow.classList.add('cursor-glow');
+      document.body.appendChild(glow);
+      //Create the cursor element
+      const cursor = document.createElement('div');
+      cursor.classList.add('cursor');
+      document.body.appendChild(cursor);
+      // Track mouse movement
+      document.addEventListener('mousemove', (e) => {
         const x = e.clientX;
         const y = e.clientY;
-
         // Update glow position
         glow.style.left = `${x}px`;
         glow.style.top = `${y}px`;
-        });
+        //Update cursor position
+        cursor.style.left = `${x}px`;
+        cursor.style.top = `${y}px`;
+      });
     };
   </script>
 </head>
@@ -309,11 +333,10 @@
       <div id="g_id_signin"></div>
     </div>
     <div class="login-footer">
-      <span>By signing in, you agree to our <a href="#" style="color:var(--accent);text-decoration:underline;">Terms</a> and <a href="#" style="color:var(--accent);text-decoration:underline;">Privacy Policy</a>.</span>
+      <span>By signing in, you agree to our <a href="#" style="color:var(--accent);text-decoration:underline;">Terms</a> and <a href="#"
+          style="color:var(--accent);text-decoration:underline;">Privacy Policy</a>.</span>
     </div>
   </div>
 </body>
 
 </html>
-```
-
