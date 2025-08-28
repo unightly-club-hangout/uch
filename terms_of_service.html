@@ -16,7 +16,6 @@
             --font-family: 'Poppins', sans-serif;
             --gradient: linear-gradient(to right, #6366f1, #a855f7);
         }
-
         body {
             margin: 0;
             font-family: var(--font-family);
@@ -28,7 +27,6 @@
             overflow: auto;
             cursor: none;
         }
-
         /* Animated background */
         body::before {
             content: "";
@@ -42,17 +40,14 @@
             z-index: -1;
             animation: wave 10s linear infinite;
         }
-
         @keyframes wave {
             0% {
                 transform: translateX(0);
             }
-
             100% {
                 transform: translateX(-50%);
             }
         }
-
         header {
             position: relative;
             top: 0;
@@ -67,7 +62,6 @@
             box-shadow: var(--shadow);
             z-index: 2;
         }
-
         .header-icon {
             width: 40px;
             height: 40px;
@@ -77,18 +71,15 @@
             background: #fff;
             object-fit: contain;
         }
-
         .header-title {
             font-size: 1.5rem;
             font-weight: 600;
             letter-spacing: 0.5px;
         }
-
         .content {
             padding: 20px;
             flex-grow: 1;
         }
-
         h1 {
             font-size: 2.5rem;
             font-weight: 700;
@@ -97,11 +88,9 @@
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
             text-align: center;
         }
-
         a {
             color: var(--accent);
         }
-
         footer {
             background: rgba(30, 41, 59, 0.9);
             color: var(--primary);
@@ -110,7 +99,6 @@
             box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.2);
             z-index: 2;
         }
-
         /* Cursor Glow */
         .cursor-glow {
             position: fixed;
@@ -125,7 +113,6 @@
             filter: blur(5px);
             background: radial-gradient(circle, rgba(30, 41, 59, 0.6), transparent);
         }
-
         .cursor {
             position: fixed;
             top: 0;
@@ -138,24 +125,41 @@
             transform: translate(-50%, -50%);
             background-color: #ffffff;
         }
+        .cta-btn {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 14px 36px;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(96, 165, 250, 0.4);
+            transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+        }
+
+        .cta-btn:hover {
+            background: var(--accent-hover);
+            box-shadow: 0 6px 18px rgba(59, 130, 246, 0.5);
+            transform: translateY(-2px) scale(1.03);
+        }
     </style>
     <script>
         window.onload = function () {
             const glow = document.createElement('div');
             glow.classList.add('cursor-glow');
             document.body.appendChild(glow);
-
             const cursor = document.createElement('div');
             cursor.classList.add('cursor');
             document.body.appendChild(cursor);
-
             document.addEventListener('mousemove', (e) => {
                 const x = e.clientX;
                 const y = e.clientY;
-
                 glow.style.left = `${x}px`;
                 glow.style.top = `${y}px`;
-
                 cursor.style.left = `${x}px`;
                 cursor.style.top = `${y}px`;
             });
@@ -167,7 +171,6 @@
         <img src="https://raw.githubusercontent.com/unightly-club-hangout/uch/refs/heads/master/unightly_icon.ico" alt="UCH Icon" class="header-icon">
         <span class="header-title">UCH Website</span>
     </header>
-
     <div class="content">
         <h1>Terms of Service</h1>
         <h2>1. Acceptance of Terms</h2>
@@ -187,8 +190,8 @@
         <h2>8. Governing Law</h2>
         <p>These terms and conditions are governed by and construed in accordance with the laws of [Your Country] and you irrevocably submit to the exclusive jurisdiction of the courts in that State or location.</p>
         <h2>Contact Us</h2>
-        <p>If you have any questions about these Terms of Service, please contact us in <a href="https://discord.com/channels/1401631295108546590/1405065371282571324/1405075528532361307">Our Discord</a>.</p>
-        <a href="index.html" class="back-button">Back to Home</a>
+        <p>If you have any questions about these Terms of Service, please contact us in <a href="https://discord.gg/m9uA384RJk">Our Discord</a>.</p>
+        <a href="index.html" class="cta-btn">Back to Home</a>
     </div>
     <footer>
         <p>&copy; 2024 UCH Website. All rights reserved.</p>

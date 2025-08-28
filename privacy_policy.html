@@ -58,14 +58,25 @@
       color: #60a5fa;
     }
 
-    .back-button {
+    .cta-btn {
       display: inline-block;
-      padding: 10px 20px;
-      background-color: #60a5fa;
+      padding: 14px 36px;
+      background: var(--accent);
       color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
       text-decoration: none;
-      border-radius: 5px;
-      margin-top: 10px;
+      box-shadow: 0 4px 12px rgba(96, 165, 250, 0.4);
+      transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+    }
+
+    .cta-btn:hover {
+      background: var(--accent-hover);
+      box-shadow: 0 6px 18px rgba(59, 130, 246, 0.5);
+      transform: translateY(-2px) scale(1.03);
     }
 
     .content {
@@ -183,6 +194,33 @@
             cursor.style.top = `${y}px`;
         });
     };
-    <a href="index.html" class="back-button">Back to Home</a>
   </script>
 </head>
+
+<body>
+  <header>
+    <img src="https://raw.githubusercontent.com/unightly-club-hangout/uch/refs/heads/master/unightly_icon.ico" alt="UCH Icon" class="header-icon">
+    <span class="header-title">UCH Website</span>
+  </header>
+  <div class="content">
+    <h1>Privacy Policy</h1>
+    <h2>1. Information We Collect</h2>
+    <p>We collect the following information: [Describe what information you collect].</p>
+    <h2>2. How We Use Your Information</h2>
+    <p>We use your information to: [Describe how you use the information].</p>
+    <h2>3. Data Security</h2>
+    <p>We take reasonable measures to protect your information from unauthorized access.</p>
+    <h2>4. Sharing Your Information</h2>
+    <p>We do not share your personal information with third parties.</p>
+    <h2>5. Your Rights</h2>
+    <p>You have the right to access, correct, or delete your personal information.</p>
+    <h2>6. Contact Us</h2>
+    <p>If you have any questions about this Privacy Policy, please contact us in <a href="https://discord.gg/m9uA384RJk">Our Discord</a>.</p>
+    <a href="index.html" class="cta-btn">Back to Home</a>
+  </div>
+  <footer>
+    <p>&copy; 2024 UCH Website. All rights reserved.</p>
+  </footer>
+</body>
+
+</html>
