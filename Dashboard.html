@@ -456,7 +456,7 @@
 
         // Check for warnings to show when the user logs in and shows the popup
         const users = [
-            { email: 'user1@example.com', lastLogin: '2024-01-01' },
+            { email: 'testerforme1st@gmail.com', lastLogin: '2024-01-01' },
             { email: 'user2@example.com', lastLogin: '2024-01-02' },
             { email: 'user3@example.com', lastLogin: '2024-01-03' }
     ];
@@ -636,7 +636,7 @@
         console.log(`User ${userEmail} is authorized.`);
 
         // Initially activate the first tab
-        document.querySelector('.sidebar li').click();
+        document.querySelector('.sidebar li[data-tab="warnings"]').click();
     };
 
     function showUserPopup(message) {
