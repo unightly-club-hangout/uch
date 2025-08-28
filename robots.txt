@@ -1,4 +1,4 @@
 User-agent: *
 Disallow: /
 
-Sitemap: https://silentmason.github.io/uch/sitemap.xml
+Sitemap: https://unightly-club-hangout.github.io/uch/sitemap.xml

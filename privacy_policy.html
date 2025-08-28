@@ -9,13 +9,49 @@
     body {
       font-family: 'Poppins', sans-serif;
       line-height: 1.6;
-      margin: 20px;
+      margin: 0;
       color: #e0f2fe;
       background-color: #0f172a;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      overflow-x: hidden; /* Prevent horizontal scrollbar */
+    }
+
+    header {
+      position: relative;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(30, 41, 59, 0.9);
+      color: var(--primary);
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      z-index: 2;
+    }
+
+    .header-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      margin-right: 16px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.3);
+      background: #fff;
+      object-fit: contain;
+    }
+
+    .header-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
     }
 
     h1 {
       color: #60a5fa;
+      text-align: center;
     }
 
     a {
@@ -31,65 +67,140 @@
       border-radius: 5px;
       margin-top: 10px;
     }
+
+    .content {
+      padding: 20px;
+      flex-grow: 1; /* Allows content to take up remaining vertical space */
+    }
+
+    /* Ensure the footer is at the bottom */
+    footer {
+      background: rgba(30, 41, 59, 0.9);
+      color: var(--primary);
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.2);
+      z-index: 2;
+    }
+
+    /* Basic reset for consistent styling */
+    :root {
+      --primary: #e0f2fe;
+      --accent: #60a5fa;
+      --accent-hover: #3b82f6;
+      --background: #0f172a;
+      --container-bg: rgba(30, 41, 59, 0.8);
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      --radius: 12px;
+      --font-family: 'Poppins', sans-serif;
+      --gradient: linear-gradient(to right, #6366f1, #a855f7);
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--font-family);
+      background: var(--background);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow: hidden;
+      cursor: none;
+    }
+
+    /* Animated background */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 200%;
+      height: 100%;
+      background: var(--gradient);
+      opacity: 0.3;
+      z-index: -1;
+      animation: wave 10s linear infinite;
+    }
+
+    @keyframes wave {
+      0% {
+        transform: translateX(0);
+      }
+
+      100% {
+        transform: translateX(-50%);
+      }
+    }
   </style>
 </head>
 
 <body>
-  <a href="index.html" class="back-button">Back to Home</a>
+  <header>
+    <img src=https://raw.githubusercontent.com/unightly-club-hangout/uch/refs/heads/master/unightly_icon.ico alt="UCH Icon" class="header-icon">
+    <span class="header-title">UCH Website</span>
+  </header>
 
-  <h1>Privacy Policy</h1>
+  <div class="content">
+    <h1>Privacy Policy</h1>
 
-  <p>Your privacy is important to us. It is UCH's policy to respect your privacy regarding any information we may collect from you
-    across our website, <a href="#">https://example.com</a>, and other sites we own and operate.</p>
+    <p>Your privacy is important to us. It is UCH's policy to respect your privacy regarding any information we may collect from you
+      across our website, <a href="#">https://example.com</a>, and other sites we own and operate.</p>
 
   <h2>Information We Collect</h2>
 
-  <p>We collect information to provide better services to all our users.</p>
-  <ul>
-    <li><strong>Personal Information:</strong> We may collect personal information such as your name, email address, and other
-      contact details when you voluntarily submit it to us through forms or sign-ups.</li>
-    <li><strong>Log Data:</strong> Our servers automatically record information created by your use of our Services ("Log
-      Data"). Log Data may include information such as your IP address, browser type, operating system, the referring web
-      page, pages visited, location, your mobile carrier, device information, search terms, and cookie information. We
-      receive Log Data when you interact with our Services, for example, when you visit our websites, sign into our
-      Services, interact with our email notifications, use your Account to authenticate to a third-party website or
-      application.</li>
-  </ul>
+    <p>We collect information to provide better services to all our users.</p>
+    <ul>
+      <li><strong>Personal Information:</strong> We may collect personal information such as your name, email address, and other
+        contact details when you voluntarily submit it to us through forms or sign-ups.</li>
+      <li><strong>Log Data:</strong> Our servers automatically record information created by your use of our Services ("Log
+        Data"). Log Data may include information such as your IP address, browser type, operating system, the referring web
+        page, pages visited, location, your mobile carrier, device information, search terms, and cookie information. We
+        receive Log Data when you interact with our Services, for example, when you visit our websites, sign into our
+        Services, interact with our email notifications, use your Account to authenticate to a third-party website or
+        application.</li>
+    </ul>
 
   <h2>How We Use Your Information</h2>
 
-  <p>We may use the information we collect from you to:</p>
-  <ul>
-    <li>Provide, maintain, and improve our services.</li>
-    <li>Develop new services.</li>
-    <li>Protect UCH and our users.</li>
-  </ul>
+    <p>We may use the information we collect from you to:</p>
+    <ul>
+      <li>Provide, maintain, and improve our services.</li>
+      <li>Develop new services.</li>
+      <li>Protect UCH and our users.</li>
+    </ul>
 
   <h2>Sharing Your Information</h2>
 
-  <p>We do not share personal information with third parties except as described below.</p>
-  <ul>
-    <li><strong>With your consent:</strong> We may share personal information with third parties when we have your consent to do
-      so.</li>
-    <li><strong>Service providers:</strong> We may share information with service providers that perform services on our behalf.</li>
-  </ul>
+    <p>We do not share personal information with third parties except as described below.</p>
+    <ul>
+      <li><strong>With your consent:</strong> We may share personal information with third parties when we have your consent to do
+        so.</li>
+      <li><strong>Service providers:</strong> We may share information with service providers that perform services on our behalf.</li>
+    </ul>
 
-  <h2>Security</h2>
-  <p>We take reasonable measures to help protect personal information from loss, theft, misuse, and unauthorized access,
-    disclosure, alteration, and destruction.</p>
+    <h2>Security</h2>
+    <p>We take reasonable measures to help protect personal information from loss, theft, misuse, and unauthorized access,
+      disclosure, alteration, and destruction.</p>
 
-  <h2>Links to Other Sites</h2>
-  <p>Our website may contain links to other sites that are not operated by us. If you click on a third-party link, you will
-    be directed to that site. We strongly advise you to review the Privacy Policy of every site you visit.</p>
+    <h2>Links to Other Sites</h2>
+    <p>Our website may contain links to other sites that are not operated by us. If you click on a third-party link, you will
+      be directed to that site. We strongly advise you to review the Privacy Policy of every site you visit.</p>
 
-  <h2>Changes to This Privacy Policy</h2>
-  <p>We may change our Privacy Policy from time to time. We will post any privacy policy changes on this page and, if the
-    changes are significant, we will provide a more prominent notice.</p>
+    <h2>Changes to This Privacy Policy</h2>
+    <p>We may change our Privacy Policy from time to time. We will post any privacy policy changes on this page and, if the
+      changes are significant, we will provide a more prominent notice.</p>
 
-  <h2>Contact Us</h2>
-  <p>If you have any questions about this Privacy Policy, please contact us in <a href="https://discord.com/channels/1401631295108546590/1405065371282571324/1405075528532361307">our Discord</a>.</p>
+    <h2>Contact Us</h2>
+    <p>If you have any questions about this Privacy Policy, please contact us in
+      <a href="https://discord.com/channels/1401631295108546590/1405065371282571324/1405075528532361307">our
+        Discord</a>.</p>
 
-  <a href="index.html" class="back-button">Back to Home</a>
+  </div>
+
+  <footer>
+    <p>&copy; 2024 Unightly Club Hangout. All rights reserved.</p>
+  </footer>
 </body>
 
 </html>
