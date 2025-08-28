@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -88,7 +87,6 @@
         .content {
             padding: 20px;
             flex-grow: 1;
-            /* Ensure content takes up remaining space */
         }
 
         h1 {
@@ -143,85 +141,56 @@
     </style>
     <script>
         window.onload = function () {
-            // Create the glow element
             const glow = document.createElement('div');
             glow.classList.add('cursor-glow');
             document.body.appendChild(glow);
-            // Create the cursor element
+
             const cursor = document.createElement('div');
             cursor.classList.add('cursor');
             document.body.appendChild(cursor);
-            // Track mouse movement
+
             document.addEventListener('mousemove', (e) => {
                 const x = e.clientX;
                 const y = e.clientY;
-                // Update glow position
+
                 glow.style.left = `${x}px`;
                 glow.style.top = `${y}px`;
-                // Update cursor position
+
                 cursor.style.left = `${x}px`;
                 cursor.style.top = `${y}px`;
             });
         };
     </script>
 </head>
-
 <body>
     <header>
-        <img src=https://raw.githubusercontent.com/unightly-club-hangout/uch/refs/heads/master/unightly_icon.ico alt="UCH Icon" class="header-icon">
+        <img src="https://raw.githubusercontent.com/unightly-club-hangout/uch/refs/heads/master/unightly_icon.ico" alt="UCH Icon" class="header-icon">
         <span class="header-title">UCH Website</span>
     </header>
 
     <div class="content">
         <h1>Terms of Service</h1>
-
         <h2>1. Acceptance of Terms</h2>
-        <p>By accessing and using the UCH website, you agree to be bound by these Terms of Service. If you do not agree with any
-            part of these terms, you are prohibited from using or accessing this site.</p>
-
+        <p>By accessing and using the UCH website, you agree to be bound by these Terms of Service. If you do not agree with any part of these terms, you are prohibited from using or accessing this site.</p>
         <h2>2. Use License</h2>
-        <p>Permission is granted to temporarily download one copy of the materials on UCH's website for personal, non-commercial
-            transitory viewing only.</p>
-
+        <p>Permission is granted to temporarily download one copy of the materials on UCH's website for personal, non-commercial transitory viewing only.</p>
         <h2>3. Disclaimer</h2>
-        <p>The materials on UCH's website are provided on an 'as is' basis. UCH makes no warranties, expressed or implied, and
-            hereby disclaims and negates all other warranties including, without limitation, implied warranties or conditions of
-            merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of
-            rights.</p>
-
+        <p>The materials on UCH's website are provided on an 'as is' basis. UCH makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties including, without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights.</p>
         <h2>4. Limitations</h2>
-        <p>In no event shall UCH or its suppliers be liable for any damages (including, without limitation, damages for loss of
-            data or profit, or due to business interruption) arising out of the use or inability to use UCH's website, even if UCH
-            or a UCH authorized representative has been notified orally or in writing of the possibility of such damage.</p>
-
+        <p>In no event shall UCH or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) arising out of the use or inability to use UCH's website, even if UCH or a UCH authorized representative has been notified orally or in writing of the possibility of such damage.</p>
         <h2>5. Accuracy of Materials</h2>
-        <p>The materials appearing on UCH's website could include technical, typographical, or photographic errors. UCH does not
-            warrant that any of the materials on its website are accurate, complete or current. UCH may make changes to the
-            materials contained on its website at any time without notice.</p>
-
+        <p>The materials appearing on UCH's website could include technical, typographical, or photographic errors. UCH does not warrant that any of the materials on its website are accurate, complete or current. UCH may make changes to the materials contained on its website at any time without notice.</p>
         <h2>6. Links</h2>
-        <p>Some links in UCH has not been reviewed from the sites linked to its website and is not responsible for the contents of any such linked
-            site. The inclusion of any link does not imply endorsement by UCH of the site. Use of any such linked website is at the
-            user's own risk.</p>
-
+        <p>Some links in UCH has not been reviewed from the sites linked to its website and is not responsible for the contents of any such linked site. The inclusion of any link does not imply endorsement by UCH of the site. Use of any such linked website is at the user's own risk.</p>
         <h2>7. Modifications</h2>
-        <p>UCH may revise these terms of service for its website at any time without notice. By using this website you are
-            agreeing to be bound by the then current version of these terms of service.</p>
-
+        <p>UCH may revise these terms of service for its website at any time without notice. By using this website you are agreeing to be bound by the then current version of these terms of service.</p>
         <h2>8. Governing Law</h2>
-        <p>These terms and conditions are governed by and construed in accordance with the laws of [Your Country] and you
-            irrevocably submit to the exclusive jurisdiction of the courts in that State or location.</p>
-
+        <p>These terms and conditions are governed by and construed in accordance with the laws of [Your Country] and you irrevocably submit to the exclusive jurisdiction of the courts in that State or location.</p>
         <h2>Contact Us</h2>
-        <p>If you have any questions about these Terms of Service, please contact us in
-            <a href="https://discord.com/channels/1401631295108546590/1405065371282571324/1405075528532361307">Our
-                Discord</a>.</p>
-
+        <p>If you have any questions about these Terms of Service, please contact us in <a href="https://discord.com/channels/1401631295108546590/1405065371282571324/1405075528532361307">Our Discord</a>.</p>
     </div>
-
     <footer>
         <p>&copy; 2024 UCH Website. All rights reserved.</p>
     </footer>
 </body>
-
 </html>
