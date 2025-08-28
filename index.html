@@ -3,8 +3,8 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>Login to UCH</title>  <!-- Updated Title Tag -->
-   <meta name="description" content="Welcome to the UCH website! Sign in to access the Unightly Club Hangout and connect with fellow members."> <!-- Updated Description Meta Tag -->
+  <title>Login to UCH</title>
+  <meta name="description" content="Welcome to the UCH website! Sign in to access the Unightly Club Hangout and connect with fellow members.">
    <meta name="google-site-verification" content="MnycxIY1541Hu7A3wr_SPNJQSfoAjrfrrTOXaWyBEDo" />
    <link rel="icon" type="image/x-icon" href="unightly-icon.ico">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -34,6 +34,7 @@
       justify-content: center;
       min-height: 100vh;
       overflow: hidden;
+      cursor: none;
     }
 
     /* Animated background */
@@ -232,6 +233,23 @@
         font-size: 1rem;
       }
     }
+
+    /* Cursor Glow */
+    .cursor-glow {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 80px;
+      height: 80px;
+      background: radial-gradient(circle, rgba(96, 165, 250, 0.4), transparent);
+      border-radius: 50%;
+      pointer-events: none;
+      /* Prevent the glow from interfering with clicks */
+      z-index: 9999;
+      /* Ensure the glow is on top of other elements */
+      transform: translate(-50%, -50%);
+      /* Center the glow on the cursor */
+    }
   </style>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script>
@@ -258,6 +276,20 @@
           width: "350" // Set a specific width for the button
         }
       );
+        // Create the glow element
+    const glow = document.createElement('div');
+    glow.classList.add('cursor-glow');
+    document.body.appendChild(glow);
+
+    // Track mouse movement
+        document.addEventListener('mousemove', (e) => {
+        const x = e.clientX;
+        const y = e.clientY;
+
+        // Update glow position
+        glow.style.left = `${x}px`;
+        glow.style.top = `${y}px`;
+        });
     };
   </script>
 </head>
@@ -283,3 +315,5 @@
 </body>
 
 </html>
+```
+
