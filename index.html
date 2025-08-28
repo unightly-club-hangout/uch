@@ -342,13 +342,12 @@
 
         // Update trail positions
         for (let i = 0; i < trailLength; i++) {
-          let index = trailLength - 1 - i;
           // Calculate the position of each trail element
           let delay = i * 5; // Adjust the delay as needed
           let trailX = x - delay;
           let trailY = y - delay;
-          trail[i].style.left = `${trailX}px`;
-          trail[i].style.top = `${trailY}px`;
+          trail[i].style.left = `${x - (i * 5)}px`;
+          trail[i].style.top = `${y - (i * 5)}px`;
         }
       });
     };
