@@ -26,7 +26,7 @@ color: var(--primary);
 overflow-x: hidden;
 display: flex;
 flex-direction: column;
-min-height: 100vh; /* Ensure the body takes up at least the full viewport height */
+min-height: 100vh;
 }
 /* Animated gradient background */
 body::before {
@@ -51,6 +51,45 @@ background-position: 100% 50%;
 }
 100% {
 background-position: 0% 50%;
+}
+}
+/* Loading Screen Styles */
+#loading-screen {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background: var(--background);
+z-index: 1000;
+display: flex;
+justify-content: center;
+align-items: center;
+transition: opacity 0.5s ease-out;
+}
+#loading-screen.hidden {
+opacity: 0;
+pointer-events: none;
+}
+#loading-spinner {
+position: absolute;
+bottom: 20px;
+right: 20px;
+width: 50px;
+height: 50px;
+background-image: url('https://raw.githubusercontent.com/unightly-club-hangout/uch/refs/heads/master/unightly_icon.ico'); /* Replace with your image URL */
+background-size: contain;
+background-repeat: no-repeat;
+border-radius: 50%;
+animation: spin 1s linear infinite;
+opacity: 0.7;
+}
+@keyframes spin {
+0% {
+transform: rotate(0deg);
+}
+100% {
+transform: rotate(360deg);
 }
 }
 header {
@@ -387,9 +426,8 @@ text-align: center;
 box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.2);
 border-top: 1px solid rgba(255, 255, 255, 0.05);
 z-index: 2;
-margin-top: auto; /* Push the footer to the bottom */
+margin-top: auto;
 }
-/* General body animation trigger */
 </style>
 <!-- The core Firebase JS SDK is always required and must be listed first -->
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
@@ -453,8 +491,8 @@ return JSON.parse(jsonPayload);
 window.onload = async function () {
 // Check if the user is logged in
 if (!localStorage.getItem('google_credential')) {
-window.location.href = 'index.html'; // Redirect to index.html
-return; // Stop further execution
+window.location.href = 'index.html';
+return;
 }
 let img;
 let menu;
@@ -730,23 +768,24 @@ postsHTML += postElement.outerHTML;
 feedContainer.innerHTML += postsHTML;
 }
 //Load posts
-renderPostsFromFirebase(feedContainer, isAuthorized, userPicture, userName)
-// Add the 'loaded' class to the body to trigger the animations
+// Add the 'loaded' class to the body and hide the loading screen after content loads
+Promise.all([fetchAuthorizedEmails(), renderPostsFromFirebase(feedContainer, isAuthorized, userPicture, userName)])
+.then(() => {
 document.body.classList.add('loaded');
-};
-// Register service worker
-if ('serviceWorker' in navigator) {
-navigator.serviceWorker.register('/service-worker.js')
-.then(registration => {
-console.log('Service Worker registered with scope:', registration.scope);
+document.getElementById('loading-screen').classList.add('hidden');
 })
 .catch(error => {
-console.error('Service Worker registration failed:', error);
+console.error("Error during initial load:", error);
+// Optionally handle the error, e.g., display an error message
+document.getElementById('loading-screen').innerHTML = '<p style="color: red;">Failed to load content. Please refresh.</p>';
 });
-}
+};
 </script>
 </head>
 <body>
+<div id="loading-screen">
+<div id="loading-spinner"></div>
+</div>
 <header>
 <img src=https://raw.githubusercontent.com/unightly-club-hangout/uch/refs/heads/master/unightly_icon.ico alt="UCH Icon" class="header-icon">
 <span class="header-title">UCH Website</span>
