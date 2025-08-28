@@ -364,6 +364,11 @@ return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
 return JSON.parse(jsonPayload);
 }
 window.onload = async function () {
+  // Check if the user is logged in
+  if (!localStorage.getItem('google_credential')) {
+    window.location.href = 'index.html'; // Redirect to index.html
+    return; // Stop further execution
+  }
 let img;
 let menu;
 let container;
