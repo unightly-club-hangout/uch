@@ -3,8 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <title>Welcome | UCH Main</title>
-<!-- Favicon -->
-<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -17,23 +15,51 @@
 --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 --radius: 12px;
 --font-family: 'Poppins', sans-serif;
+--gradient-start: #4c669f;
+--gradient-end: #2e4779;
 }
 body {
 margin: 0;
 font-family: var(--font-family);
 background: var(--background);
 color: var(--primary);
+overflow-x: hidden;
+}
+/* Animated gradient background */
+body::before {
+content: "";
+position: fixed;
+top: 0;
+left: 0;
+width: 200%;
+height: 100%;
+background: linear-gradient(45deg, var(--gradient-start), var(--gradient-end), var(--gradient-start));
+background-size: 400% 400%;
+opacity: 0.4;
+z-index: -1;
+animation: gradientAnimation 15s ease infinite;
+}
+@keyframes gradientAnimation {
+0% {
+background-position: 0% 50%;
+}
+50% {
+background-position: 100% 50%;
+}
+100% {
+background-position: 0% 50%;
+}
 }
 header {
-background: rgba(30, 41, 59, 0.9);
+background: rgba(30, 41, 59, 0.95);
 color: var(--primary);
 padding: 20px;
 position: relative;
-height: auto;
 display: flex;
 align-items: center;
 justify-content: center;
 box-shadow: var(--shadow);
+border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 .header-icon {
 width: 40px;
@@ -43,12 +69,17 @@ margin-right: 16px;
 box-shadow: 0 0 12px rgba(0, 0, 0, 0.3);
 background: #fff;
 object-fit: contain;
+transition: transform 0.2s ease-in-out;
+}
+.header-icon:hover {
+transform: scale(1.1);
 }
 .header-title {
-font-size: 1.5rem;
+font-size: 1.7rem;
 font-weight: 600;
 letter-spacing: 0.5px;
 text-align: center;
+text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 #profile-container {
 position: absolute;
@@ -57,32 +88,34 @@ right: 32px;
 z-index: 100;
 }
 #profile-icon {
-width: 40px;
-height: 40px;
+width: 42px;
+height: 42px;
 border-radius: 50%;
-box-shadow: 0 0 4px #aaa;
+box-shadow: 0 0 6px rgba(0, 0, 0, 0.4);
 border: 2px solid #fff;
 background: #eee;
 cursor: pointer;
-transition: box-shadow 0.2s;
+transition: transform 0.2s, box-shadow 0.2s;
+object-fit: cover;
 }
-#profile-icon:active,
-#profile-icon:focus {
-box-shadow: 0 0 8px var(--accent);
+#profile-icon:hover {
+transform: scale(1.1);
+box-shadow: 0 0 12px var(--accent);
 }
 .dropdown-menu {
 display: none;
 position: absolute;
-top: 48px;
+top: 52px;
 right: 0;
-background: var(--container-bg);
+background: rgba(30, 41, 59, 0.95);
 color: var(--primary);
-min-width: 180px;
+min-width: 200px;
 border-radius: var(--radius);
 box-shadow: var(--shadow);
-padding: 8px 0;
-font-size: 1rem;
+padding: 10px 0;
+font-size: 1.1rem;
 animation: fadeInMenu 0.2s;
+border: 1px solid rgba(255, 255, 255, 0.05);
 }
 .dropdown-menu.show {
 display: block;
@@ -90,7 +123,7 @@ display: block;
 @keyframes fadeInMenu {
 from {
 opacity: 0;
-transform: translateY(-10px);
+transform: translateY(-5px);
 }
 to {
 opacity: 1;
@@ -98,63 +131,68 @@ transform: translateY(0);
 }
 }
 .dropdown-item {
-padding: 12px 24px;
+padding: 14px 24px;
 cursor: pointer;
-transition: background 0.15s;
+transition: background 0.15s, color 0.15s;
 color: var(--primary);
 }
 .dropdown-item:hover {
-background: rgba(45, 55, 72, 0.6);
+background: rgba(45, 55, 72, 0.8);
 color: var(--accent);
 }
 .dropdown-item.signout {
 border-top: 1px solid rgba(75, 85, 99, 0.4);
-margin-top: 6px;
+margin-top: 8px;
 color: #fca5a5;
+}
+.dropdown-item.signout:hover {
+color: #e53e3e;
+background: rgba(45, 55, 72, 0.8);
 }
 .dropdown-item.disabled {
 color: #6b7280;
-/* Grey out the text */
 cursor: not-allowed;
-/* Change the cursor */
 }
 .dropdown-item.disabled:hover {
 background: none;
-/* Remove hover effect */
 color: #6b7280;
-/* Keep greyed out */
 }
 /* New Feed Styles */
 #feed-container {
-max-width: 700px;
+max-width: 750px;
 margin: 40px auto;
-padding: 20px;
+padding: 30px;
 background: var(--container-bg);
 border-radius: var(--radius);
 box-shadow: var(--shadow);
 color: var(--primary);
+border: 1px solid rgba(255, 255, 255, 0.05);
 }
 #post-form {
-margin-bottom: 20px;
+margin-bottom: 30px;
 display: flex;
 flex-direction: column;
 }
 #post-text {
 width: 100%;
-padding: 10px;
-margin-bottom: 10px;
+padding: 12px;
+margin-bottom: 15px;
 border: 1px solid rgba(75, 85, 99, 0.6);
-border-radius: 6px;
+border-radius: 8px;
 background: rgba(45, 55, 72, 0.3);
 color: var(--primary);
-font-size: 1rem;
+font-size: 1.1rem;
 resize: vertical;
-/* Allow vertical resizing */
+transition: border-color 0.2s;
+}
+#post-text:focus {
+border-color: var(--accent);
+outline: none;
+box-shadow: 0 0 5px rgba(96, 165, 250, 0.2);
 }
 #file-input {
-margin-bottom: 10px;
+margin-bottom: 15px;
 color: var(--primary);
-/* Hide the default file input button */
 position: absolute;
 width: 1px;
 height: 1px;
@@ -167,142 +205,178 @@ border: 0;
 .file-input-wrapper {
 position: relative;
 display: inline-block;
+margin-bottom: 15px;
 }
 .file-input-button {
 background: var(--accent);
 color: #fff;
 border: none;
-border-radius: 8px;
-padding: 10px 20px;
+border-radius: 10px;
+padding: 12px 24px;
 font-size: 1.1rem;
 font-weight: 500;
 cursor: pointer;
-transition: background 0.2s, box-shadow 0.2s;
+transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
 box-shadow: 0 4px 12px rgba(96, 165, 250, 0.4);
 display: inline-block;
 }
 .file-input-button:hover {
 background: var(--accent-hover);
 box-shadow: 0 6px 18px rgba(59, 130, 246, 0.5);
+transform: translateY(-2px) scale(1.03);
 }
 #post-button {
 background: var(--accent);
 color: #fff;
 border: none;
-border-radius: 8px;
-padding: 10px 20px;
+border-radius: 10px;
+padding: 12px 24px;
 font-size: 1.1rem;
 font-weight: 500;
 cursor: pointer;
-transition: background 0.2s, box-shadow 0.2s;
+transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
 box-shadow: 0 4px 12px rgba(96, 165, 250, 0.4);
 }
 #post-button:hover {
 background: var(--accent-hover);
 box-shadow: 0 6px 18px rgba(59, 130, 246, 0.5);
+transform: translateY(-2px) scale(1.03);
 }
 .post {
-padding: 15px;
-margin-bottom: 15px;
+padding: 20px;
+margin-bottom: 20px;
 border-radius: var(--radius);
-background: rgba(45, 55, 72, 0.6);
-box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+background: rgba(45, 55, 72, 0.7);
+box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 word-wrap: break-word;
-/* Prevent long words from breaking the layout */
 position: relative;
+border: 1px solid rgba(255, 255, 255, 0.05);
 }
 .post-header {
 display: flex;
 align-items: center;
-margin-bottom: 10px;
+margin-bottom: 12px;
 }
 .post-header img {
-width: 32px;
-height: 32px;
+width: 36px;
+height: 36px;
 border-radius: 50%;
-margin-right: 10px;
+margin-right: 12px;
+object-fit: cover;
+box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+.post-header p {
+font-weight: 500;
+font-size: 1.1rem;
 }
 .post-content {
-margin-bottom: 10px;
+margin-bottom: 15px;
+font-size: 1.1rem;
+line-height: 1.5;
 }
 .post-image,
 .post-video {
 max-width: 100%;
-border-radius: 8px;
-margin-bottom: 10px;
-/* Ensure images and videos don't overflow */
-max-height: 400px;
-/* Set a maximum height */
+border-radius: 10px;
+margin-bottom: 15px;
+max-height: 500px;
 object-fit: contain;
-/* Maintain aspect ratio and fit within the container */
+box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 .post-video {
-max-height: 400px;
-/* Limit video height */
+max-height: 500px;
 }
 #preview-container {
 max-width: 100%;
+margin-bottom: 15px;
 }
 #preview-container img,
 #preview-container video {
 max-width: 100%;
-/* Ensure images and videos don't overflow */
-max-height: 300px;
-/* Set a maximum height */
+max-height: 400px;
 object-fit: contain;
-/* Maintain aspect ratio and fit within the container */
-margin-bottom: 10px;
+border-radius: 10px;
+box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 .delete-btn {
 position: absolute;
-top: 5px;
-right: 5px;
+top: 8px;
+right: 8px;
 background: #e53e3e;
-/* Red color */
 color: #fff;
 border: none;
 border-radius: 50%;
-width: 24px;
-height: 24px;
+width: 28px;
+height: 28px;
 display: flex;
 align-items: center;
 justify-content: center;
 cursor: pointer;
-transition: background 0.2s;
+transition: background 0.2s, transform 0.1s;
+box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 .delete-btn:hover {
 background: #c53030;
-/* Darker red */
+transform: scale(1.1);
 }
 /* Responsive Styles */
 @media (max-width: 600px) {
 #feed-container {
 margin: 20px;
-padding: 15px;
+padding: 20px;
 }
 header {
-padding: 16px;
-/* Reduce padding for smaller screens */
+padding: 15px;
 }
 .header-icon {
 width: 32px;
 height: 32px;
-margin-right: 8px;
-/* Reduce margin for smaller screens */
+margin-right: 12px;
 }
 .header-title {
-font-size: 1.2rem;
-/* Reduce font size for smaller screens */
+font-size: 1.4rem;
 }
 #profile-container {
-top: 12px;
-right: 12px;
+top: 15px;
+right: 15px;
 }
 #profile-icon {
-width: 32px;
-height: 32px;
+width: 36px;
+height: 36px;
+}
+.dropdown-menu {
+top: 44px;
+right: -5px;
+min-width: 180px;
+padding: 8px 0;
+font-size: 1rem;
+}
+.dropdown-item {
+padding: 12px 20px;
 }
 }
+/* Fade-in animation for the main content */
+#feed-container {
+opacity: 0;
+transform: translateY(20px);
+transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+body.loaded #feed-container {
+opacity: 1;
+transform: translateY(0);
+}
+/* Initial header state */
+header {
+opacity: 0;
+transform: translateY(-10px);
+transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+/* Header animation when body is loaded */
+body.loaded header {
+opacity: 1;
+transform: translateY(0);
+}
+/* General body animation trigger */
 </style>
 <!-- The core Firebase JS SDK is always required and must be listed first -->
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
@@ -364,11 +438,11 @@ return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
 return JSON.parse(jsonPayload);
 }
 window.onload = async function () {
-  // Check if the user is logged in
-  if (!localStorage.getItem('google_credential')) {
-    window.location.href = 'index.html'; // Redirect to index.html
-    return; // Stop further execution
-  }
+// Check if the user is logged in
+if (!localStorage.getItem('google_credential')) {
+window.location.href = 'index.html'; // Redirect to index.html
+return; // Stop further execution
+}
 let img;
 let menu;
 let container;
@@ -454,17 +528,23 @@ adminButton.textContent = 'Admin Dashboard';
 adminButton.style.cssText = `
 background-color: var(--accent);
 color: #fff;
-padding: 10px 15px;
-border-radius: var(--radius);
+padding: 12px 20px;
+border-radius: 10px;
 text-decoration: none;
 margin-left: 20px;
-transition: background-color 0.2s;
+transition: background-color 0.2s, transform 0.1s;
+box-shadow: 0 4px 12px rgba(96, 165, 250, 0.4);
+display: inline-block;
 `;
 adminButton.onmouseover = function () {
 this.style.backgroundColor = 'var(--accent-hover)';
+this.style.transform = 'translateY(-2px) scale(1.03)';
+this.style.boxShadow = '0 6px 18px rgba(59, 130, 246, 0.5)';
 };
 adminButton.onmouseout = function () {
 this.style.backgroundColor = 'var(--accent)';
+this.style.transform = 'none';
+this.style.boxShadow = '0 4px 12px rgba(96, 165, 250, 0.4)';
 };
 document.querySelector('header').appendChild(adminButton);
 }
@@ -488,10 +568,10 @@ formHTML = `
 </form>
 `;
 } else {
-formHTML = `<p>Official UCH Staff may post.</p>`;
+formHTML = `<p style="font-size: 1.2rem; text-align: center; padding: 15px;">Official UCH Staff may post.</p>`;
 }
 feedContainer.innerHTML = `
-<h1>Welcome to the UCH Feed!</h1>
+<h1 style="text-align: center; margin-bottom: 25px; font-size: 2.2rem; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);">Welcome to the UCH Feed!</h1>
 ${formHTML}
 `;
 // Post Submission
@@ -638,6 +718,8 @@ feedContainer.innerHTML += postsHTML;
 }
 //Load posts
 renderPostsFromFirebase(feedContainer, isAuthorized, userPicture, userName)
+// Add the 'loaded' class to the body to trigger the animations
+document.body.classList.add('loaded');
 };
 // Register service worker
 if ('serviceWorker' in navigator) {
