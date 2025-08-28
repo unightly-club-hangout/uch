@@ -1,186 +1,227 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Terms of Service</title>
-  <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      line-height: 1.6;
-      margin: 0;
-      color: #e0f2fe;
-      background-color: #0f172a;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-      overflow-x: hidden; /* Prevent horizontal scrollbar */
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms of Service</title>
+    <style>
+        :root {
+            --primary: #e0f2fe;
+            --accent: #60a5fa;
+            --accent-hover: #3b82f6;
+            --background: #0f172a;
+            --container-bg: rgba(30, 41, 59, 0.8);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            --radius: 12px;
+            --font-family: 'Poppins', sans-serif;
+            --gradient: linear-gradient(to right, #6366f1, #a855f7);
+        }
 
-    header {
-      position: relative;
-      top: 0;
-      left: 0;
-      width: 100%;
-      background: rgba(30, 41, 59, 0.9);
-      color: var(--primary);
-      padding: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-      z-index: 2;
-    }
+        body {
+            margin: 0;
+            font-family: var(--font-family);
+            background: var(--background);
+            color: var(--primary);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow: hidden;
+            cursor: none;
+        }
 
-    .header-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 8px;
-      margin-right: 16px;
-      box-shadow: 0 0 12px rgba(0, 0, 0, 0.3);
-      background: #fff;
-      object-fit: contain;
-    }
+        /* Animated background */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 200%;
+            height: 100%;
+            background: var(--gradient);
+            opacity: 0.3;
+            z-index: -1;
+            animation: wave 10s linear infinite;
+        }
 
-    .header-title {
-      font-size: 1.5rem;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-    }
+        @keyframes wave {
+            0% {
+                transform: translateX(0);
+            }
 
-    h1 {
-      color: #60a5fa;
-      text-align: center;
-    }
+            100% {
+                transform: translateX(-50%);
+            }
+        }
 
-    a {
-      color: #60a5fa;
-    }
+        header {
+            position: relative;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(30, 41, 59, 0.9);
+            color: var(--primary);
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            box-shadow: var(--shadow);
+            z-index: 2;
+        }
 
-    .back-button {
-      display: inline-block;
-      padding: 10px 20px;
-      background-color: #60a5fa;
-      color: #fff;
-      text-decoration: none;
-      border-radius: 5px;
-      margin-top: 10px;
-    }
+        .header-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            margin-right: 16px;
+            box-shadow: 0 0 12px rgba(0, 0, 0, 0.3);
+            background: #fff;
+            object-fit: contain;
+        }
 
-    .content {
-      padding: 20px;
-      flex-grow: 1; /* Allows content to take up remaining vertical space */
-    }
+        .header-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
 
-    /* Ensure the footer is at the bottom */
-    footer {
-      background: rgba(30, 41, 59, 0.9);
-      color: var(--primary);
-      padding: 20px;
-      text-align: center;
-      box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.2);
-      z-index: 2;
-    }
+        .content {
+            padding: 20px;
+            flex-grow: 1;
+            /* Ensure content takes up remaining space */
+        }
 
-    /* Basic reset for consistent styling */
-    :root {
-      --primary: #e0f2fe;
-      --accent: #60a5fa;
-      --accent-hover: #3b82f6;
-      --background: #0f172a;
-      --container-bg: rgba(30, 41, 59, 0.8);
-      --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-      --radius: 12px;
-      --font-family: 'Poppins', sans-serif;
-      --gradient: linear-gradient(to right, #6366f1, #a855f7);
-    }
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5em;
+            color: var(--primary);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
 
-    body {
-      margin: 0;
-      font-family: var(--font-family);
-      background: var(--background);
-      color: var(--primary);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      overflow: hidden;
-      cursor: none;
-    }
+        a {
+            color: var(--accent);
+        }
 
-    /* Animated background */
-    body::before {
-      content: "";
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 200%;
-      height: 100%;
-      background: var(--gradient);
-      opacity: 0.3;
-      z-index: -1;
-      animation: wave 10s linear infinite;
-    }
+        footer {
+            background: rgba(30, 41, 59, 0.9);
+            color: var(--primary);
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.2);
+            z-index: 2;
+        }
 
-    @keyframes wave {
-      0% {
-        transform: translateX(0);
-      }
+        /* Cursor Glow */
+        .cursor-glow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1;
+            transform: translate(-50%, -50%);
+            filter: blur(5px);
+            background: radial-gradient(circle, rgba(30, 41, 59, 0.6), transparent);
+        }
 
-      100% {
-        transform: translateX(-50%);
-      }
-    }
-
-/* Cursor Glow */
-.cursor-glow {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 1;
-    transform: translate(-50%, -50%);
-    filter: blur(5px);
-    background: radial-gradient(circle, rgba(30, 41, 59, 0.6), transparent);
-}
-
-.cursor {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 10000;
-    transform: translate(-50%, -50%);
-    background-color: #ffffff;
-}
-  </style>
-  <script>
+        .cursor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10000;
+            transform: translate(-50%, -50%);
+            background-color: #ffffff;
+        }
+    </style>
+    <script>
         window.onload = function () {
-        // Create the glow element
-        const glow = document.createElement('div');
-        glow.classList.add('cursor-glow');
-        document.body.appendChild(glow);
-        //Create the cursor element
-        const cursor = document.createElement('div');
-        cursor.classList.add('cursor');
-        document.body.appendChild(cursor);
-        // Track mouse movement
-        document.addEventListener('mousemove', (e) => {
-            const x = e.clientX;
-            const y = e.clientY;
-            // Update glow position
-            glow.style.left = `${x}px`;
-            glow.style.top = `${y}px`;
-            //Update cursor position
-            cursor.style.left = `${x}px`;
-            cursor.style.top = `${y}px`;
-        });
-    };
-  </script>
+            // Create the glow element
+            const glow = document.createElement('div');
+            glow.classList.add('cursor-glow');
+            document.body.appendChild(glow);
+            // Create the cursor element
+            const cursor = document.createElement('div');
+            cursor.classList.add('cursor');
+            document.body.appendChild(cursor);
+            // Track mouse movement
+            document.addEventListener('mousemove', (e) => {
+                const x = e.clientX;
+                const y = e.clientY;
+                // Update glow position
+                glow.style.left = `${x}px`;
+                glow.style.top = `${y}px`;
+                // Update cursor position
+                cursor.style.left = `${x}px`;
+                cursor.style.top = `${y}px`;
+            });
+        };
+    </script>
 </head>
+
+<body>
+    <header>
+        <img src=https://raw.githubusercontent.com/unightly-club-hangout/uch/refs/heads/master/unightly_icon.ico alt="UCH Icon" class="header-icon">
+        <span class="header-title">UCH Website</span>
+    </header>
+
+    <div class="content">
+        <h1>Terms of Service</h1>
+
+        <h2>1. Acceptance of Terms</h2>
+        <p>By accessing and using the UCH website, you agree to be bound by these Terms of Service. If you do not agree with any
+            part of these terms, you are prohibited from using or accessing this site.</p>
+
+        <h2>2. Use License</h2>
+        <p>Permission is granted to temporarily download one copy of the materials on UCH's website for personal, non-commercial
+            transitory viewing only.</p>
+
+        <h2>3. Disclaimer</h2>
+        <p>The materials on UCH's website are provided on an 'as is' basis. UCH makes no warranties, expressed or implied, and
+            hereby disclaims and negates all other warranties including, without limitation, implied warranties or conditions of
+            merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of
+            rights.</p>
+
+        <h2>4. Limitations</h2>
+        <p>In no event shall UCH or its suppliers be liable for any damages (including, without limitation, damages for loss of
+            data or profit, or due to business interruption) arising out of the use or inability to use UCH's website, even if UCH
+            or a UCH authorized representative has been notified orally or in writing of the possibility of such damage.</p>
+
+        <h2>5. Accuracy of Materials</h2>
+        <p>The materials appearing on UCH's website could include technical, typographical, or photographic errors. UCH does not
+            warrant that any of the materials on its website are accurate, complete or current. UCH may make changes to the
+            materials contained on its website at any time without notice.</p>
+
+        <h2>6. Links</h2>
+        <p>Some links in UCH has not been reviewed from the sites linked to its website and is not responsible for the contents of any such linked
+            site. The inclusion of any link does not imply endorsement by UCH of the site. Use of any such linked website is at the
+            user's own risk.</p>
+
+        <h2>7. Modifications</h2>
+        <p>UCH may revise these terms of service for its website at any time without notice. By using this website you are
+            agreeing to be bound by the then current version of these terms of service.</p>
+
+        <h2>8. Governing Law</h2>
+        <p>These terms and conditions are governed by and construed in accordance with the laws of [Your Country] and you
+            irrevocably submit to the exclusive jurisdiction of the courts in that State or location.</p>
+
+        <h2>Contact Us</h2>
+        <p>If you have any questions about these Terms of Service, please contact us in
+            <a href="https://discord.com/channels/1401631295108546590/1405065371282571324/1405075528532361307">Our
+                Discord</a>.</p>
+
+    </div>
+
+    <footer>
+        <p>&copy; 2024 UCH Website. All rights reserved.</p>
+    </footer>
+</body>
+
+</html>
