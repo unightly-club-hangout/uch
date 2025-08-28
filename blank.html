@@ -24,6 +24,9 @@ font-family: var(--font-family);
 background: var(--background);
 color: var(--primary);
 overflow-x: hidden;
+display: flex;
+flex-direction: column;
+min-height: 100vh; /* Ensure the body takes up at least the full viewport height */
 }
 /* Animated gradient background */
 body::before {
@@ -375,6 +378,16 @@ transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
 body.loaded header {
 opacity: 1;
 transform: translateY(0);
+}
+footer {
+background: rgba(30, 41, 59, 0.95);
+color: var(--primary);
+padding: 20px;
+text-align: center;
+box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.2);
+border-top: 1px solid rgba(255, 255, 255, 0.05);
+z-index: 2;
+margin-top: auto; /* Push the footer to the bottom */
 }
 /* General body animation trigger */
 </style>
@@ -742,5 +755,8 @@ console.error('Service Worker registration failed:', error);
 <div id="feed-container">
 <!-- Posts will be loaded here -->
 </div>
+<footer>
+<p>&copy; 2024 UCH Website. All rights reserved.</p>
+</footer>
 </body>
 </html>
