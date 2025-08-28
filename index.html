@@ -267,7 +267,21 @@
       /* Ensure the glow is on top of other elements */
       transform: translate(-50%, -50%);
       /* Center the glow on the cursor */
-      background-color: white;
+      background-color: #808080;
+    }
+
+    .trail {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: #808080;
+      pointer-events: none;
+      z-index: 9999;
+      /* Below the main cursor */
+      transform: translate(-50%, -50%);
     }
   </style>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -303,16 +317,41 @@
       const cursor = document.createElement('div');
       cursor.classList.add('cursor');
       document.body.appendChild(cursor);
+
+      let trailLength = 10; // Number of trail elements
+      let trail = []; // Array to hold trail elements
+
+      for (let i = 0; i < trailLength; i++) {
+        const trailEl = document.createElement('div');
+        trailEl.classList.add('trail');
+        document.body.appendChild(trailEl);
+        trail.push(trailEl);
+      }
+
       // Track mouse movement
       document.addEventListener('mousemove', (e) => {
         const x = e.clientX;
         const y = e.clientY;
+
         // Update glow position
         glow.style.left = `${x}px`;
         glow.style.top = `${y}px`;
         //Update cursor position
         cursor.style.left = `${x}px`;
         cursor.style.top = `${y}px`;
+
+        // Update trail positions
+        for (let i = 0; i < trailLength; i++) {
+          let index = trailLength - 1 - i;
+          let pos = {
+            x: x - (i * 5),
+            y: y - (i * 5)
+          }; // Adjust spacing as needed
+          if (index >= 0) {
+            trail[index].style.left = `${pos.x}px`;
+            trail[index].style.top = `${pos.y}px`;
+          }
+        }
       });
     };
   </script>
