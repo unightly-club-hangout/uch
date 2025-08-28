@@ -194,6 +194,39 @@
             background: var(--accent-hover);
             box-shadow: 0 6px 18px rgba(59, 130, 246, 0.5);
         }
+
+        /* Styles for the email list popup */
+        #user-emails-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--container-bg);
+            padding: 20px;
+            border: 1px solid rgba(75, 85, 99, 0.4);
+            box-shadow: var(--shadow);
+            z-index: 1000;
+            display: none; /* Hidden by default */
+            border-radius: var(--radius);
+            color: var(--primary);
+        }
+
+        #user-emails-popup ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        #user-emails-popup li {
+            padding: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            border-radius: var(--radius);
+        }
+
+        #user-emails-popup li:hover {
+            background-color: rgba(45, 55, 72, 0.6);
+            color: var(--accent);
+        }
     </style>
 </head>
 <body>
@@ -214,7 +247,7 @@
         <!-- Warnings Tab -->
         <div id="warnings" class="tab-content">
             <h2>Warnings</h2>
-            <button onclick="showUsernamePromptPopup()">Give Warning</button>
+            <button onclick="showUserEmailsPopup()">Give Warning</button>
         </div>
 
         <!-- Users Tab -->
@@ -283,6 +316,15 @@
         <button onclick="hideUserPopup()">Close</button>
     </div>
 
+    <!-- User Emails Popup -->
+    <div id="user-emails-popup" class="popup">
+        <h3>Select User to Warn</h3>
+        <ul id="user-emails-list">
+            <!-- User emails will be populated here -->
+        </ul>
+        <button onclick="hideUserEmailsPopup()">Cancel</button>
+    </div>
+
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
@@ -336,25 +378,57 @@
     });
 
     // --- Warnings Tab Functions ---
-    function showUsernamePromptPopup() {
-        document.getElementById('username-prompt-popup').style.display = 'block';
+    //New function to show emails
+    function showUserEmailsPopup() {
+        const userEmailsList = document.getElementById('user-emails-list');
+        userEmailsList.innerHTML = ''; // Clear previous list
+
+        // Fetch users from Firebase and populate the list
+        db.ref('users').once('value', (snapshot) => {
+            const users = snapshot.val();
+            if (users) {
+                Object.entries(users).forEach(([uid, user]) => {
+            const li = document.createElement('li');
+            li.textContent = user.email;
+                    li.style.cursor = 'pointer';
+            li.addEventListener('click', () => {
+                        selectedUserEmail = user.email; // Set the selectedUserEmail
+                hideUserEmailsPopup();
+                showWarningPopup();
+            });
+            userEmailsList.appendChild(li);
+        });
+        } else {
+                userEmailsList.textContent = 'No users found.';
+        }
+        });
+        document.getElementById('user-emails-popup').style.display = 'block';
     }
 
+    //Hide the popup
+    function hideUserEmailsPopup() {
+        document.getElementById('user-emails-popup').style.display = 'none';
+    }
+
+    //Old functions
+
+    function showUsernamePromptPopup() {
+
+    showUserEmailsPopup()
+    }
     function hideUsernamePromptPopup() {
         document.getElementById('username-prompt-popup').style.display = 'none';
     }
-
     function submitUsername() {
-        const username = document.getElementById('username-input').value;
-        if (username) {
-            // Set the selectedUserEmail
-            selectedUserEmail = username;
-            hideUsernamePromptPopup();
-            showWarningPopup();
-
-        } else {
-            alert("Please enter a username.");
-        }
+    const username = document.getElementById('username-input').value;
+    if (username) {
+    // Set the selectedUserEmail
+    selectedUserEmail = username;
+    hideUsernamePromptPopup();
+    showWarningPopup();
+            } else {
+    alert("Please enter a username.");
+            }
     }
 
     function showWarningPopup() {
@@ -385,7 +459,7 @@
             { email: 'user1@example.com', lastLogin: '2024-01-01' },
             { email: 'user2@example.com', lastLogin: '2024-01-02' },
             { email: 'user3@example.com', lastLogin: '2024-01-03' }
-        ];
+    ];
 
         const userList = document.getElementById('user-list');
         userList.innerHTML = ''; // Clear previous list
@@ -421,7 +495,6 @@
                 li.textContent = admin;
                 adminList.appendChild(li);
             });
-
         } catch (error) {
             console.error('Failed to fetch authorized emails:', error);
             authorizedEmails = []; // Ensure authorizedEmails is an array even on failure
@@ -513,18 +586,18 @@
 
             if (!credential) {
                 console.warn("No Google credential found in localStorage. Redirecting...");
-                window.location.href = 'blank.html';
-                return;
-            }
+            window.location.href = 'blank.html';
+            return;
+        }
 
             const payload = parseJwt(credential);
             userEmail = payload.email;
 
             if (!userEmail) {
                 console.warn("No email found in JWT payload. Redirecting...");
-                window.location.href = 'blank.html';
-                return;
-            }
+            window.location.href = 'blank.html';
+            return;
+        }
 
             let warningReason = localStorage.getItem(`warning-${userEmail}`);
             if (warningReason) {
@@ -597,3 +670,5 @@
 
 </body>
 </html>
+```
+
