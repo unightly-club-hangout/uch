@@ -243,7 +243,6 @@
       left: 0;
       width: 80px;
       height: 80px;
-      background: var(--background);
       /* Match the body background */
       border-radius: 50%;
       pointer-events: none;
@@ -252,6 +251,9 @@
       /* Ensure the glow is behind other elements, but above the animated background*/
       transform: translate(-50%, -50%);
       /* Center the glow on the cursor */
+      /* Add blur to feather the edges */
+      filter: blur(15px);
+      background: radial-gradient(circle, rgba(15, 23, 42, 1), transparent);
     }
 
     .cursor {
@@ -344,10 +346,9 @@
         for (let i = 0; i < trailLength; i++) {
           // Calculate the position of each trail element
           let delay = i * 5; // Adjust the delay as needed
-          let trailX = x - delay;
-          let trailY = y - delay;
-          trail[i].style.left = `${x - (i * 5)}px`;
-          trail[i].style.top = `${y - (i * 5)}px`;
+
+          trail[i].style.left = `${x - delay}px`;
+          trail[i].style.top = `${y - delay}px`;
         }
       });
     };
