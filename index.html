@@ -3,8 +3,8 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>Login to UCH</title>  <!-- Updated Title Tag -->
-   <meta name="description" content="Welcome to the UCH website! Sign in to access the Unightly Club Hangout and connect with fellow members."> <!-- Updated Description Meta Tag -->
+  <title>Login to UCH</title>
+  <meta name="description" content="Welcome to the UCH website! Sign in to access the Unightly Club Hangout and connect with fellow members.">
    <meta name="google-site-verification" content="MnycxIY1541Hu7A3wr_SPNJQSfoAjrfrrTOXaWyBEDo" />
    <link rel="icon" type="image/x-icon" href="unightly-icon.ico">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -232,12 +232,148 @@
         font-size: 1rem;
       }
     }
+
+    /* Popup Styles */
+    .popup {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: var(--container-bg);
+      padding: 20px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      z-index: 1000;
+      text-align: center;
+    }
+
+    .popup h3 {
+      color: var(--primary);
+      margin-bottom: 15px;
+    }
+
+    .popup ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .popup ul li {
+      margin: 10px 0;
+    }
+
+    .popup button {
+      padding: 10px 20px;
+      background-color: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+     /* Warning Popup Styles */
+     #warning-popup {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: var(--container-bg);
+        padding: 20px;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        z-index: 1001; /* Ensure it's above the other popups */
+        text-align: center;
+    }
+
+    #warning-popup h3 {
+        color: var(--primary);
+        margin-bottom: 15px;
+    }
+
+    #warning-popup textarea {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border-radius: 5px;
+        border: 1px solid #4b5563;
+        background-color: #1e293b;
+        color: var(--primary);
+    }
+
+    #warning-popup button {
+        padding: 10px 20px;
+        background-color: var(--accent);
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    #user-popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: var(--container-bg);
+            padding: 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            z-index: 1002;
+            text-align: center;
+        }
+
+        #user-popup h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        #user-popup button {
+            padding: 10px 20px;
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
   </style>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
   <script>
-    // Redirect to blank.html if user is already logged in
-    if (localStorage.getItem('google_credential')) {
-      window.location.href = "blank.html";
+    // Initialize Firebase (Replace with your config)
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_AUTH_DOMAIN",
+      databaseURL: "YOUR_DATABASE_URL",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_STORAGE_BUCKET",
+      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    let authorizedEmails = [];
+
+    function parseJwt(token) {
+      try {
+        return JSON.parse(atob(token.split('.')[1]));
+      } catch (e) {
+        return null;
+      }
+    }
+
+    async function fetchAuthorizedEmails() {
+      try {
+        const snapshot = await db.ref('authorized_emails').once('value');
+        authorizedEmails = snapshot.val() || [];
+        console.log("Authorized emails fetched:", authorizedEmails);
+      } catch (error) {
+        console.error("Error fetching authorized emails:", error);
+        throw error;
+      }
     }
 
     function handleCredentialResponse(response) {
@@ -246,7 +382,142 @@
       window.location.href = "blank.html";
     }
 
-    window.onload = function() {
+    function showUserPopup(message) {
+            const popup = document.getElementById('user-popup');
+            const messageElement = document.getElementById('user-popup-message');
+            messageElement.textContent = message;
+            popup.style.display = 'block';
+        }
+
+        function hideUserPopup() {
+            document.getElementById('user-popup').style.display = 'none';
+        }
+    // --- Warnings Tab Functions ---
+    let selectedUserEmail = null; // Track selected user's email
+    function showUsernamePromptPopup() {
+        // Populate the username list
+        populateUsernameList();
+        document.getElementById('username-prompt-popup').style.display = 'block';
+    }
+
+    function hideUsernamePromptPopup() {
+      document.getElementById('username-prompt-popup').style.display = 'none';
+    }
+
+    function populateUsernameList() {
+        const usernameList = document.getElementById('username-list');
+        usernameList.innerHTML = ''; // Clear previous list
+
+        // Fetch users from Firebase and populate the list
+        db.ref('users').once('value', (snapshot) => {
+            const users = snapshot.val();
+            if (users) {
+                Object.entries(users).forEach(([uid, user]) => { // Assuming 'users' node contains user objects with a unique ID (UID)
+                    const li = document.createElement('li');
+                    li.textContent = user.email; // Or user.username, depending on your data structure
+                    li.style.cursor = 'pointer';
+                    li.addEventListener('click', () => {
+                        selectedUserEmail = user.email; // Set the selectedUserEmail
+                        hideUsernamePromptPopup();
+                        showWarningPopup();
+                    });
+                    usernameList.appendChild(li);
+                });
+            } else {
+                usernameList.textContent = 'No users found.';
+            }
+        });
+    }
+
+
+    function showWarningPopup() {
+        document.getElementById('warning-popup').style.display = 'block';
+    }
+
+    function hideWarningPopup() {
+        document.getElementById('warning-popup').style.display = 'none';
+    }
+
+    function giveWarning() {
+        const reason = document.getElementById('warning-reason').value;
+        if (selectedUserEmail && reason) {
+            // Store warning in Firebase
+            db.ref('warnings').child(selectedUserEmail.replace(/[^a-zA-Z0-9]/g, '_')).set(reason)
+                .then(() => {
+                    alert(`Warning set for ${selectedUserEmail}. They will see it on their next login.`);
+                    hideWarningPopup();
+                })
+                .catch((error) => {
+                    console.error("Error saving warning to Firebase:", error);
+                    alert("Failed to save warning. See console for details.");
+                });
+        } else {
+            alert("Please select a user and enter a reason.");
+        }
+    }
+
+    window.onload = async function() {
+    let userEmail = null;
+    try {
+        const credential = localStorage.getItem('google_credential');
+        if (!credential) {
+            console.warn("No Google credential found in localStorage. Redirecting...");
+            window.location.href = 'blank.html';
+            return;
+        }
+
+        const payload = parseJwt(credential);
+        userEmail = payload.email;
+
+        if (!userEmail) {
+            console.warn("No email found in JWT payload. Redirecting...");
+            window.location.href = 'blank.html';
+            return;
+        }
+
+        // Fetch warning from Firebase
+        db.ref('warnings').child(userEmail.replace(/[^a-zA-Z0-9]/g, '_')).once('value')
+            .then((snapshot) => {
+                const warningReason = snapshot.val();
+                if (warningReason) {
+                    showUserPopup(`WARNING\nYou have been warned by UCH staff for: ${warningReason}`);
+                    // Remove the warning after displaying it
+                    db.ref('warnings').child(userEmail.replace(/[^a-zA-Z0-9]/g, '_')).remove();
+                }
+            })
+            .catch((error) => {
+                console.error("Error fetching warning from Firebase:", error);
+            });
+
+
+        let suspensionReason = localStorage.getItem(`suspension-${userEmail}`);
+        if (suspensionReason) {
+            showUserPopup(`WARNING\nYou have been suspended by UCH staff for: ${suspensionReason}. To appeal, go to https://discord.gg/m9uA384RJk`);
+            localStorage.removeItem(`suspension-${userEmail}`); // Clear the warning
+        }
+    } catch (error) {
+        console.error("Error during credential processing: ", error);
+        window.location.href = 'blank.html';
+        return;
+    }
+    // Load authorized emails
+    try {
+        await fetchAuthorizedEmails();
+    } catch (error) {
+        console.error("Failed to fetch authorized emails: ", error);
+        window.location.href = 'blank.html';
+        return;
+    }
+    // Check authorization status
+    let isAuthorized = authorizedEmails.includes(userEmail);
+    if (!isAuthorized) {
+        console.log(`User ${userEmail} is not authorized. Redirecting...`);
+        window.location.href = 'blank.html';
+        return;
+    }
+    console.log(`User ${userEmail} is authorized.`);
+    // Initially activate the first tab
+    document.querySelector('.sidebar li').click();
       google.accounts.id.initialize({
         client_id: "90008544107-puntiddkae4hctcec08mghl6e9nhvs4k.apps.googleusercontent.com",
         callback: handleCredentialResponse
@@ -255,17 +526,17 @@
         document.getElementById("g_id_signin"), {
           theme: "outline",
           size: "large",
-          width: "350" // Set a specific width for the button
+          width: "350" // Set a specific Website
         }
       );
-    };
+    }
   </script>
 </head>
 
 <body>
   <header>
-    <img src="unightly-icon.ico" alt="Unightly Icon" class="header-icon">
-    <span class="header-title">UCH Website</span>
+    <img src="unightly-icon.ico" alt="UCH Icon" class="header-icon">
+    <h1 class="header-title">Unightly Club Hangout</h1>
   </header>
   <div class="container">
     <h1>Welcome to UCH</h1>
@@ -280,6 +551,28 @@
       <span>By signing in, you agree to our <a href="#" style="color:var(--accent);text-decoration:underline;">Terms</a> and <a href="#" style="color:var(--accent);text-decoration:underline;">Privacy Policy</a>.</span>
     </div>
   </div>
+
+  <div id="username-prompt-popup" class="popup">
+    <h3>Select User to Warn</h3>
+    <ul id="username-list">
+      <!-- User list will be populated here -->
+    </ul>
+    <button onclick="hideUsernamePromptPopup()">Cancel</button>
+  </div>
+
+  <div id="warning-popup" class="popup">
+        <h3>Enter Warning Reason</h3>
+        <textarea id="warning-reason" placeholder="Reason for warning"></textarea>
+        <button onclick="giveWarning()">Give Warning</button>
+        <button onclick="hideWarningPopup()">Cancel</button>
+    </div>
+
+    <div id="user-popup" class="popup">
+        <h3 id="user-popup-message"></h3>
+        <button onclick="hideUserPopup()">OK</button>
+    </div>
 </body>
 
 </html>
+```
+
