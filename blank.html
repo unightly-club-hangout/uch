@@ -703,7 +703,7 @@ console.error('Error adding post to MongoDB:', error);
 }
 async function deletePost(postId) {
 try {
-const response = await fetch(`http://127.0.0.1:3000/posts/${postId}`, {
+const response = await fetch(`http://localhost:3000${postId}`, {
 method: 'DELETE'
 });
 if (response.ok) {
@@ -720,7 +720,7 @@ console.error('Error deleting post from MongoDB:', error);
 async function renderPostsContent(feedContainer, isAuthorized, userPicture, userName) {
 feedContainer.innerHTML = ''
 try {
-const response = await fetch('http://127.0.0.1:3000/posts');
+const response = await fetch('http://localhost:3000');
 if (!response.ok) {
 throw new Error(`HTTP error! status: ${response.status}`);
 }
