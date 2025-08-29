@@ -204,9 +204,34 @@
                 }
             }
         }
+const linkToSite = document.createElement('a');
+        linkToSite.href = 'https://unightly-club-hangout.github.io/uch';
+        linkToSite.textContent = 'UCH Main Website';
+        linkToSite.style.cssText = `
+            background-color: var(--accent);
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            margin-left: 20px;
+            transition: background-color 0.2s, transform 0.1s;
+            box-shadow: 0 4px 12px rgba(96, 165, 250, 0.4);
+            display: inline-block;
+        `;
+        linkToSite.onmouseover = function () {
+            this.style.backgroundColor = 'var(--accent-hover)';
+            this.style.transform = 'translateY(-2px) scale(1.03)';
+            this.style.boxShadow = '0 6px 18px rgba(59, 130, 246, 0.5)';
+        };
+        linkToSite.onmouseout = function () {
+            this.style.backgroundColor = 'var(--accent)';
+            this.style.transform = 'none';
+            this.style.boxShadow = '0 4px 12px rgba(96, 165, 250, 0.4)';
+        };
+        const header = document.querySelector('.container');
+        header.appendChild(linkToSite);
         // Call addStatusDashboardButton along with the existing admin button
     loadContent().then(() => addStatusDashboardButton());
-
     </script>
 </body>
 </html>
