@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>CachetHQ Status</title>
+</head>
+<body>
+  <h1>Service Status</h1>
+  <div id="status-container">
+    <!-- Status information will be displayed here -->
+  </div>
+
+  <script>
+    async function fetchStatus() {
+      const url = 'https://v3.cachethq.io/status';
+      const options = { method: 'GET', body: undefined };
+      try {
+        const response = await fetch(url, options);
+        const data = await response.json();
+        displayStatus(data);
+      } catch (error) {
+        console.error(error);
+        document.getElementById('status-container').innerText = 'Error fetching status.';
+      }
+    }
+
+    function displayStatus(data) {
+      const container = document.getElementById('status-container');
+      container.innerHTML = ''; // Clear previous content
+
+      // Example: Display the overall status
+      const overallStatus = document.createElement('p');
+      overallStatus.innerText = `Overall Status: ${data.data.status}`;
+      container.appendChild(overallStatus);
+
+      // Example: Display component statuses (assuming the API returns components)
+      if (data.data.components && Array.isArray(data.data.components)) {
+        data.data.components.forEach(component => {
+          const componentDiv = document.createElement('div');
+          componentDiv.innerHTML = `<strong>${component.name}:</strong> ${component.status}`;
+          container.appendChild(componentDiv);
+        });
+      } else {
+        container.innerText = "No component data available";
+      }
+    }
+
+    // Fetch status on page load
+    fetchStatus();
+
+    // Refresh status every 60 seconds
+    setInterval(fetchStatus, 60000);
+  </script>
+</body>
+</html>
