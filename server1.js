@@ -19,7 +19,7 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
 // Define a Mongoose Schema and Model
 const postSchema = new mongoose.Schema({
     title: { type: String, required: true },
-    content: { type: String, default: '' }, // Added a default value
+    content: { type: String }, // Removed required: true
     createdAt: { type: Date, default: Date.now }
 });
 
@@ -66,7 +66,7 @@ app.delete('/posts/:postId', async (req, res) => {
 });
 
 // Start the server
-app.listen(port, () => {
+app.listen(port,'0.0.0.0', () => {
     console.log(`Server listening at http://localhost:${port}`);
 });
 
