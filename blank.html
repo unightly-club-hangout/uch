@@ -437,6 +437,24 @@ border-top: 1px solid rgba(255, 255, 255, 0.05);
 z-index: 2;
 margin-top: auto;
 }
+/* Offline notification styles */
+#offline-notification {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+background: #f44336; /* Red background */
+color: white;
+text-align: center;
+padding: 10px;
+font-size: 1.1rem;
+z-index: 1000;
+display: none; /* Hidden by default */
+}
+/* Show the notification when body has the offline class */
+body.offline #offline-notification {
+display: block;
+}
 </style>
 <script>
 let fileType;
@@ -746,7 +764,7 @@ try {
 // Update loading text
 loadingText.textContent = "Loading...";
 // Load authorized emails and render posts in parallel
-await Promise.all([fetchAuthorizedEmails(), renderPostsContent(feedContainer, isAuthorized, userPicture, userName)]);
+await Promise.all([fetchAuthorizedEmails](), renderPostsContent(feedContainer, isAuthorized, userPicture, userName));
 } catch (error) {
 console.error("Error during initial load:", error);
 // Optionally handle the error, e.g., display an error message
@@ -764,11 +782,29 @@ loadingText.textContent = "Welcome to the Unightly Club Hangout!";
 }, 5000); // 5000 milliseconds = 5 seconds
 }
 }
+
+function updateOnlineStatus() {
+  if (navigator.onLine) {
+    document.body.classList.remove('offline');
+  } else {
+    document.body.classList.add('offline');
+  }
+}
+
+window.addEventListener('online',  updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+
+// Check initial status
+updateOnlineStatus();
+
 loadContent();
 };
 </script>
 </head>
-<body>
+<body >
+<div id="offline-notification">
+You are currently offline. Some features may be unavailable.
+</div>
 <div id="loading-screen">
 <div id="loading-text">Loading...</div>
 <div id="loading-spinner"></div>
