@@ -817,17 +817,3 @@ class="header-icon">
 </footer>
 </body>
 </html>
-Here are the changes:
-
-```html blank.html
---- a/blank.html
-+++ b/blank.html
-@@ -468,7 +468,7 @@
- loadingText.textContent = "Loading...";
- // Load authorized emails and render posts in parallel
- await Promise.all([fetchAuthorizedEmails(), renderPostsContent(feedContainer, isAuthorized, userPicture, userName));
--} catch (error) {
-+} catch (error) {
- console.error("Error during initial load:", error);
- // Optionally handle the error, e.g., display an error message
- loadingText.textContent = "Failed to load content. Please refresh.";
