@@ -730,19 +730,19 @@ throw new Error(`HTTP error! status: ${response.status}`);
 const posts = await response.json();
 let postsHTML = '';
 posts.forEach(post => {
-const postElement = document.createElement('div');
-postElement.className = 'post';
-let postHeader = `<div class="post-header">
-<img src="${post.userPicture}" alt="${post.userName}'s Profile Picture">
-<p>${post.userName}</p>
-</div>`;
-let postContent = '';
-if (post.text) {
-postContent += `<div class="post-content">${post.text}</div>`;
+    const postElement = document.createElement('div');
+    postElement.className = 'post';
+    let postHeader = `<div class="post-header">
+        <img src="${post.userPicture}" alt="${post.userName}'s Profile Picture">
+        <p>${post.userName}</p>
+    </div>`;
+    let postContent = '';
+    if (post.text) {
+        postContent += `<div class="post-content">${post.text}</div>`;
 }
-if (post.mediaUrl) {
+    if (post.mediaUrl) {
 if (post.mediaType && post.mediaType.startsWith('image/')) {
-postContent += `<img src="${post.mediaUrl}" alt="Post Image" class="post-image">`;
+    postContent += `<img src="${post.mediaUrl}" alt="Post Image" class="post-image">`;
 } else if (post.mediaType && post.mediaType.startsWith('video/')) {
 postContent += `<video src="${post.mediaUrl}" alt="Post Video" controls class="post-video"></video>`;
 }
@@ -757,7 +757,7 @@ postsHTML += postElement.outerHTML;
 feedContainer.innerHTML += postsHTML;
 } catch (error) {
 console.error('Error fetching posts:', error);
-feedContainer.innerHTML = '<p>Error loading posts.</p>';
+feedContainer.innerHTML += '<p>Error loading posts.</p>';
 }
 }
 // Add the 'loaded' class to the body and hide the loading screen after the content loads
