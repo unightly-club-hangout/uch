@@ -100,30 +100,53 @@
     <div id="stars"></div>
     <div class="container">
         <h1>UCH System Status</h1>
-
-        <div class="status-item">
-            <h2>Website</h2>
-            <p>Status: <span class="status-good">Operational</span></p>
-            <p>All systems are currently running smoothly.</p>
-        </div>
-
-        <div class="status-item">
-            <h2>API</h2>
-            <p>Status: <span class="status-minor">Minor Issues</span></p>
-            <p>Experiencing slightly elevated latency. Our team is investigating.</p>
-        </div>
-
-        <div class="status-item">
-            <h2>Database</h2>
-            <p>Status: <span class="status-good">Operational</span></p>
-            <p>Database is functioning normally.</p>
-        </div>
-
-        <div class="status-item">
-            <h2>Authentication Service</h2>
-            <p>Status: <span class="status-good">Operational</span></p>
-            <p>Users are able to log in and authenticate without issues.</p>
+        <div id="status-container">
+            <!-- Status items will be dynamically added here -->
         </div>
     </div>
+
+    <script>
+        async function fetchStatusData() {
+            try {
+                const response = await fetch('status_data.json');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error('Error fetching status data:', error);
+                return [];
+            }
+        }
+
+        function renderStatusPage(statusData) {
+            const statusContainer = document.getElementById('status-container');
+            statusContainer.innerHTML = ''; // Clear existing content
+
+            statusData.forEach(item => {
+                const statusItem = document.createElement('div');
+                statusItem.classList.add('status-item');
+
+                const statusClass = `status-${item.status.toLowerCase().replace('_', '-')}`;
+                let statusText = item.status.replace('_', ' ');
+                statusText = statusText.charAt(0).toUpperCase() + statusText.slice(1).toLowerCase()
+
+                statusItem.innerHTML = `
+                    <h2>${item.service}</h2>
+                    <p>Status: <span class="${statusClass}">${statusText}</span></p>
+                    <p>${item.description}</p>
+                `;
+                statusContainer.appendChild(statusItem);
+            });
+        }
+
+        async function initializeStatusPage() {
+            const statusData = await fetchStatusData();
+            renderStatusPage(statusData);
+        }
+
+        initializeStatusPage();
+    </script>
 </body>
 </html>
