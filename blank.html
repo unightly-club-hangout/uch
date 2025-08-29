@@ -659,9 +659,11 @@ const previewContainer = document.getElementById('preview-container');
 const postText = document.getElementById('post-text');
 postForm.addEventListener('submit', async function (e) {
 e.preventDefault();
+
 const text = postText.value.trim();
 const fileInput = document.getElementById('file-input'); // Get file input inside the submit handler
 const file = fileInput.files[0];
+
 if (text !== '' || file) { // Check if there's text or a file
 // Simulate upload and get URL (replace with your actual Firebase upload logic)
 let mediaUrlFirebase = null;
@@ -669,6 +671,7 @@ if (file) {
 //Simulate file upload
 mediaUrlFirebase = 'https://example.com/uploaded-image.jpg';
 }
+
 const newPost = {
 text: text,
 mediaUrl: mediaUrlFirebase,
