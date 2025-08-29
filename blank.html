@@ -764,7 +764,7 @@ try {
 // Update loading text
 loadingText.textContent = "Loading...";
 // Load authorized emails and render posts in parallel
-await Promise.all([fetchAuthorizedEmails](), () => renderPostsContent(feedContainer, isAuthorized, userPicture, userName));
+await Promise.all([fetchAuthorizedEmails(), () => renderPostsContent(feedContainer, isAuthorized, userPicture, userName) ]);
 } catch (error) {
 console.error("Error during initial load:", error);
 // Optionally handle the error, e.g., display an error message

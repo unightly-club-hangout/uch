@@ -319,6 +319,31 @@
 
       });
     };
+
+    async function loadContent() {
+        loadingText = document.getElementById('loading-text'); // Get the loading text element
+        try {
+            // Update loading text
+            loadingText.textContent = "Loading...";
+            // Load authorized emails and render posts in parallel
+            await Promise.all([fetchAuthorizedEmails(), () => renderPostsContent(feedContainer, isAuthorized, userPicture, userName)]);
+        } catch (error) {
+            console.error("Error during initial load:", error);
+            // Optionally handle the error, e.g., display an error message
+            loadingText.textContent = "Failed to load content. Please refresh.";
+            loadingText.style.color = "red";
+        } finally {
+            // Ensure the loading screen is hidden after 5 seconds, regardless of load success
+            setTimeout(() => {
+                document.body.classList.add('loaded');
+                document.getElementById('loading-screen').classList.add('hidden');
+                // Update loading text after loading screen is hidden
+                setTimeout(() => {
+                    loadingText.textContent = "Welcome to the Unightly Club Hangout!";
+                }, 500); // A short delay to make sure the loading screen is fully hidden
+            }, 5000); // 5000 milliseconds = 5 seconds
+        }
+    }
   </script>
 </head>
 
@@ -343,3 +368,5 @@
 </body>
 
 </html>
+```
+
