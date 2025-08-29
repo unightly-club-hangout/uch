@@ -31,7 +31,7 @@ const Post = mongoose.model('Post', postSchema);
 // API Endpoints
 
 // Get all posts
-app.get('/posts/', async (req, res) => {
+app.get('/posts', async (req, res) => {
     try {
         const posts = await Post.find().sort({ createdAt: -1 }); // Sort by creation date, newest first
         res.json(posts);
@@ -46,10 +46,7 @@ app.post('/posts/', async (req, res) => {
     try {
         const newPost = new Post({
             text: req.body.text, // changed from title to text
-            mediaUrl: req.body.mediaUrl, // added mediaURL to schema
-            mediaType: req.body.mediaType, // added mediaType to schema
-            userName: req.body.userName,
-            userPicture: req.body.userPicture
+            content: req.body.mediaUrl, // added mediaURL to schema
         });
 
         const savedPost = await newPost.save();
