@@ -1,54 +1,63 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>CachetHQ Status</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Status Display</title>
+    <style>
+        .status-container {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .incident {
+            padding: 10px;
+            margin: 10px 0;
+            border-left: 4px solid #f39c12;
+            background: #fef9e7;
+        }
+        .status-investigating { border-left-color: #e74c3c; background: #fdf2f2; }
+        .status-fixed { border-left-color: #27ae60; background: #f0f9f4; }
+    </style>
 </head>
 <body>
-  <h1>Service Status</h1>
-  <div id="status-container">
-    <!-- Status information will be displayed here -->
-  </div>
+    <div class="status-container">
+        <h2>System Status</h2>
+        <div id="status-content">Loading...</div>
+    </div>
 
-  <script>
-    async function fetchStatus() {
-      const url = 'https://v3.cachethq.io/status';
-      const options = { method: 'GET', body: undefined };
-      try {
-        const response = await fetch(url, options);
-        const data = await response.json();
-        displayStatus(data);
-      } catch (error) {
-        console.error(error);
-        document.getElementById('status-container').innerText = 'Error fetching status.';
-      }
-    }
+    <script>
+        async function fetchStatus() {
+            try {
+                const response = await fetch('https://v3.cachethq.io/status/api/incidents');
+                const data = await response.json();
+                
+                const container = document.getElementById('status-content');
+                
+                if (data.data && data.data.length > 0) {
+                    container.innerHTML = data.data.map(incident => `
+                        <div class="incident status-${incident.attributes.status.human.toLowerCase()}">
+                            <h3>${incident.attributes.name}</h3>
+                            <p>${incident.attributes.message}</p>
+                            <small>Status: ${incident.attributes.status.human} | ${incident.attributes.occurred.human}</small>
+                        </div>
+                    `).join('');
+                } else {
+                    container.innerHTML = '<p>All systems operational</p>';
+                }
+            } catch (error) {
+                document.getElementById('status-content').innerHTML = '<p>Unable to load status</p>';
+            }
+        }
 
-    function displayStatus(data) {
-      const container = document.getElementById('status-container');
-      container.innerHTML = ''; // Clear previous content
-
-      // Example: Display the overall status
-      const overallStatus = document.createElement('p');
-      overallStatus.innerText = `Overall Status: ${data.data.status}`;
-      container.appendChild(overallStatus);
-
-      // Example: Display component statuses (assuming the API returns components)
-      if (data.data.components && Array.isArray(data.data.components)) {
-        data.data.components.forEach(component => {
-          const componentDiv = document.createElement('div');
-          componentDiv.innerHTML = `<strong>${component.name}:</strong> ${component.status}`;
-          container.appendChild(componentDiv);
-        });
-      } else {
-        container.innerText = "No component data available";
-      }
-    }
-
-    // Fetch status on page load
-    fetchStatus();
-
-    // Refresh status every 60 seconds
-    setInterval(fetchStatus, 60000);
-  </script>
+        // Load status on page load
+        fetchStatus();
+        
+        // Refresh every 5 minutes
+        setInterval(fetchStatus, 300000);
+    </script>
 </body>
 </html>
