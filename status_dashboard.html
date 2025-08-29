@@ -108,6 +108,8 @@
     </div>
 
     <script>
+        const backendUrl = 'http://localhost:3000'; // Update to your backend URL
+
         // Function to fetch authorized emails from GitHub
         async function fetchAuthorizedEmails() {
             try {
@@ -149,7 +151,7 @@
 
         async function fetchStatusData() {
             try {
-                const response = await fetch('status_data.json');
+                const response = await fetch(`${backendUrl}/status`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
@@ -158,6 +160,36 @@
             } catch (error) {
                 console.error('Error fetching status data:', error);
                 return [];
+            }
+        }
+
+        async function updateStatusData(serviceName, newStatus, newDescription) {
+            try {
+                const response = await fetch(`${backendUrl}/status`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                const serviceIndex = data.findIndex(item => item.service === serviceName);
+                if (serviceIndex === -1) {
+                    console.error(`Service ${serviceName} not found in status data.`);
+                    return;
+                }
+                data[serviceIndex].status = newStatus;
+                data[serviceIndex].description = newDescription;
+                const updateResponse = await fetch(`${backendUrl}/status`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                if (!updateResponse.ok) {
+                    throw new Error(`HTTP error during update: ${updateResponse.status}`);
+                }
+                console.log(`Status for ${serviceName} updated successfully.`);
+            } catch (error) {
+                console.error('Error updating status data:', error);
             }
         }
 
@@ -188,16 +220,16 @@
                     const newStatus = document.getElementById(`status-${item.service}`).value;
                     const newDescription = document.getElementById(`description-${item.service}`).value;
 
-                    // Here, you would call a function to update the status data
-                    // (e.g., updateStatusData(item.service, newStatus, newDescription))
-                    // For now, we'll just log the data
-                    console.log(`Updating ${item.service} to status: ${newStatus}, description: ${newDescription}`);
+                    await updateStatusData(item.service, newStatus, newDescription);
+
+                    const updatedStatusData = await fetchStatusData();
+                    renderDashboard(updatedStatusData);
                 });
 
                 dashboardContent.appendChild(form);
             });
 
-            dashboardContent.style.display = 'block'; // Show the dashboard content
+            dashboardContent.style.display = 'block';
         }
 
         // Function to initialize the dashboard page
@@ -220,3 +252,4 @@
     </script>
 </body>
 </html>
+```
