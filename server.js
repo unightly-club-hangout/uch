@@ -9,7 +9,7 @@ app.use(cors());
 app.use(express.json()); // Enable JSON parsing
 
 // MongoDB connection string (replace with your actual connection string)
-const mongoURI = 'mongodb+srv://UnightlyClubHangout:Mastermaster3rd@uch.ogenkeq.mongodb.net/?retryWrites=true&w=majority';
+const mongoURI = 'mongodb+srv://UnightlyClubHangout:Mastermaster3rd@uch.ogenkeq.mongodb.net/';
 
 mongoose.connect(mongoURI, {
   useNewUrlParser: true,
