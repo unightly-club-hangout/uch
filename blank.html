@@ -782,21 +782,17 @@ loadingText.textContent = "Welcome to the Unightly Club Hangout!";
 }, 5000); // 5000 milliseconds = 5 seconds
 }
 }
-
 function updateOnlineStatus() {
-  if (navigator.onLine) {
-    document.body.classList.remove('offline');
-  } else {
-    document.body.classList.add('offline');
-  }
+if (navigator.onLine) {
+document.body.classList.remove('offline');
+} else {
+document.body.classList.add('offline');
 }
-
-window.addEventListener('online',  updateOnlineStatus);
+}
+window.addEventListener('online', updateOnlineStatus);
 window.addEventListener('offline', updateOnlineStatus);
-
 // Check initial status
 updateOnlineStatus();
-
 loadContent();
 };
 </script>
@@ -821,3 +817,17 @@ class="header-icon">
 </footer>
 </body>
 </html>
+Here are the changes:
+
+```html blank.html
+--- a/blank.html
++++ b/blank.html
+@@ -468,7 +468,7 @@
+ loadingText.textContent = "Loading...";
+ // Load authorized emails and render posts in parallel
+ await Promise.all([fetchAuthorizedEmails(), renderPostsContent(feedContainer, isAuthorized, userPicture, userName));
+-} catch (error) {
++} catch (error) {
+ console.error("Error during initial load:", error);
+ // Optionally handle the error, e.g., display an error message
+ loadingText.textContent = "Failed to load content. Please refresh.";
