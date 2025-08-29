@@ -12,7 +12,6 @@
             color: #eee;
             overflow: hidden; /* Hide scrollbars */
         }
-
         .container {
             width: 80%;
             max-width: 960px;
@@ -24,7 +23,6 @@
             position: relative;
             z-index: 1;
         }
-
         h1 {
             text-align: center;
             margin-bottom: 40px;
@@ -33,7 +31,6 @@
             letter-spacing: 1.5px;
             font-size: 2.5em;
         }
-
         .status-item {
             background-color: rgba(50, 50, 50, 0.7);
             border-radius: 10px;
@@ -42,12 +39,10 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-
         .status-item:hover {
             transform: translateY(-5px);
             box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
         }
-
         .status-item h2 {
             margin-top: 0;
             color: #fff;
@@ -55,28 +50,23 @@
             border-bottom: 2px solid #00bcd4;
             padding-bottom: 10px;
         }
-
         .status-item p {
             margin-bottom: 0;
             font-size: 1.1em;
             line-height: 1.6;
         }
-
         .status-good {
             color: #4caf50; /* Green */
             text-shadow: 0 0 5px rgba(76, 175, 80, 0.7);
         }
-
         .status-minor {
             color: #ff9800; /* Orange */
             text-shadow: 0 0 5px rgba(255, 152, 0, 0.7);
         }
-
         .status-major {
             color: #f44336; /* Red */
             text-shadow: 0 0 5px rgba(244, 67, 54, 0.7);
         }
-
         /* Animated Background - Stars */
         #stars {
             position: fixed;
@@ -89,7 +79,6 @@
             background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="6" height="6"><circle cx="3" cy="3" r="1" fill="#fff"/></svg>'), #222;
             animation: twinkling 20s linear infinite;
         }
-
         @keyframes twinkling {
             from { background-position: 0 0; }
             to { background-position: 1000px 1000px; }
@@ -104,7 +93,6 @@
             <!-- Status items will be dynamically added here -->
         </div>
     </div>
-
     <script>
         async function fetchStatusData() {
             try {
@@ -119,19 +107,15 @@
                 return [];
             }
         }
-
         function renderStatusPage(statusData) {
             const statusContainer = document.getElementById('status-container');
             statusContainer.innerHTML = ''; // Clear existing content
-
             statusData.forEach(item => {
                 const statusItem = document.createElement('div');
                 statusItem.classList.add('status-item');
-
                 const statusClass = `status-${item.status.toLowerCase().replace('_', '-')}`;
                 let statusText = item.status.replace('_', ' ');
                 statusText = statusText.charAt(0).toUpperCase() + statusText.slice(1).toLowerCase()
-
                 statusItem.innerHTML = `
                     <h2>${item.service}</h2>
                     <p>Status: <span class="${statusClass}">${statusText}</span></p>
@@ -140,13 +124,12 @@
                 statusContainer.appendChild(statusItem);
             });
         }
-
         async function initializeStatusPage() {
             const statusData = await fetchStatusData();
             renderStatusPage(statusData);
         }
-
         initializeStatusPage();
     </script>
 </body>
 </html>
+```
