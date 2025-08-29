@@ -677,7 +677,7 @@ userName: userName,
 userPicture: userPicture
 };
 try {
-const response = await fetch('http://localhost:3000/posts', {
+const response = await fetch('http://localhost:3000/posts/', {
 method: 'POST',
 headers: {
 'Content-Type': 'application/json'
@@ -703,7 +703,7 @@ console.error('Error adding post to MongoDB:', error);
 }
 async function deletePost(postId) {
 try {
-const response = await fetch(`http://localhost:3000/posts${postId}`, {
+const response = await fetch(`http://localhost:3000/posts/${postId}`, {
 method: 'DELETE'
 });
 if (response.ok) {
@@ -720,7 +720,7 @@ console.error('Error deleting post from MongoDB:', error);
 async function renderPostsContent(feedContainer, isAuthorized, userPicture, userName) {
 feedContainer.innerHTML = ''
 try {
-const response = await fetch('http://localhost:3000/posts');
+const response = await fetch('http://localhost:3000/posts/');
 if (!response.ok) {
 throw new Error(`HTTP error! status: ${response.status}`);
 }
