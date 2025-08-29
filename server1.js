@@ -18,11 +18,8 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
 
 // Define a Mongoose Schema and Model
 const postSchema = new mongoose.Schema({
-    text: { type: String, required: false }, //changed from title to text, and made it false
-    mediaUrl: { type: String, required: false }, //added mediaURL to schema
-    mediaType: { type: String, required: false }, //added mediaType to schema
-    userName: { type: String, required: false },
-    userPicture: { type: String, required: false },
+    title: { type: String, required: true },
+    content: { type: String, default: '' }, // Added a default value
     createdAt: { type: Date, default: Date.now }
 });
 
@@ -45,8 +42,8 @@ app.get('/posts', async (req, res) => {
 app.post('/posts/', async (req, res) => {
     try {
         const newPost = new Post({
-            text: req.body.text, // changed from title to text
-            content: req.body.mediaUrl, // added mediaURL to schema
+            title: req.body.title,
+            content: req.body.content,
         });
 
         const savedPost = await newPost.save();
@@ -72,3 +69,4 @@ app.delete('/posts/:postId', async (req, res) => {
 app.listen(port, () => {
     console.log(`Server listening at http://localhost:${port}`);
 });
+
