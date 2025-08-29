@@ -1,7 +1,7 @@
 [
   {
     "service": "Website",
-    "status": "minor_issues",
+    "status": "operational",
     "description": "All systems are currently running smoothly."
   },
   {
@@ -11,7 +11,7 @@
   },
   {
     "service": "Database",
-    "status": "minor_issues",
+    "status": "operational",
     "description": "Database is functioning normally."
   },
   {
