@@ -113,7 +113,7 @@
             statusData.forEach(item => {
                 const statusItem = document.createElement('div');
                 statusItem.classList.add('status-item');
-                const statusClass = `status-${item.status.toLowerCase().replace('_', '-')}`;
+                const statusClass = `status-${item.status.toLowerCase()}`;
                 let statusText = item.status.replace('_', ' ');
                 statusText = statusText.charAt(0).toUpperCase() + statusText.slice(1).toLowerCase()
                 statusItem.innerHTML = `
