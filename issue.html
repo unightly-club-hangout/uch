@@ -128,7 +128,9 @@
             const statusData = await fetchStatusData();
             renderStatusPage(statusData);
         }
-        initializeStatusPage();
+        async function loadContent() {
+          await initializeStatusPage();
+        }
 
         // Function to check if the user is authorized
         async function checkAuthorization() {
@@ -203,8 +205,7 @@
             }
         }
         // Call addStatusDashboardButton along with the existing admin button
-        addStatusDashboardButton();
-
+    loadContent().then(() => addStatusDashboardButton());
 
     </script>
 </body>
