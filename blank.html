@@ -674,7 +674,7 @@ mediaUrlFirebase = 'https://example.com/uploaded-image.jpg';
 
 const newPost = {
 title: text,
-content: mediaUrl,
+content: mediaUrl || 'No media Provided',
 mediaType: fileType,
 userName: userName,
 userPicture: userPicture
