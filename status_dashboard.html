@@ -111,7 +111,7 @@
         // Function to fetch authorized emails from GitHub
         async function fetchAuthorizedEmails() {
             try {
-                const response = await fetch('https://raw.githubusercontent.com/silentmason/Unightly-Club-Hangout/refs/heads/main/UCHstaff.json');
+                const response = await fetch('https://raw.githubusercontent.com/silentmason/Unightly-Club-Hangout/refs/heads/main/statusstaff.json');
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
