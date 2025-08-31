@@ -480,6 +480,7 @@ body.offline #offline-notification {
 display: block;
 }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 let fileType;
 let mediaUrl;
@@ -490,7 +491,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 let supabase; // Declare supabase outside the window.onload function
 
 window.onload = async function () {
-  supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); // Initialize supabase inside window.onload
+  supabase = supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 // Check if the user is logged in
 if (!localStorage.getItem('google_credential')) {
 window.location.href = 'index.html';
@@ -502,6 +503,7 @@ let container;
 let userEmail;
 let userName;
 let userPicture;
+let adminButton;
 const credential = localStorage.getItem('google_credential');
 if (credential) {
 const payload = parseJwt(credential);
@@ -569,7 +571,6 @@ const feedContainer = document.getElementById('feed-container');
 let authorizedEmails = []; // Define authorizedEmails here
 // Add Admin Dashboard Button if Authorized
 let isAuthorized = false;
-let adminButton; // define adminButton
 // Post Submission
 // Function to handle file selection
 window.handleFileChange = function (event) {
