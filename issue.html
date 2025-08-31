@@ -84,20 +84,22 @@ from { background-position: 0 0; }
 to { background-position: 1000px 1000px; }
 }
 .nav-button {
-background-color: #607d8b; /* A dark gray/blue color */
+background-color: var(--accent);
 color: #fff;
 padding: 12px 20px;
 border: none;
-border-radius: 5px;
+border-radius: 10px;
+text-decoration: none;
+margin-left: 20px;
+transition: background-color 0.2s, transform 0.1s;
+box-shadow: 0 4px 12px rgba(96, 165, 250, 0.4);
+display: inline-block;
 cursor: pointer;
-transition: background-color 0.3s ease;
-font-size: 1em; /* Match the font size of other buttons */
-margin-top: 20px; /* Add some space above the button */
-margin-right: 10px;
-margin-left: 10px;
 }
 .nav-button:hover {
-background-color: #455a64; /* Darken on hover */
+background-color: var(--accent-hover);
+transform: translateY(-2px) scale(1.03);
+box-shadow: 0 6px 18px rgba(59, 130, 246, 0.5);
 }
 </style>
 </head>
@@ -130,7 +132,7 @@ return null;
 }
 return null;
 }
-// Function to render posts from  API
+// Function to render posts from API
 async function renderStatusPage(statusData) {
 const statusContainer = document.getElementById('status-container');
 statusContainer.innerHTML = ''; // Clear existing content
