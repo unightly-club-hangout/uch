@@ -5,7 +5,7 @@
 <title>Welcome | UCH Main</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root {
 --primary: #e0f2fe;
@@ -491,7 +491,9 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 let supabase; // Declare supabase outside the window.onload function
 
 window.onload = async function () {
-  supabase = supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  try {
+  supabase =  createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
 // Check if the user is logged in
 if (!localStorage.getItem('google_credential')) {
 window.location.href = 'index.html';
@@ -503,7 +505,6 @@ let container;
 let userEmail;
 let userName;
 let userPicture;
-let adminButton;
 const credential = localStorage.getItem('google_credential');
 if (credential) {
 const payload = parseJwt(credential);
@@ -571,6 +572,7 @@ const feedContainer = document.getElementById('feed-container');
 let authorizedEmails = []; // Define authorizedEmails here
 // Add Admin Dashboard Button if Authorized
 let isAuthorized = false;
+let adminButton; // define adminButton
 // Post Submission
 // Function to handle file selection
 window.handleFileChange = function (event) {
@@ -850,6 +852,11 @@ document.body.classList.add('offline');
 // Check initial status
 updateOnlineStatus();
 loadContent();
+} catch (e) {
+        console.error("Failed to initialize Supabase:", e);
+        loadingText.textContent = "Failed to initialize Supabase. Please refresh.";
+        loadingText.style.color = "red";
+    }
 };
 </script>
 </head>
@@ -872,6 +879,3 @@ class="header-icon">
 <p>&copy; 2025 UCH Website. All rights reserved.</p>
 <p>Developed by Tells Fox and the UCH Team.</p>
 <a href="issue.html" style="color: var(--accent); text-decoration: none;">System Status</a>
-</footer>
-</body>
-</html>
