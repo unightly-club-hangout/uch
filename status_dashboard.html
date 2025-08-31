@@ -83,6 +83,20 @@ animation: twinkling 20s linear infinite;
 from { background-position: 0 0; }
 to { background-position: 1000px 1000px; }
 }
+.back-button {
+background-color: #607d8b; /* A dark gray/blue color */
+color: #fff;
+padding: 12px 20px;
+border: none;
+border-radius: 5px;
+cursor: pointer;
+transition: background-color 0.3s ease;
+font-size: 1em; /* Match the font size of other buttons */
+margin-top: 20px; /* Add some space above the button */
+}
+.back-button:hover {
+background-color: #455a64; /* Darken on hover */
+}
 </style>
 </head>
 <body>
@@ -93,6 +107,7 @@ to { background-position: 1000px 1000px; }
 <div id="dashboard-content" style="display: none;">
 <!-- Dashboard content will be dynamically added here -->
 </div>
+<button class="back-button" onclick="window.location.href='issue.html'">Back to Status Page</button>
 </div>
 <script>
 // Utility function to set a cookie
@@ -113,10 +128,15 @@ for (let i = 0; i < ca.length; i++) {
 let c = ca[i];
 while (c.charAt(0) === ' ') c = c.substring(1, c.length);
 if (c.indexOf(nameEQ) === 0) {
+try {
 return JSON.parse(c.substring(nameEQ.length, c.length));
+} catch (error) {
+console.error("Error parsing cookie:", name, error);
+return null;
 }
 }
 return null;
+}
 }
 // Function to fetch authorized emails from GitHub
 async function fetchAuthorizedEmails() {
