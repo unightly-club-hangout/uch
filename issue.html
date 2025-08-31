@@ -1,113 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UCH Status System</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            background: linear-gradient(to bottom, #222, #333);
-            color: #eee;
-            overflow: auto; /* Hide scrollbars */
-        }
-        .container {
-            width: 80%;
-            max-width: 960px;
-            margin: 50px auto;
-            padding: 30px;
-            background-color: rgba(40, 40, 40, 0.8);
-            border-radius: 15px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
-            position: relative;
-            z-index: 1;
-        }
-        h1 {
-            text-align: center;
-            margin-bottom: 40px;
-            color: #00bcd4; /* Neon accent color */
-            text-shadow: 0 0 10px rgba(0, 188, 212, 0.8);
-            letter-spacing: 1.5px;
-            font-size: 2.5em;
-        }
-        .status-item {
-            background-color: rgba(50, 50, 50, 0.7);
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .status-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
-        }
-        .status-item h2 {
-            margin-top: 0;
-            color: #fff;
-            font-size: 1.8em;
-            border-bottom: 2px solid #00bcd4;
-            padding-bottom: 10px;
-        }
-        .status-item p {
-            margin-bottom: 0;
-            font-size: 1.1em;
-            line-height: 1.6;
-        }
-        .status-operational {
-            color: #4caf50; /* Green */
-            text-shadow: 0 0 5px rgba(76, 175, 80, 0.7);
-        }
-        .status-minor_issues {
-            color: #ff9800; /* Orange */
-            text-shadow: 0 0 5px rgba(255, 152, 0, 0.7);
-        }
-        .status-major_issues {
-            color: #f44336; /* Red */
-            text-shadow: 0 0 5px rgba(244, 67, 54, 0.7);
-        }
-        /* Animated Background - Stars */
-        #stars {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            pointer-events: none;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="6" height="6"><circle cx="3" cy="3" r="1" fill="#fff"/></svg>'), #222;
-            animation: twinkling 20s linear infinite;
-        }
-        @keyframes twinkling {
-            from { background-position: 0 0; }
-            to { background-position: 1000px 1000px; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UCH Status System</title>
+<style>
+body {
+font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+margin: 0;
+background: linear-gradient(to bottom, #222, #333);
+color: #eee;
+overflow: auto; /* Hide scrollbars */
+}
+.container {
+width: 80%;
+max-width: 960px;
+margin: 50px auto;
+padding: 30px;
+background-color: rgba(40, 40, 40, 0.8);
+border-radius: 15px;
+box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+position: relative;
+z-index: 1;
+}
+h1 {
+text-align: center;
+margin-bottom: 40px;
+color: #00bcd4; /* Neon accent color */
+text-shadow: 0 0 10px rgba(0, 188, 212, 0.8);
+letter-spacing: 1.5px;
+font-size: 2.5em;
+}
+.status-item {
+background-color: rgba(50, 50, 50, 0.7);
+border-radius: 10px;
+padding: 20px;
+margin-bottom: 20px;
+box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.status-item:hover {
+transform: translateY(-5px);
+box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
+}
+.status-item h2 {
+margin-top: 0;
+color: #fff;
+font-size: 1.8em;
+border-bottom: 2px solid #00bcd4;
+padding-bottom: 10px;
+}
+.status-item p {
+margin-bottom: 0;
+font-size: 1.1em;
+line-height: 1.6;
+}
+.status-operational {
+color: #4caf50; /* Green */
+text-shadow: 0 0 5px rgba(76, 175, 80, 0.7);
+}
+.status-minor_issues {
+color: #ff9800; /* Orange */
+text-shadow: 0 0 5px rgba(255, 152, 0, 0.7);
+}
+.status-major_issues {
+color: #f44336; /* Red */
+text-shadow: 0 0 5px rgba(244, 67, 54, 0.7);
+}
+/* Animated Background - Stars */
+#stars {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+z-index: 0;
+pointer-events: none;
+background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="6" height="6"><circle cx="3" cy="3" r="1" fill="#fff"/></svg>'), #222;
+animation: twinkling 20s linear infinite;
+}
+@keyframes twinkling {
+from { background-position: 0 0; }
+to { background-position: 1000px 1000px; }
+}
+</style>
 </head>
 <body>
-    <div id="stars"></div>
-    <div class="container">
-        <h1>UCH System Status</h1>
-        <div id="status-container">
-            <!-- Status items will be dynamically added here -->
-        </div>
-    </div>
-    <script>
-async function fetchStatusData() {
+<div id="stars"></div>
+<div class="container">
+<h1>UCH System Status</h1>
+<div id="status-container">
+<!-- Status items will be dynamically added here -->
+</div>
+</div>
+<script>
+// Utility function to get a cookie
+function getCookie(name) {
+const nameEQ = name + "=";
+const ca = document.cookie.split(';');
+for (let i = 0; i < ca.length; i++) {
+let c = ca[i];
+while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+if (c.indexOf(nameEQ) === 0) {
 try {
-const response = await fetch('status_data.json');
-if (!response.ok) {
-throw new Error(`HTTP error! status: ${response.status}`);
-}
-const data = await response.json();
-return data;
+return JSON.parse(c.substring(nameEQ.length, c.length));
 } catch (error) {
-console.error('Error fetching status data:', error);
-return [];
+console.error("Error parsing cookie:", name, error);
+return null;
 }
 }
-function renderStatusPage(statusData) {
+}
+return null;
+}
+// Function to render posts from API
+async function renderStatusPage(statusData) {
 const statusContainer = document.getElementById('status-container');
 statusContainer.innerHTML = ''; // Clear existing content
 statusData.forEach(item => {
@@ -125,13 +131,41 @@ statusContainer.appendChild(statusItem);
 });
 }
 async function initializeStatusPage() {
-const statusData = await fetchStatusData();
+const statusData = getCookie('statusData') || [
+{
+"service": "Website",
+"status": "operational",
+"description": "All systems are currently running smoothly."
+},
+{
+"service": "API",
+"status": "minor_issues",
+"description": "Experiencing slightly elevated latency. Our team is investigating."
+},
+{
+"service": "Database",
+"status": "operational",
+"description": "Database is functioning normally."
+},
+{
+"service": "Authentication Service",
+"status": "operational",
+"description": "Users are able to log in and authenticate without issues."
+}
+];
 renderStatusPage(statusData);
 }
 async function loadContent() {
 await initializeStatusPage();
 }
-    //Utility function
+// Function to check if the user is authorized
+async function checkAuthorization() {
+try {
+const response = await fetch('https://raw.githubusercontent.com/silentmason/Unightly-Club-Hangout/refs/heads/main/UCHstaff.json');
+if (!response.ok) {
+throw new Error(`HTTP error! Status: ${response.status}`);
+}
+const authorizedEmails = await response.json();
 function parseJwt(token) {
 var base64Url = token.split('.')[1];
 var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -140,15 +174,6 @@ return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
 }).join(''));
 return JSON.parse(jsonPayload);
 }
-// Function to check if the user is authorized
-async function checkAuthorization() {
-try {
-const response = await fetch('https://raw.githubusercontent.com/silentmason/Unightly-Club-Hangout/refs/heads/main/UCHstaff.json');
-if (!response.ok) 
-{
-throw new Error(`HTTP error! Status: ${response.status}`);
-}
-const authorizedEmails = await response.json();
 const credential = localStorage.getItem('google_credential');
 if (!credential) {
 return false;
@@ -237,6 +262,6 @@ container2.appendChild(linkToSite);
 }
 // Call addStatusDashboardButton along with the existing admin button
 loadContent().then(() => addStatusDashboardButton());
-    </script>
+</script>
 </body>
 </html>
