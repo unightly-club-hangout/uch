@@ -818,7 +818,7 @@ let loadingMessages = [
 "Almost done..."
 ];
 loadingText = document.getElementById('loading-text');
-try {loadingText.textContent = loadingMessages[Math].floor(Math.random() * loadingMessages.length);
+try {loadingText.textContent = loadingMessages[Math.floor(Math.random() * loadingMessages.length)];
 // Load authorized emails and render posts in parallel
 await Promise.all([fetchAuthorizedEmails()], () => renderPostsContent(feedContainer, isAuthorized, userPicture, userName));
 } catch (error) {
