@@ -918,7 +918,7 @@ ${formHTML}
                             console.log("Authorized emails fetched successfully:", authorizedEmails);
                         } catch (error) {
                             console.error('Failed to fetch authorized emails:', error);
-                            authorizedEmails = [; // Ensure authorizedEmails is an array even on failure
+                            authorizedEmails = [] // Ensure authorizedEmails is an array even on failure
                         }
                     }
 
