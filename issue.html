@@ -151,27 +151,6 @@ statusContainer.appendChild(statusItem);
 });
 }
 async function initializeStatusPage() {
-const statusData = getCookie('statusData') || [
-{
-"service": "Website",
-"status": "operational",
-"description": "All systems are currently running smoothly."
-},
-{
-"service": "API",
-"status": "minor_issues",
-"description": "Experiencing slightly elevated latency. Our team is investigating."
-},
-{
-"service": "Database",
-"status": "operational",
-"description": "Database is functioning normally."
-},
-{
-"service": "Authentication Service",
-"description": "Users are able to log in and authenticate without issues."
-}
-];
 renderStatusPage(statusData);
 }
 async function loadContent() {
