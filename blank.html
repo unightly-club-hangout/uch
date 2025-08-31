@@ -1,104 +1,99 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <title>Welcome | UCH Main</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #e0f2fe;
-            --accent: #60a5fa;
-            --accent-hover: #3b82f6;
-            --background: rgb(58, 67, 88);
-            --container-bg: rgba(30, 41, 59, 0.8);
-            --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-            --radius: 12px;
-            --font-family: 'Poppins', sans-serif;
-            --gradient-start: #4c669f;
-            --gradient-end: #2e4779;
-        }
-
-        body {
-            margin: 0;
-            font-family: var(--font-family);
-            background: var(--background);
-            color: var(--primary);
-            overflow-x: hidden;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-
-        /* Animated gradient background */
-        body::before {
-            content: "";
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 200%;
-            height: 100%;
-            background: linear-gradient(45deg, var(--gradient-start), var(--gradient-end), var(--gradient-start));
-            background-size: 400% 400%;
-            opacity: 0.4;
-            z-index: -1;
-            animation: gradientAnimation 15s ease infinite;
-        }
-
-        @keyframes gradientAnimation {
-            0% {
-                background-position: 0% 50%;
-            }
-
-            50% {
-                background-position: 100% 50%;
-            }
-
-            100% {
-                background-position: 0% 50%;
-            }
-        }
-        /* Loading Screen Styles */
-        #loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--background);
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            transition: opacity 0.5s ease-out;
-            overflow: hidden; /* Hide anything that overflows */
-        }
-        #loading-screen.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-        #loading-text {
-            font-size: 2rem;
-            font-weight: 600;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-            margin-bottom: 20px;
-            color: var(--accent); /* Change color to accent */
-        }
-        #loading-spinner {
-            position: relative; /* Make position relative for overlay */
-            width: 60px; /* Increase size */
-            height: 60px; /* Increase size */
-            background-image: url('https://raw.githubusercontent.com/unightly-club-hangout/uch/refs/heads/master/unightly_icon.ico');
-        /* Replace with your image URL */
-            background-size: contain;
-            background-repeat: no-repeat;
-            border-radius: 50%;
-            animation: spin 1.2s linear infinite; /* Slightly slower spin */
-            opacity: 0.8; /* Increase opacity */
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4); /* Add a shadow */
-        }
+<meta charset="UTF-8">
+<title>Welcome | UCH Main</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+--primary: #e0f2fe;
+--accent: #60a5fa;
+--accent-hover: #3b82f6;
+--background: rgb(58, 67, 88);
+--container-bg: rgba(30, 41, 59, 0.8);
+--shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+--radius: 12px;
+--font-family: 'Poppins', sans-serif;
+--gradient-start: #4c669f;
+--gradient-end: #2e4779;
+}
+body {
+margin: 0;
+font-family: var(--font-family);
+background: var(--background);
+color: var(--primary);
+overflow-x: hidden;
+display: flex;
+flex-direction: column;
+min-height: 100vh;
+}
+/* Animated gradient background */
+body::before {
+content: "";
+position: fixed;
+top: 0;
+left: 0;
+width: 200%;
+height: 100%;
+background: linear-gradient(45deg, var(--gradient-start), var(--gradient-end), var(--gradient-start));
+background-size: 400% 400%;
+opacity: 0.4;
+z-index: -1;
+animation: gradientAnimation 15s ease infinite;
+}
+@keyframes gradientAnimation {
+0% {
+background-position: 0% 50%;
+}
+50% {
+background-position: 100% 50%;
+}
+100% {
+background-position: 0% 50%;
+}
+}
+/* Loading Screen Styles */
+#loading-screen {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background: var(--background);
+z-index: 1000;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+transition: opacity 0.5s ease-out;
+overflow: hidden; /* Hide anything that overflows */
+}
+#loading-screen.hidden {
+opacity: 0;
+pointer-events: none;
+}
+#loading-text {
+font-size: 2rem;
+font-weight: 600;
+text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+margin-bottom: 20px;
+color: var(--accent); /* Change color to accent */
+}
+#loading-spinner {
+position: relative; /* Make position relative for overlay */
+width: 60px; /* Increase size */
+height: 60px; /* Increase size */
+background-image: url('https://raw.githubusercontent.com/unightly-club-hangout/uch/refs/heads/master/unightly_icon.ico');
+/* Replace with your image URL */
+background-size: contain;
+background-repeat: no-repeat;
+border-radius: 50%;
+animation: spin 1.2s linear infinite; /* Slightly slower spin */
+opacity: 0.8; /* Increase opacity */
+box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4); /* Add a shadow */
+}
+/* Overlay effect */
 @keyframes spin {
 0% {
 transform: rotate(0deg);
@@ -118,761 +113,762 @@ background-position: 100% 50%;
 background-position: 0% 50%;
 }
 }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        header {
-            background: rgba(30, 41, 59, 0.95);
-            color: var(--primary);
-            padding: 20px;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: var(--shadow);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .header-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
-            margin-right: 16px;
-            box-shadow: 0 0 12px rgba(0, 0, 0, 0.3);
-            background: #fff;
-            object-fit: contain;
-            transition: transform 0.2s ease-in-out;
-        }
-
-        .header-icon:hover {
-            transform: scale(1.1);
-        }
-
-        .header-title {
-            font-size: 1.7rem;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            text-align: center;
-            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-        }
-
-        #profile-container {
-            position: absolute;
-            top: 20px;
-            right: 32px;
-            z-index: 100;
-        }
-
-        #profile-icon {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            box-shadow: 0 0 6px rgba(0, 0, 0, 0.4);
-            border: 2px solid #fff;
-            background: #eee;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            object-fit: cover;
-        }
-
-        #profile-icon:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 12px var(--accent);
-        }
-
-        .dropdown-menu {
-            display: none;
-            position: absolute;
-            top: 52px;
-            right: 0;
-            background: rgba(30, 41, 59, 0.95);
-            color: var(--primary);
-            min-width: 200px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            padding: 10px 0;
-            font-size: 1.1rem;
-            animation: fadeInMenu 0.2s;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .dropdown-menu.show {
-            display: block;
-        }
-
-        @keyframes fadeInMenu {
-            from {
-                opacity: 0;
-                transform: translateY(-5px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .dropdown-item {
-            padding: 14px 24px;
-            cursor: pointer;
-            transition: background 0.15s, color 0.15s;
-            color: var(--primary);
-        }
-
-        .dropdown-item:hover {
-            background: rgba(45, 55, 72, 0.8);
-            color: var(--accent);
-        }
-
-        .dropdown-item.signout {
-            border-top: 1px solid rgba(75, 85, 99, 0.4);
-            margin-top: 8px;
-            color: #fca5a5;
-        }
-
-        .dropdown-item.signout:hover {
-            color: #e53e3e;
-            background: rgba(45, 55, 72, 0.8);
-        }
-
-        .dropdown-item.disabled {
-            color: #6b7280;
-            cursor: not-allowed;
-        }
-
-        .dropdown-item.disabled:hover {
-            background: none;
-            color: #6b7280;
-        }
-
-        /* New Feed Styles */
-        #feed-container {
-            max-width: 750px;
-            margin: 40px auto;
-            padding: 30px;
-            background: var(--container-bg);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            color: var(--primary);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        #post-form {
-            margin-bottom: 30px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        #post-text {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 15px;
-            border: 1px solid rgba(75, 85, 99, 0.6);
-            border-radius: 8px;
-            background: rgba(45, 55, 72, 0.3);
-            color: var(--primary);
-            font-size: 1.1rem;
-            resize: vertical;
-            transition: border-color 0.2s;
-        }
-
-        #post-text:focus {
-            border-color: var(--accent);
-            outline: none;
-            box-shadow: 0 0 5px rgba(96, 165, 250, 0.2);
-        }
-
-        #file-input {
-            margin-bottom: 15px;
-            color: var(--primary);
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            border: 0;
-        }
-
-        .file-input-wrapper {
-            position: relative;
-            display: inline-block;
-            margin-bottom: 15px;
-        }
-
-        .file-input-button {
-            background: var(--accent);
-            color: #fff;
-            border: none;
-            border-radius: 10px;
-            padding: 12px 24px;
-            font-size: 1.1rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
-            box-shadow: 0 4px 12px rgba(96, 165, 250, 0.4);
-            display: inline-block;
-        }
-
-        .file-input-button:hover {
-            background: var(--accent-hover);
-            box-shadow: 0 6px 18px rgba(59, 130, 246, 0.5);
-            transform: translateY(-2px) scale(1.03);
-        }
-
-        #post-button {
-            background: var(--accent);
-            color: #fff;
-            border: none;
-            border-radius: 10px;
-            padding: 12px 24px;
-            font-size: 1.1rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
-            box-shadow: 0 4px 12px rgba(96, 165, 250, 0.4);
-            display: inline-block;
-        }
-
-        #post-button:hover {
-            background: var(--accent-hover);
-            box-shadow: 0 6px 18px rgba(59, 130, 246, 0.5);
-            transform: translateY(-2px) scale(1.03);
-        }
-
-        .post {
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: var(--radius);
-            background: rgba(45, 55, 72, 0.7);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            word-wrap: break-word;
-            position: relative;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .post-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-
-        .post-header img {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            margin-right: 12px;
-            object-fit: cover;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-
-        .post-header p {
-            font-weight: 500;
-            font-size: 1.1rem;
-        }
-
-        .post-content {
-            margin-bottom: 15px;
-            font-size: 1.1rem;
-            line-height: 1.5;
-        }
-
-        .post-image,
-        .post-video {
-            max-width: 100%;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            max-height: 500px;
-            object-fit: contain;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        }
-
-        .post-video {
-            max-height: 500px;
-        }
-
-        #preview-container {
-            max-width: 100%;
-            margin-bottom: 15px;
-        }
-
-        #preview-container img,
-        #preview-container video {
-            max-width: 100%;
-            max-height: 400px;
-            object-fit: contain;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        }
-
-        .delete-btn {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            background: #e53e3e;
-            color: #fff;
-            border: none;
-            border-radius: 50%;
-            width: 28px;
-            height: 28px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: background 0.2s, transform 0.1s;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-        }
-
-        .delete-btn:hover {
-            background: #c53030;
-            transform: scale(1.1);
-        }
-
-        /* Responsive Styles */
-        @media (max-width: 600px) {
-            #feed-container {
-                margin: 20px;
-                padding: 20px;
-            }
-
-            header {
-                padding: 15px;
-            }
-
-            .header-icon {
-                width: 32px;
-                height: 32px;
-                margin-right: 12px;
-            }
-
-            .header-title {
-                font-size: 1.4rem;
-            }
-
-            #profile-container {
-                top: 15px;
-                right: 15px;
-            }
-
-            #profile-icon {
-                width: 36px;
-                height: 36px;
-            }
-
-            .dropdown-menu {
-                top: 44px;
-                right: -5px;
-                min-width: 180px;
-                padding: 8px 0;
-                font-size: 1rem;
-            }
-
-            .dropdown-item {
-                padding: 12px 20px;
-            }
-        }
-
-        /* Fade-in animation for the main content */
-        #feed-container {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
-        }
-
-        body.loaded #feed-container {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* Initial header state */
-        header {
-            opacity: 0;
-            transform: translateY(-10px);
-            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
-        }
-
-        /* Header animation when body is loaded */
-        body.loaded header {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        footer {
-            background: rgba(30, 41, 59, 0.95);
-            color: var(--primary);
-            padding: 20px;
-            text-align: center;
-            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.2);
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            z-index: 2;
-            margin-top: auto;
-        }
-
-        /* Offline notification styles */
-        #offline-notification {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            background: #f44336;
-            /* Red background */
-            color: white;
-            text-align: center;
-            padding: 10px;
-            font-size: 1.1rem;
-            z-index: 1000;
-            display: none;
-            /* Hidden by default */
-        }
-
-        /* Show the notification when body has the offline class */
-        body.offline #offline-notification {
-            display: block;
-        }
-    </style>
-    <script>
-        let fileType;
-        let mediaUrl;
-        let loadingText;
-        const GITHUB_RAW_URL = 'https://raw.githubusercontent.com/silentmason/Unightly-Club-Hangout/refs/heads/main/UCHstaff.json';
-        const API_URL = 'http://localhost:3000'; // Define backend URL here
-
-        async function fetchAuthorizedEmails() {
-            try {
-                const response = await fetch(GITHUB_RAW_URL);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                authorizedEmails = await response.json();
-                console.log("Authorized emails fetched successfully:", authorizedEmails);
-            } catch (error) {
-                console.error('Failed to fetch authorized emails:', error);
-                authorizedEmails = []; // Ensure authorizedEmails is an array even on failure
-            }
-        }
-
-        function parseJwt(token) {
-            var base64Url = token.split('.')[1];
-            var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            var jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
-                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-            }).join(''));
-            return JSON.parse(jsonPayload);
-        }
-
-        window.onload = async function () {
-            // Check if the user is logged in
-            if (!localStorage.getItem('google_credential')) {
-                window.location.href = 'index.html';
-                return;
-            }
-            let img;
-            let menu;
-            let container;
-            let userEmail;
-            let userName;
-            let userPicture;
-            let adminButton;
-            const credential = localStorage.getItem('google_credential');
-            if (credential) {
-                const payload = parseJwt(credential);
-                if (payload.picture) {
-                    // Create profile container
-                    container = document.createElement('div');
-                    container.id = 'profile-container';
-                    // Create profile icon
-                    img = document.createElement('img');
-                    img.id = 'profile-icon';
-                    img.src = payload.picture;
-                    img.alt = 'Google Profile';
-                    img.tabIndex = 0;
-                    // Create dropdown menu
-                    menu = document.createElement('div');
-                    menu.className = 'dropdown-menu';
-                    menu.innerHTML = `
-                        <div class="dropdown-item" id="account-settings-link">Account settings</div>
-                        <div class="dropdown-item">Profile</div>
-                        <div class="dropdown-item">Friends</div>
-                        <div class="dropdown-item disabled" id="status-link">Status</div>
-                        <div class="dropdown-item signout" id="signout-link">Sign Out</div>
-                        `;
-                    // Toggle menu on icon click
-                    img.onclick = function (e) {
-                        e.stopPropagation();
-                        menu.classList.toggle('show');
-                    };
-                    img.onblur = function () {
-                        setTimeout(() => menu.classList.remove('show'), 150);
-                    };
-                    // Hide menu when clicking outside
-                    document.addEventListener('click', function () {
-                        menu.classList.remove('show');
-                    });
-                    // Account settings click
-                    menu.querySelector('#account-settings-link').onclick = function (e) {
-                        e.stopPropagation();
-                        menu.classList.remove('show');
-                        window.location.href = 'account-settings.html';
-                    };
-                    // Status click - PREVENT ACTION
-                    menu.querySelector('#status-link').onclick = function (e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        menu.classList.remove('show');
-                        return false;
-                    };
-                    // Sign out click
-                    menu.querySelector('#signout-link').onclick = function (e) {
-                        e.stopPropagation();
-                        localStorage.removeItem('google_credential');
-                        window.location.href = 'index.html';
-                    };
-                    container.appendChild(img);
-                    container.appendChild(menu);
-                    document.body.appendChild(container);
-                    userEmail = payload.email;
-                    userName = payload.name;
-                    userPicture = payload.picture;
-                }
-            }
-            const feedContainer = document.getElementById('feed-container');
-            // Load authorized emails
-            await fetchAuthorizedEmails();
-            let isAuthorized = authorizedEmails.includes(userEmail);
-            // Add Admin Dashboard Button if Authorized
-            // Check if the adminButton already exists
-            adminButton = document.getElementById('adminDashboardButton');
-            if (isAuthorized) {
-                if (!adminButton) {
-                    adminButton = document.createElement('a');
-                    adminButton.id = 'adminDashboardButton'; // Add an ID to the button
-                    adminButton.href = 'Dashboard.html'; // Replace with the actual URL
-                    adminButton.textContent = 'Admin Dashboard';
-                    adminButton.style.cssText = `
-                        background-color: var(--accent);
-                        color: #fff;
-                        padding: 12px 20px;
-                        border-radius: 10px;
-                        text-decoration: none;
-                        margin-left: 20px;
-                        transition: background-color 0.2s, transform 0.1s;
-                        box-shadow: 0 4px 12px rgba(96, 165, 250, 0.4);
-                        display: inline-block;
-                        `;
-                    adminButton.onmouseover = function () {
-                        this.style.backgroundColor = 'var(--accent-hover)';
-                        this.style.transform = 'translateY(-2px) scale(1.03)';
-                        this.style.boxShadow = '0 6px 18px rgba(59, 130, 246, 0.5)';
-                    };
-                    adminButton.onmouseout = function () {
-                        this.style.backgroundColor = 'var(--accent)';
-                        this.style.transform = 'none';
-                        this.style.boxShadow = '0 4px 12px rgba(96, 165, 250, 0.4)';
-                    };
-                    document.querySelector('header').appendChild(adminButton);
-                }
-            } else {
-                // Remove the button if the user is not authorized
-                if (adminButton) {
-                    adminButton.remove();
-                }
-            }
-            let formHTML = '';
-            if (isAuthorized) {
-                formHTML = `
-                    <form id="post-form">
-                        <textarea id="post-text" placeholder="What's on your mind?" rows="4"></textarea>
-                        <div id="preview-container"></div>
-                        <div class="file-input-wrapper">
-                            <button class="file-input-button" type="button" onclick="document.getElementById('file-input').click()">Upload File</button>
-                            <input type="file" id="file-input" accept="image/*, video/*" onchange="handleFileChange(event)" style="display:none;">
-                            <input type="hidden" id="max-file-size" value="104857600"> <!-- 10MB in bytes -->
-                        </div>
-                        <button type="submit" id="post-button">Post</button>
-                    </form>
-                    `;
-            } else {
-                formHTML = `<p style="font-size: 1.2rem; text-align: center; padding: 15px;">Official UCH Staff may post.</p>`;
-            }
-            feedContainer.innerHTML = `
-                <h1 style="text-align: center; margin-bottom: 25px; font-size: 2.2rem; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);">Welcome to the UCH Feed!</h1>
-                ${formHTML}
-                `;
-            // Post Submission
-            // Function to handle file selection
-            window.handleFileChange = function (event) {
-                const file = event.target.files[0];
-                const previewContainer = document.getElementById('preview-container');
-                const maxFileSize = document.getElementById('max-file-size').value;
-                const fileInput = document.getElementById('file-input');
-
-
-                if (file) {
-                    if (file.size > maxFileSize) {
-                        alert("File size exceeds the maximum limit.");
-                        fileInput.value = ''; // Clear the file input
-                        previewContainer.innerHTML = '';
-                        mediaUrl = null;
-                        fileType = null;
-                        return;
-                    }
-
-                    fileType = file.type;
-                    if (fileType.startsWith('image/') || fileType.startsWith('video/')) {
-                        const reader = new FileReader();
-                        reader.onload = function (e) {
-                            mediaUrl = e.target.result;
-                            let previewContent = '';
-                            if (fileType.startsWith('image/')) {
-                                previewContent = `<img src="${mediaUrl}" alt="Post Image" id="preview-image">`;
-                            } else if (fileType.startsWith('video/')) {
-                                previewContent = `<video src="${mediaUrl}" alt="Post Video" controls></video>`;
-                            }
-                            previewContainer.innerHTML = previewContent;
-                        };
-                        reader.readAsDataURL(file); // Read file as Data URL
-                    } else {
-                        alert('Invalid file type. Only images and videos are allowed.');
-                        fileInput.value = '';
-                        previewContainer.innerHTML = '';
-                        mediaUrl = null;
-                        fileType = null;
-                        return;
-                    }
-                } else {
-                    previewContainer.innerHTML = '';
-                    mediaUrl = null;
-                    fileType = null;
-                }
-            }
-            const postForm = document.getElementById('post-form');
-            if (postForm) {
-                const previewContainer = document.getElementById('preview-container');
-                const postText = document.getElementById('post-text');
-                postForm.addEventListener('submit', async function (e) {
-                    e.preventDefault();
-                    const text = postText.value.trim();
-                    const fileInput = document.getElementById('file-input'); // Get file input inside the submit handler
-                    const file = fileInput.files[0];
-                    if (text !== '' || file) { // Check if there's text or a file
-                        // Simulate upload and get URL (replace with your actual Firebase upload logic)
-                        let mediaUrlFirebase = null;
-                        if (file) {
-                            //Simulate file upload
-                            mediaUrlFirebase = 'https://example.com/uploaded-image.jpg';
-                        }
-                        const newPost = {
-                            title: text,
-                            content: mediaUrl || 'No media Provided',
-                            mediaType: fileType,
-                            userName: userName,
-                            userPicture: userPicture
-                        };
-                        try {
-                            const response = await fetch(`${API_URL}/posts`, {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify(newPost)
-                            });
-                            if (response.ok) {
-                                console.log('Post added to MongoDB!');
-                                postText.value = ''; // Clear the text input
-                                fileInput.value = ''; // Clear the file input
-                                previewContainer.innerHTML = ''; // Clear the preview
-                                mediaUrl = null;
-                                fileType = null;
-                                renderPostsContent(feedContainer, isAuthorized, userPicture, userName)
-                            } else {
-                                console.error('Error adding post to MongoDB:', response.status);
-                            }
-                        } catch (error) {
-                            console.error('Error adding post to MongoDB:', error);
-                        }
-                    }
-                });
-            }
-            async function deletePost(postId) {
-                try {
-                    const response = await fetch(`${API_URL}/posts/${postId}`, {
-                        method: 'DELETE'
-                    });
-                    if (response.ok) {
-                        console.log('Post deleted from MongoDB!');
-                        renderPostsContent(feedContainer, isAuthorized, userPicture, userName)
-                    } else {
-                        console.error('Error deleting post from MongoDB:', response.status);
-                    }
-                } catch (error) {
-                    console.error('Error deleting post from MongoDB:', error);
-                }
-            }
-            // Function to render posts from API
-            async function renderPostsContent(feedContainer, isAuthorized, userPicture, userName) {
-                try {
-                    const response = await fetch(`${API_URL}/posts`);
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    const posts = await response.json();
-                    let postsHTML = '';
-                    posts.forEach(post => {
-                        const postElement = document.createElement('div');
-                        postElement.className = 'post';
-                        let postHeader = `<div class="post-header">
-                            <img src="${post.userPicture}" alt="${post.userName}'s Profile Picture">
-                            <p>${post.userName}</p>
-                        </div>`;
-                        let postContent = '';
-                        if (post.text) {
-                            postContent += `<div class="post-content">${post.text}</div>`;
-                        }
-                        if (post.mediaUrl) {
-                            if (post.mediaType && post.mediaType.startsWith('image/')) {
-                                postContent += `<img src="${post.mediaUrl}" alt="Post Image" class="post-image">`;
-                            } else if (post.mediaType && post.mediaType.startsWith('video/')) {
-                                postContent += `<video src="${post.mediaUrl}" alt="Post Video" controls class="post-video"></video>`;
-                            }
-                        }
-                        let deleteButtonHTML = '';
-                        if (isAuthorized) {
-                            deleteButtonHTML = `<button class="delete-btn" data-id="${post._id}" onclick="deletePost('${post._id}')">x</button>`;
-                        }
-                        postElement.innerHTML = postHeader + postContent + deleteButtonHTML;
-                        postsHTML += postElement.outerHTML;
-                    });
-                    feedContainer.innerHTML += postsHTML;
-                } catch (error) {
-                    console.error('Error fetching posts:', error);
-                    feedContainer.innerHTML += '<p>Error loading posts.</p>';
-                }
-            }
-            // Add the 'loaded' class to the body and hide the loading screen after the content loads
-            async function loadContent() {
-                let loadingMessages = [
-                    "Warming up the servers...",
-                    "Pouring a cup of coffee...",
-                    "Telling tells to fix all his bugs...",
-                    "Fetching the latest crazy person...",
-                    "Counting to infinity...",
-                    "Reticulating splines...",
-                    "Almost done..."
-                    ];
-                    loadingText = document.getElementById('loading-text');
-                    try {loadingText.textContent = loadingMessages[Math.floor(Math.random() * loadingMessages.length)];
-                        await Promise.all([fetchAuthorizedEmails(), () => renderPostsContent(feedContainer, isAuthorized, userPicture, userName)]);
-                    } catch (error) {
-                    console.error("Error during initial load:", error);
+@keyframes spin {
+0% {
+transform: rotate(0deg);
+}
+100% {
+transform: rotate(360deg);
+}
+}
+header {
+background: rgba(30, 41, 59, 0.95);
+color: var(--primary);
+padding: 20px;
+position: relative;
+display: flex;
+align-items: center;
+justify-content: center;
+box-shadow: var(--shadow);
+border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+.header-icon {
+width: 40px;
+height: 40px;
+border-radius: 8px;
+margin-right: 16px;
+box-shadow: 0 0 12px rgba(0, 0, 0, 0.3);
+background: #fff;
+object-fit: contain;
+transition: transform 0.2s ease-in-out;
+}
+.header-icon:hover {
+transform: scale(1.1);
+}
+.header-title {
+font-size: 1.7rem;
+font-weight: 600;
+letter-spacing: 0.5px;
+text-align: center;
+text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+#profile-container {
+position: absolute;
+top: 20px;
+right: 32px;
+z-index: 100;
+}
+#profile-icon {
+width: 42px;
+height: 42px;
+border-radius: 50%;
+box-shadow: 0 0 6px rgba(0, 0, 0, 0.4);
+border: 2px solid #fff;
+background: #eee;
+cursor: pointer;
+transition: transform 0.2s, box-shadow 0.2s;
+object-fit: cover;
+}
+#profile-icon:hover {
+transform: scale(1.1);
+box-shadow: 0 0 12px var(--accent);
+}
+.dropdown-menu {
+display: none;
+position: absolute;
+top: 52px;
+right: 0;
+background: rgba(30, 41, 59, 0.95);
+color: var(--primary);
+min-width: 200px;
+border-radius: var(--radius);
+box-shadow: var(--shadow);
+padding: 10px 0;
+font-size: 1.1rem;
+animation: fadeInMenu 0.2s;
+border: 1px solid rgba(255, 255, 255, 0.05);
+}
+.dropdown-menu.show {
+display: block;
+}
+@keyframes fadeInMenu {
+from {
+opacity: 0;
+transform: translateY(-5px);
+}
+to {
+opacity: 1;
+transform: translateY(0);
+}
+}
+.dropdown-item {
+padding: 14px 24px;
+cursor: pointer;
+transition: background 0.15s, color 0.15s;
+color: var(--primary);
+}
+.dropdown-item:hover {
+background: rgba(45, 55, 72, 0.8);
+color: var(--accent);
+}
+.dropdown-item.signout {
+border-top: 1px solid rgba(75, 85, 99, 0.4);
+margin-top: 8px;
+color: #fca5a5;
+}
+.dropdown-item.signout:hover {
+color: #e53e3e;
+background: rgba(45, 55, 72, 0.8);
+}
+.dropdown-item.disabled {
+color: #6b7280;
+cursor: not-allowed;
+}
+.dropdown-item.disabled:hover {
+background: none;
+color: #6b7280;
+}
+/* New Feed Styles */
+#feed-container {
+max-width: 750px;
+margin: 40px auto;
+padding: 30px;
+background: var(--container-bg);
+border-radius: var(--radius);
+box-shadow: var(--shadow);
+color: var(--primary);
+border: 1px solid rgba(255, 255, 255, 0.05);
+}
+#post-form {
+margin-bottom: 30px;
+display: flex;
+flex-direction: column;
+}
+#post-text {
+width: 100%;
+padding: 12px;
+margin-bottom: 15px;
+border: 1px solid rgba(75, 85, 99, 0.6);
+border-radius: 8px;
+background: rgba(45, 55, 72, 0.3);
+color: var(--primary);
+font-size: 1.1rem;
+resize: vertical;
+transition: border-color 0.2s;
+}
+#post-text:focus {
+border-color: var(--accent);
+outline: none;
+box-shadow: 0 0 5px rgba(96, 165, 250, 0.2);
+}
+#file-input {
+margin-bottom: 15px;
+color: var(--primary);
+position: absolute;
+width: 1px;
+height: 1px;
+padding: 0;
+margin: -1px;
+overflow: hidden;
+clip: rect(0, 0, 0, 0);
+border: 0;
+}
+.file-input-wrapper {
+position: relative;
+display: inline-block;
+margin-bottom: 15px;
+}
+.file-input-button {
+background: var(--accent);
+color: #fff;
+border: none;
+border-radius: 10px;
+padding: 12px 24px;
+font-size: 1.1rem;
+font-weight: 500;
+cursor: pointer;
+transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+box-shadow: 0 4px 12px rgba(96, 165, 250, 0.4);
+display: inline-block;
+}
+.file-input-button:hover {
+background: var(--accent-hover);
+box-shadow: 0 6px 18px rgba(59, 130, 246, 0.5);
+transform: translateY(-2px) scale(1.03);
+}
+#post-button {
+background: var(--accent);
+color: #fff;
+border: none;
+border-radius: 10px;
+padding: 12px 24px;
+font-size: 1.1rem;
+font-weight: 500;
+cursor: pointer;
+transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+box-shadow: 0 4px 12px rgba(96, 165, 250, 0.4);
+display: inline-block;
+}
+#post-button:hover {
+background: var(--accent-hover);
+box-shadow: 0 6px 18px rgba(59, 130, 246, 0.5);
+transform: translateY(-2px) scale(1.03);
+}
+.post {
+padding: 20px;
+margin-bottom: 20px;
+border-radius: var(--radius);
+background: rgba(45, 55, 72, 0.7);
+box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+word-wrap: break-word;
+position: relative;
+border: 1px solid rgba(255, 255, 255, 0.05);
+}
+.post-header {
+display: flex;
+align-items: center;
+margin-bottom: 12px;
+}
+.post-header img {
+width: 36px;
+height: 36px;
+border-radius: 50%;
+margin-right: 12px;
+object-fit: cover;
+box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+.post-header p {
+font-weight: 500;
+font-size: 1.1rem;
+}
+.post-content {
+margin-bottom: 15px;
+font-size: 1.1rem;
+line-height: 1.5;
+}
+.post-image,
+.post-video {
+max-width: 100%;
+border-radius: 10px;
+margin-bottom: 15px;
+max-height: 500px;
+object-fit: contain;
+box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+.post-video {
+max-height: 500px;
+}
+#preview-container {
+max-width: 100%;
+margin-bottom: 15px;
+}
+#preview-container img,
+#preview-container video {
+max-width: 100%;
+max-height: 400px;
+object-fit: contain;
+border-radius: 10px;
+box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+.delete-btn {
+position: absolute;
+top: 8px;
+right: 8px;
+background: #e53e3e;
+color: #fff;
+border: none;
+border-radius: 50%;
+width: 28px;
+height: 28px;
+display: flex;
+align-items: center;
+justify-content: center;
+cursor: pointer;
+transition: background 0.2s, transform 0.1s;
+box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+.delete-btn:hover {
+background: #c53030;
+transform: scale(1.1);
+}
+/* Responsive Styles */
+@media (max-width: 600px) {
+#feed-container {
+margin: 20px;
+padding: 20px;
+}
+header {
+padding: 15px;
+}
+.header-icon {
+width: 32px;
+height: 32px;
+margin-right: 12px;
+}
+.header-title {
+font-size: 1.4rem;
+}
+#profile-container {
+top: 15px;
+right: 15px;
+}
+#profile-icon {
+width: 36px;
+height: 36px;
+}
+.dropdown-menu {
+top: 44px;
+right: -5px;
+min-width: 180px;
+padding: 8px 0;
+font-size: 1rem;
+}
+.dropdown-item {
+padding: 12px 20px;
+}
+}
+/* Fade-in animation for the main content */
+#feed-container {
+opacity: 0;
+transform: translateY(20px);
+transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+body.loaded #feed-container {
+opacity: 1;
+transform: translateY(0);
+}
+/* Initial header state */
+header {
+opacity: 0;
+transform: translateY(-10px);
+transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+/* Header animation when body is loaded */
+body.loaded header {
+opacity: 1;
+transform: translateY(0);
+}
+footer {
+background: rgba(30, 41, 59, 0.95);
+color: var(--primary);
+padding: 20px;
+text-align: center;
+box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.2);
+border-top: 1px solid rgba(255, 255, 255, 0.05);
+z-index: 2;
+margin-top: auto;
+}
+/* Offline notification styles */
+#offline-notification {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+background: #f44336;
+/* Red background */
+color: white;
+text-align: center;
+padding: 10px;
+font-size: 1.1rem;
+z-index: 1000;
+display: none;
+/* Hidden by default */
+}
+/* Show the notification when body has the offline class */
+body.offline #offline-notification {
+display: block;
+}
+</style>
+<script>
+let fileType;
+let mediaUrl;
+let loadingText;
+const GITHUB_RAW_URL = 'https://raw.githubusercontent.com/silentmason/Unightly-Club-Hangout/refs/heads/main/UCHstaff.json';
+const API_URL = 'http://localhost:3000'; // Define backend URL here
+// Utility function to set a cookie
+function setCookie(name, value, days) {
+let expires = "";
+if (days) {
+const date = new Date();
+date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+expires = "; expires=" + date.toUTCString();
+}
+document.cookie = name + "=" + (JSON.stringify(value) || "") + expires + "; path=/";
+}
+// Utility function to get a cookie
+function getCookie(name) {
+const nameEQ = name + "=";
+const ca = document.cookie.split(';');
+for (let i = 0; i < ca.length; i++) {
+let c = ca[i];
+while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+if (c.indexOf(nameEQ) === 0) {
+try {
+return JSON.parse(c.substring(nameEQ.length, c.length));
+} catch (error) {
+console.error("Error parsing cookie:", name, error);
+return null;
+}
+}
+return null;
+}
+}
+async function fetchAuthorizedEmails() {
+try {
+const response = await fetch(GITHUB_RAW_URL);
+if (!response.ok) {
+throw new Error(`HTTP error! Status: ${response.status}`);
+}
+authorizedEmails = await response.json();
+console.log("Authorized emails fetched successfully:", authorizedEmails);
+} catch (error) {
+console.error('Failed to fetch authorized emails:', error);
+authorizedEmails = []; // Ensure authorizedEmails is an array even on failure
+}
+}
+function parseJwt(token) {
+var base64Url = token.split('.')[1];
+var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+var jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+}).join(''));
+return JSON.parse(jsonPayload);
+}
+window.onload = async function () {
+// Check if the user is logged in
+if (!localStorage.getItem('google_credential')) {
+window.location.href = 'index.html';
+return;
+}
+let img;
+let menu;
+let container;
+let userEmail;
+let userName;
+let userPicture;
+let adminButton;
+const credential = localStorage.getItem('google_credential');
+if (credential) {
+const payload = parseJwt(credential);
+if (payload.picture) {
+// Create profile container
+container = document.createElement('div');
+container.id = 'profile-container';
+// Create profile icon
+img = document.createElement('img');
+img.id = 'profile-icon';
+img.src = payload.picture;
+img.alt = 'Google Profile';
+img.tabIndex = 0;
+// Create dropdown menu
+menu = document.createElement('div');
+menu.className = 'dropdown-menu';
+menu.innerHTML = `
+<div class="dropdown-item" id="account-settings-link">Account settings</div>
+<div class="dropdown-item">Profile</div>
+<div class="dropdown-item">Friends</div>
+<div class="dropdown-item disabled" id="status-link">Status</div>
+<div class="dropdown-item signout" id="signout-link">Sign Out</div>
+`;
+// Toggle menu on icon click
+img.onclick = function (e) {
+e.stopPropagation();
+menu.classList.toggle('show');
+};
+img.onblur = function () {
+setTimeout(() => menu.classList.remove('show'), 150);
+};
+// Hide menu when clicking outside
+document.addEventListener('click', function () {
+menu.classList.remove('show');
+});
+// Account settings click
+menu.querySelector('#account-settings-link').onclick = function (e) {
+e.stopPropagation();
+menu.classList.remove('show');
+window.location.href = 'account-settings.html';
+};
+// Status click - PREVENT ACTION
+menu.querySelector('#status-link').onclick = function (e) {
+e.preventDefault();
+e.stopPropagation();
+menu.classList.remove('show');
+return false;
+};
+// Sign out click
+menu.querySelector('#signout-link').onclick = function (e) {
+e.stopPropagation();
+localStorage.removeItem('google_credential');
+window.location.href = 'index.html';
+};
+container.appendChild(img);
+container.appendChild(menu);
+document.body.appendChild(container);
+userEmail = payload.email;
+userName = payload.name;
+userPicture = payload.picture;
+}
+}
+const feedContainer = document.getElementById('feed-container');
+// Load authorized emails
+await fetchAuthorizedEmails();
+let isAuthorized = authorizedEmails.includes(userEmail);
+// Add Admin Dashboard Button if Authorized
+// Check if the adminButton already exists
+adminButton = document.getElementById('adminDashboardButton');
+if (isAuthorized) {
+if (!adminButton) {
+adminButton = document.createElement('a');
+adminButton.id = 'adminDashboardButton'; // Add an ID to the button
+adminButton.href = 'Dashboard.html'; // Replace with the actual URL
+adminButton.textContent = 'Admin Dashboard';
+adminButton.style.cssText = `
+background-color: var(--accent);
+color: #fff;
+padding: 12px 20px;
+border-radius: 10px;
+text-decoration: none;
+margin-left: 20px;
+transition: background-color 0.2s, transform 0.1s;
+box-shadow: 0 4px 12px rgba(96, 165, 250, 0.4);
+display: inline-block;
+`;
+adminButton.onmouseover = function () {
+this.style.backgroundColor = 'var(--accent-hover)';
+this.style.transform = 'translateY(-2px) scale(1.03)';
+this.style.boxShadow = '0 6px 18px rgba(59, 130, 246, 0.5)';
+};
+adminButton.onmouseout = function () {
+this.style.backgroundColor = 'var(--accent)';
+this.style.transform = 'none';
+this.style.boxShadow = '0 4px 12px rgba(96, 165, 250, 0.4)';
+};
+document.querySelector('header').appendChild(adminButton);
+}
+} else {
+// Remove the button if the user is not authorized
+if (adminButton) {
+adminButton.remove();
+}
+}
+let formHTML = '';
+if (isAuthorized) {
+formHTML = `
+<form id="post-form">
+<textarea id="post-text" placeholder="What's on your mind?" rows="4"></textarea>
+<div id="preview-container"></div>
+<div class="file-input-wrapper">
+<button class="file-input-button" type="button" onclick="document.getElementById('file-input').click()">Upload File</button>
+<input type="file" id="file-input" accept="image/*, video/*" onchange="handleFileChange(event)" style="display:none;">
+<input type="hidden" id="max-file-size" value="104857600"> <!-- 10MB in bytes -->
+</div>
+<button type="submit" id="post-button">Post</button>
+</form>
+`;
+} else {
+formHTML = `<p style="font-size: 1.2rem; text-align: center; padding: 15px;">Official UCH Staff may post.</p>`;
+}
+feedContainer.innerHTML = `
+<h1 style="text-align: center; margin-bottom: 25px; font-size: 2.2rem; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);">Welcome to the UCH Feed!</h1>
+${formHTML}
+`;
+// Post Submission
+// Function to handle file selection
+window.handleFileChange = function (event) {
+const file = event.target.files[0];
+const previewContainer = document.getElementById('preview-container');
+const maxFileSize = document.getElementById('max-file-size').value;
+const fileInput = document.getElementById('file-input');
+if (file) {
+if (file.size > maxFileSize) {
+alert("File size exceeds the maximum limit.");
+fileInput.value = ''; // Clear the file input
+previewContainer.innerHTML = '';
+mediaUrl = null;
+fileType = null;
+return;
+}
+fileType = file.type;
+if (fileType.startsWith('image/') || fileType.startsWith('video/')) {
+const reader = new FileReader();
+reader.onload = function (e) {
+mediaUrl = e.target.result;
+let previewContent = '';
+if (fileType.startsWith('image/')) {
+previewContent = `<img src="${mediaUrl}" alt="Post Image" id="preview-image">`;
+} else if (fileType.startsWith('video/')) {
+previewContent = `<video src="${mediaUrl}" alt="Post Video" controls></video>`;
+}
+previewContainer.innerHTML = previewContent;
+};
+reader.readAsDataURL(file); // Read file as Data URL
+} else {
+alert('Invalid file type. Only images and videos are allowed.');
+fileInput.value = '';
+previewContainer.innerHTML = '';
+mediaUrl = null;
+fileType = null;
+return;
+}
+} else {
+previewContainer.innerHTML = '';
+mediaUrl = null;
+fileType = null;
+}
+}
+const postForm = document.getElementById('post-form');
+if (postForm) {
+const previewContainer = document.getElementById('preview-container');
+const postText = document.getElementById('post-text');
+postForm.addEventListener('submit', async function (e) {
+e.preventDefault();
+const text = postText.value.trim();
+const fileInput = document.getElementById('file-input'); // Get file input inside the submit handler
+const file = fileInput.files[0];
+if (text !== '' || file) { // Check if there's text or a file
+// Simulate upload and get URL (replace with your actual Firebase upload logic)
+let mediaUrlFirebase = null;
+if (file) {
+//Simulate file upload
+mediaUrlFirebase = 'https://example.com/uploaded-image.jpg';
+}
+const newPost = {
+title: text,
+content: mediaUrl || 'No media Provided',
+mediaType: fileType,
+userName: userName,
+userPicture: userPicture
+};
+try {
+const response = await fetch(`${API_URL}/posts`, {
+method: 'POST',
+headers: {
+'Content-Type': 'application/json'
+},
+body: JSON.stringify(newPost)
+});
+if (response.ok) {
+console.log('Post added to MongoDB!');
+postText.value = ''; // Clear the text input
+fileInput.value = ''; // Clear the file input
+previewContainer.innerHTML = ''; // Clear the preview
+mediaUrl = null;
+fileType = null;
+let cookiePosts = getCookie('allPosts') || [];
+cookiePosts.push(newPost);
+setCookie('allPosts', cookiePosts, 7);
+renderPostsContent(feedContainer, isAuthorized, userPicture, userName);
+} else {
+console.error('Error adding post to MongoDB:', response.status);
+}
+} catch (error) {
+console.error('Error adding post to MongoDB:', error);
+}
+}
+});
+}
+async function deletePost(postId) {
+try {
+const response = await fetch(`${API_URL}/posts/${postId}`, {
+method: 'DELETE'
+});
+if (response.ok) {
+console.log('Post deleted from MongoDB!');
+renderPostsContent(feedContainer, isAuthorized, userPicture, userName)
+} else {
+console.error('Error deleting post from MongoDB:', response.status);
+}
+} catch (error) {
+console.error('Error deleting post from MongoDB:', error);
+}
+}
+// Function to render posts from API
+async function renderPostsContent(feedContainer, isAuthorized, userPicture, userName) {
+try {
+const response = await fetch(`${API_URL}/posts`);
+if (!response.ok) {
+throw new Error(`HTTP error! status: ${response.status}`);
+}
+const posts = await response.json();
+let cookiePosts = getCookie('allPosts') || [];
+let allPosts = cookiePosts.concat(posts);
+let postsHTML = '';
+allPosts.forEach(post => {
+const postElement = document.createElement('div');
+postElement.className = 'post';
+let postHeader = `<div class="post-header">
+<img src="${post.userPicture}" alt="${post.userName}'s Profile Picture">
+<p>${post.userName}</p>
+</div>`;
+let postContent = '';
+if (post.title) {
+postContent += `<div class="post-content">${post.title}</div>`;
+}
+if (post.content) {
+if (post.mediaType && post.mediaType.startsWith('image/')) {
+postContent += `<img src="${post.content}" alt="Post Image" class="post-image">`;
+} else if (post.mediaType && post.mediaType.startsWith('video/')) {
+postContent += `<video src="${post.content}" alt="Post Video" controls class="post-video"></video>`;
+} else {
+postContent += `<div class="post-content">${post.content}</div>`;
+}
+}
+let deleteButtonHTML = '';
+if (isAuthorized) {
+deleteButtonHTML = `<button class="delete-btn" data-id="${post._id}" onclick="deletePost('${post._id}')">x</button>`;
+}
+postElement.innerHTML = postHeader + postContent + deleteButtonHTML;
+postsHTML += postElement.outerHTML;
+});
+feedContainer.innerHTML = postsHTML;
+} catch (error) {
+console.error('Error fetching posts:', error);
+feedContainer.innerHTML = '<p>Error loading posts.</p>';
+}
+}
+function setCookie(name, value, days) {
+let expires = "";
+if (days) {
+const date = new Date();
+date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+expires = "; expires=" + date.toUTCString();
+}
+document.cookie = name + "=" + (JSON.stringify(value) || "") + expires + "; path=/";
+}
+function getCookie(name) {
+const nameEQ = name + "=";
+const ca = document.cookie.split(';');
+for (let i = 0; i < ca.length; i++) {
+let c = ca[i];
+while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+if (c.indexOf(nameEQ) === 0) {
+try {
+return JSON.parse(c.substring(nameEQ.length, c.length));
+} catch (error) {
+console.error("Error parsing cookie:", name, error);
+return null;
+}
+}
+}
+return null;
+}
+// Add the 'loaded' class to the body and hide the loading screen after the content loads
+async function loadContent() {
+let loadingMessages = [
+"Warming up the servers...",
+"Pouring a cup of coffee...",
+"Telling tells to fix all his bugs...",
+"Fetching the latest crazy person...",
+"Counting to infinity...",
+"Reticulating splines...",
+"Almost done..."
+];
+loadingText = document.getElementById('loading-text');
+try {loadingText.textContent = loadingMessages[Math.floor(Math.random() * loadingMessages.length)];
+// Load authorized emails and render posts in parallel
+await Promise.all([fetchAuthorizedEmails(), () => renderPostsContent(feedContainer, isAuthorized, userPicture, userName)]);
+} catch (error) {
+console.error("Error during content load:", error);
                     // Optionally handle the error, e.g., display an error message
                     loadingText.textContent = "Failed to load content. Please refresh.";
                     loadingText.style.color = "red";
