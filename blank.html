@@ -488,7 +488,6 @@ const GITHUB_RAW_URL = 'https://raw.githubusercontent.com/silentmason/Unightly-C
 const SUPABASE_URL = 'https://rqovhtxyptakqtmbpvgo.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJxb3ZodHh5cHRha3F0bWJwdmdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY2NDcxOTEsImV4cCI6MjA3MjIyMzE5MX0.n83gdFaKw5z_9e0B30tho-P-IDIMfiLBEBqhbpXGVbY';
 supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
 async function fetchAuthorizedEmails() {
 try {
 const response = await fetch(GITHUB_RAW_URL);
