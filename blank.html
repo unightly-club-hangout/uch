@@ -502,7 +502,6 @@ let container;
 let userEmail;
 let userName;
 let userPicture;
-let adminButton;
 const credential = localStorage.getItem('google_credential');
 if (credential) {
 const payload = parseJwt(credential);
@@ -567,67 +566,10 @@ userPicture = payload.picture;
 }
 const feedContainer = document.getElementById('feed-container');
 // Load authorized emails
-await fetchAuthorizedEmails();
-let isAuthorized = authorizedEmails.includes(userEmail);
+let authorizedEmails = []; // Define authorizedEmails here
 // Add Admin Dashboard Button if Authorized
-// Check if the adminButton already exists
-adminButton = document.getElementById('adminDashboardButton');
-if (isAuthorized) {
-if (!adminButton) {
-adminButton = document.createElement('a');
-adminButton.id = 'adminDashboardButton'; // Add an ID to the button
-adminButton.href = 'Dashboard.html'; // Replace with the actual URL
-adminButton.textContent = 'Admin Dashboard';
-adminButton.style.cssText = `
-background-color: var(--accent);
-color: #fff;
-padding: 12px 20px;
-border-radius: 10px;
-text-decoration: none;
-margin-left: 20px;
-transition: background-color 0.2s, transform 0.1s;
-box-shadow: 0 4px 12px rgba(96, 165, 250, 0.4);
-display: inline-block;
-`;
-adminButton.onmouseover = function () {
-this.style.backgroundColor = 'var(--accent-hover)';
-this.style.transform = 'translateY(-2px) scale(1.03)';
-this.style.boxShadow = '0 6px 18px rgba(59, 130, 246, 0.5)';
-};
-adminButton.onmouseout = function () {
-this.style.backgroundColor = 'var(--accent)';
-this.style.transform = 'none';
-this.style.boxShadow = '0 4px 12px rgba(96, 165, 250, 0.4)';
-};
-document.querySelector('header').appendChild(adminButton);
-}
-} else {
-// Remove the button if the user is not authorized
-if (adminButton) {
-adminButton.remove();
-}
-}
-let formHTML = '';
-if (isAuthorized) {
-formHTML = `
-<form id="post-form">
-<textarea id="post-text" placeholder="What's on your mind?" rows="4"></textarea>
-<div id="preview-container"></div>
-<div class="file-input-wrapper">
-<button class="file-input-button" type="button" onclick="document.getElementById('file-input').click()">Upload File</button>
-<input type="file" id="file-input" accept="image/*, video/*" onchange="handleFileChange(event)" style="display:none;">
-<input type="hidden" id="max-file-size" value="104857600"> <!-- 10MB in bytes -->
-</div>
-<button type="submit" id="post-button">Post</button>
-</form>
-`;
-} else {
-formHTML = `<p style="font-size: 1.2rem; text-align: center; padding: 15px;">Official UCH Staff may post.</p>`;
-}
-feedContainer.innerHTML = `
-<h1 style="text-align: center; margin-bottom: 25px; font-size: 2.2rem; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);">Welcome to the UCH Feed!</h1>
-${formHTML}
-`;
+let isAuthorized = false;
+let adminButton; // define adminButton
 // Post Submission
 // Function to handle file selection
 window.handleFileChange = function (event) {
@@ -673,43 +615,6 @@ fileType = null;
 }
 }
 const postForm = document.getElementById('post-form');
-if (postForm) {
-const previewContainer = document.getElementById('preview-container');
-const postText = document.getElementById('post-text');
-postForm.addEventListener('submit', async function (e) {
-e.preventDefault();
-const text = postText.value.trim();
-const fileInput = document.getElementById('file-input'); // Get file input inside the submit handler
-const file = fileInput.files[0];
-if (text !== '' || file) { // Check if there's text or a file
-const newPost = {
-title: text || '',
-content: mediaUrl || 'No media Provided',
-mediaType: fileType,
-userName: userName,
-userPicture: userPicture
-};
-try {
-const { data, error } = await supabase
-.from('posts')
-.insert([newPost]);
-if (error) {
-console.error('Error adding post to Supabase:', error.message);
-} else {
-console.log('Post added to Supabase!');
-postText.value = ''; // Clear the text input
-fileInput.value = ''; // Clear the file input
-previewContainer.innerHTML = ''; // Clear the preview
-mediaUrl = null;
-fileType = null;
-renderPostsContent(feedContainer, isAuthorized, userPicture, userName);
-}
-} catch (generalError){
-console.error('General error during post submission:', generalError)
-}
-}
-});
-}
 async function deletePost(postId) {
 try {
 const { data, error } = await supabase
@@ -783,9 +688,114 @@ let loadingMessages = [
 "Almost done..."
 ];
 loadingText = document.getElementById('loading-text');
-try {loadingText.textContent = loadingMessages[Math.floor(Math.random() * loadingMessages.length)];
+try {
+let i = 0;
+const changeLoadingText = () => {
+  loadingText.textContent = loadingMessages[i];
+  i = (i + 1) % loadingMessages.length;
+};
+
+// Change loading text every 1.5 seconds
+const loadingTextInterval = setInterval(changeLoadingText, 1500);
+changeLoadingText();
+
 // Load authorized emails and render posts in parallel
-await Promise.all([fetchAuthorizedEmails()].map(fn => fn()));
+await fetchAuthorizedEmails();
+isAuthorized = authorizedEmails.includes(userEmail);
+if (isAuthorized) {
+if (!adminButton) {
+adminButton = document.createElement('a');
+adminButton.id = 'adminDashboardButton'; // Add an ID to the button
+adminButton.href = 'Dashboard.html'; // Replace with the actual URL
+adminButton.textContent = 'Admin Dashboard';
+adminButton.style.cssText = `
+background-color: var(--accent);
+color: #fff;
+padding: 12px 20px;
+border-radius: 10px;
+text-decoration: none;
+margin-left: 20px;
+transition: background-color 0.2s, transform 0.1s;
+box-shadow: 0 4px 12px rgba(96, 165, 250, 0.4);
+display: inline-block;
+`;
+adminButton.onmouseover = function () {
+this.style.backgroundColor = 'var(--accent-hover)';
+this.style.transform = 'translateY(-2px) scale(1.03)';
+this.style.boxShadow = '0 6px 18px rgba(59, 130, 246, 0.5)';
+};
+adminButton.onmouseout = function () {
+this.style.backgroundColor = 'var(--accent)';
+this.style.transform = 'none';
+this.style.boxShadow = '0 4px 12px rgba(96, 165, 250, 0.4)';
+};
+document.querySelector('header').appendChild(adminButton);
+}
+} else {
+// Remove the button if the user is not authorized
+if (adminButton) {
+adminButton.remove();
+}
+}
+let formHTML = '';
+if (isAuthorized) {
+formHTML = `
+<form id="post-form">
+<textarea id="post-text" placeholder="What's on your mind?" rows="4"></textarea>
+<div id="preview-container"></div>
+<div class="file-input-wrapper">
+<button class="file-input-button" type="button" onclick="document.getElementById('file-input').click()">Upload File</button>
+<input type="file" id="file-input" accept="image/*, video/*" onchange="handleFileChange(event)" style="display:none;">
+<input type="hidden" id="max-file-size" value="104857600"> <!-- 10MB in bytes -->
+</div>
+<button type="submit" id="post-button">Post</button>
+</form>
+`;
+} else {
+formHTML = `<p style="font-size: 1.2rem; text-align: center; padding: 15px;">Official UCH Staff may post.</p>`;
+}
+feedContainer.innerHTML = `
+<h1 style="text-align: center; margin-bottom: 25px; font-size: 2.2rem; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);">Welcome to the UCH Feed!</h1>
+${formHTML}
+`;
+
+if (postForm) {
+const previewContainer = document.getElementById('preview-container');
+const postText = document.getElementById('post-text');
+postForm.addEventListener('submit', async function (e) {
+e.preventDefault();
+const text = postText.value.trim();
+const fileInput = document.getElementById('file-input'); // Get file input inside the submit handler
+const file = fileInput.files[0];
+if (text !== '' || file) { // Check if there's text or a file
+const newPost = {
+title: text || '',
+content: mediaUrl || 'No media Provided',
+mediaType: fileType,
+userName: userName,
+userPicture: userPicture
+};
+try {
+const { data, error } = await supabase
+.from('posts')
+.insert([newPost]);
+if (error) {
+console.error('Error adding post to Supabase:', error.message);
+} else {
+console.log('Post added to Supabase!');
+postText.value = ''; // Clear the text input
+fileInput.value = ''; // Clear the file input
+previewContainer.innerHTML = ''; // Clear the preview
+mediaUrl = null;
+fileType = null;
+renderPostsContent(feedContainer, isAuthorized, userPicture, userName);
+}
+} catch (generalError){
+console.error('General error during post submission:', generalError)
+}
+}
+});
+}
 await renderPostsContent(feedContainer, isAuthorized, userPicture, userName);
 } catch (error) {
 console.error("Error during initial load:", error);
@@ -794,6 +804,7 @@ loadingText.textContent = "Failed to load content. Please refresh.";
 loadingText.style.color = "red";
 } finally {
 // Ensure the loading screen is hidden after the content loads
+clearInterval(loadingTextInterval);
 setTimeout(() => {
 document.body.classList.add('loaded');
 document.getElementById('loading-screen').classList.add('hidden');
@@ -801,14 +812,7 @@ document.getElementById('loading-screen').classList.add('hidden');
 setTimeout(() => {
 loadingText.textContent = "Welcome to the Unightly Club Hangout!";
 }, 500); // A short delay to make sure the loading screen is fully hidden
-}, 5000); // 5000 milliseconds = 5 seconds
-}
-}
-function updateOnlineStatus() {
-if (navigator.onLine) {
-document.body.classList.remove('offline');
-} else {
-document.body.classList.add('offline');
+}, 3000); // 3000 milliseconds = 3 seconds
 }
 }
 async function fetchAuthorizedEmails() {
@@ -835,6 +839,13 @@ return JSON.parse(jsonPayload);
 
 window.addEventListener('online', updateOnlineStatus);
 window.addEventListener('offline', updateOnlineStatus);
+function updateOnlineStatus() {
+if (navigator.onLine) {
+document.body.classList.remove('offline');
+} else {
+document.body.classList.add('offline');
+}
+}
 // Check initial status
 updateOnlineStatus();
 loadContent();
