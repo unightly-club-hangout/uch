@@ -484,7 +484,7 @@ let fileType;
 let mediaUrl;
 let loadingText;
 const GITHUB_RAW_URL = 'https://raw.githubusercontent.com/silentmason/Unightly-Club-Hangout/refs/heads/main/UCHstaff.json';
-const API_URL = 'http://localhost:3000'; // Define backend URL here
+const API_URL = 'http://localhost:3000'; // This is no longer used, but I'm leaving it in case you want to revert
 // Utility function to set a cookie
 function setCookie(name, value, days) {
 let expires = "";
@@ -510,8 +510,8 @@ console.error("Error parsing cookie:", name, error);
 return null;
 }
 }
-return null;
 }
+return null;
 }
 async function fetchAuthorizedEmails() {
 try {
@@ -613,44 +613,6 @@ const feedContainer = document.getElementById('feed-container');
 // Load authorized emails
 await fetchAuthorizedEmails();
 let isAuthorized = authorizedEmails.includes(userEmail);
-// Add Admin Dashboard Button if Authorized
-// Check if the adminButton already exists
-adminButton = document.getElementById('adminDashboardButton');
-if (isAuthorized) {
-if (!adminButton) {
-adminButton = document.createElement('a');
-adminButton.id = 'adminDashboardButton'; // Add an ID to the button
-adminButton.href = 'Dashboard.html'; // Replace with the actual URL
-adminButton.textContent = 'Admin Dashboard';
-adminButton.style.cssText = `
-background-color: var(--accent);
-color: #fff;
-padding: 12px 20px;
-border-radius: 10px;
-text-decoration: none;
-margin-left: 20px;
-transition: background-color 0.2s, transform 0.1s;
-box-shadow: 0 4px 12px rgba(96, 165, 250, 0.4);
-display: inline-block;
-`;
-adminButton.onmouseover = function () {
-this.style.backgroundColor = 'var(--accent-hover)';
-this.style.transform = 'translateY(-2px) scale(1.03)';
-this.style.boxShadow = '0 6px 18px rgba(59, 130, 246, 0.5)';
-};
-adminButton.onmouseout = function () {
-this.style.backgroundColor = 'var(--accent)';
-this.style.transform = 'none';
-this.style.boxShadow = '0 4px 12px rgba(96, 165, 250, 0.4)';
-};
-document.querySelector('header').appendChild(adminButton);
-}
-} else {
-// Remove the button if the user is not authorized
-if (adminButton) {
-adminButton.remove();
-}
-}
 let formHTML = '';
 if (isAuthorized) {
 formHTML = `
@@ -739,61 +701,23 @@ mediaType: fileType,
 userName: userName,
 userPicture: userPicture
 };
-try {
-const response = await fetch(`${API_URL}/posts`, {
-method: 'POST',
-headers: {
-'Content-Type': 'application/json'
-},
-body: JSON.stringify(newPost)
-});
-if (response.ok) {
-console.log('Post added to MongoDB!');
+let cookiePosts = getCookie('allPosts') || [];
+cookiePosts.push(newPost);
+setCookie('allPosts', cookiePosts, 7);
+renderPostsContent(feedContainer, isAuthorized, userPicture, userName);
 postText.value = ''; // Clear the text input
 fileInput.value = ''; // Clear the file input
 previewContainer.innerHTML = ''; // Clear the preview
 mediaUrl = null;
 fileType = null;
-let cookiePosts = getCookie('allPosts') || [];
-cookiePosts.push(newPost);
-setCookie('allPosts', cookiePosts, 7);
-renderPostsContent(feedContainer, isAuthorized, userPicture, userName);
-} else {
-console.error('Error adding post to MongoDB:', response.status);
-}
-} catch (error) {
-console.error('Error adding post to MongoDB:', error);
-}
 }
 });
-}
-async function deletePost(postId) {
-try {
-const response = await fetch(`${API_URL}/posts/${postId}`, {
-method: 'DELETE'
-});
-if (response.ok) {
-console.log('Post deleted from MongoDB!');
-renderPostsContent(feedContainer, isAuthorized, userPicture, userName)
-} else {
-console.error('Error deleting post from MongoDB:', response.status);
-}
-} catch (error) {
-console.error('Error deleting post from MongoDB:', error);
-}
 }
 // Function to render posts from API
 async function renderPostsContent(feedContainer, isAuthorized, userPicture, userName) {
-try {
-const response = await fetch(`${API_URL}/posts`);
-if (!response.ok) {
-throw new Error(`HTTP error! status: ${response.status}`);
-}
-const posts = await response.json();
 let cookiePosts = getCookie('allPosts') || [];
-let allPosts = cookiePosts.concat(posts);
 let postsHTML = '';
-allPosts.forEach(post => {
+cookiePosts.forEach(post => {
 const postElement = document.createElement('div');
 postElement.className = 'post';
 let postHeader = `<div class="post-header">
@@ -813,18 +737,10 @@ postContent += `<video src="${post.content}" alt="Post Video" controls class="po
 postContent += `<div class="post-content">${post.content}</div>`;
 }
 }
-let deleteButtonHTML = '';
-if (isAuthorized) {
-deleteButtonHTML = `<button class="delete-btn" data-id="${post._id}" onclick="deletePost('${post._id}')">x</button>`;
-}
-postElement.innerHTML = postHeader + postContent + deleteButtonHTML;
+postElement.innerHTML = postHeader + postContent;
 postsHTML += postElement.outerHTML;
 });
 feedContainer.innerHTML = postsHTML;
-} catch (error) {
-console.error('Error fetching posts:', error);
-feedContainer.innerHTML = '<p>Error loading posts.</p>';
-}
 }
 function setCookie(name, value, days) {
 let expires = "";
@@ -866,34 +782,33 @@ let loadingMessages = [
 loadingText = document.getElementById('loading-text');
 try {loadingText.textContent = loadingMessages[Math.floor(Math.random() * loadingMessages.length)];
 // Load authorized emails and render posts in parallel
-await Promise.all([fetchAuthorizedEmails(), () => renderPostsContent(feedContainer, isAuthorized, userPicture, userName)]);
+await Promise.all([fetchAuthorizedEmails](), () => renderPostsContent(feedContainer, isAuthorized, userPicture, userName));
 } catch (error) {
-console.error("Error during content load:", error);
-                    // Optionally handle the error, e.g., display an error message
-                    loadingText.textContent = "Failed to load content. Please refresh.";
-                    loadingText.style.color = "red";
-                } finally {
-                    // Ensure the loading screen is hidden after 5 seconds, regardless of load success
-                    setTimeout(() => {
-                        document.body.classList.add('loaded');
-                        document.getElementById('loading-screen').classList.add('hidden');
-                        // Update loading text after loading screen is hidden
-                        setTimeout(() => {
-                            loadingText.textContent = "Welcome to the Unightly Club Hangout!";
-                        }, 500); // A short delay to make sure the loading screen is fully hidden
-                    }, 5000); // 5000 milliseconds = 5 seconds
-                }
-            }
-
-            function updateOnlineStatus() {
-                if (navigator.onLine) {
-                    document.body.classList.remove('offline');
-                } else {
-                    document.body.classList.add('offline');
-                }
-            }
-            window.addEventListener('online', updateOnlineStatus);
-            window.addEventListener('offline', updateOnlineStatus);
+console.error("Error during initial load:", error);
+// Optionally handle the error, e.g., display an error message
+loadingText.textContent = "Failed to load content. Please refresh.";
+loadingText.style.color = "red";
+} finally {
+// Ensure the loading screen is hidden after 5 seconds, regardless of load success
+setTimeout(() => {
+document.body.classList.add('loaded');
+document.getElementById('loading-screen').classList.add('hidden');
+// Update loading text after loading screen is hidden
+setTimeout(() => {
+loadingText.textContent = "Welcome to the Unightly Club Hangout!";
+}, 500); // A short delay to make sure the loading screen is fully hidden
+}, 5000); // 5000 milliseconds = 5 seconds
+}
+}
+function updateOnlineStatus() {
+if (navigator.onLine) {
+document.body.classList.remove('offline');
+} else {
+document.body.classList.add('offline');
+}
+}
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
 // Check initial status
 updateOnlineStatus();
 loadContent();
