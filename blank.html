@@ -490,357 +490,394 @@ const SUPABASE_URL = 'https://rqovhtxyptakqtmbpvgo.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJxb3ZodHh5cHRha3F0bWJwdmdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY2NDcxOTEsImV4cCI6MjA3MjIyMzE5MX0.n83gdFaKw5z_9e0B30tho-P-IDIMfiLBEBqhbpXGVbY';
 let supabase; // Declare supabase outside the window.onload function
 
+async function initSupabase() {
+  supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+}
+
 window.onload = async function () {
   try {
-  supabase =  createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    await initSupabase();
 
-// Check if the user is logged in
-if (!localStorage.getItem('google_credential')) {
-window.location.href = 'index.html';
-return;
-}
-let img;
-let menu;
-let container;
-let userEmail;
-let userName;
-let userPicture;
-const credential = localStorage.getItem('google_credential');
-if (credential) {
-const payload = parseJwt(credential);
-if (payload.picture) {
-// Create profile container
-container = document.createElement('div');
-container.id = 'profile-container';
-// Create profile icon
-img = document.createElement('img');
-img.id = 'profile-icon';
-img.src = payload.picture;
-img.alt = 'Google Profile';
-img.tabIndex = 0;
-// Create dropdown menu
-menu = document.createElement('div');
-menu.className = 'dropdown-menu';
-menu.innerHTML = `
-<div class="dropdown-item" id="account-settings-link">Account settings</div>
-<div class="dropdown-item">Profile</div>
-<div class="dropdown-item">Friends</div>
-<div class="dropdown-item disabled" id="status-link">Status</div>
-<div class="dropdown-item signout" id="signout-link">Sign Out</div>
-`;
-// Toggle menu on icon click
-img.onclick = function (e) {
-e.stopPropagation();
-menu.classList.toggle('show');
-};
-img.onblur = function () {
-setTimeout(() => menu.classList.remove('show'), 150);
-};
-// Hide menu when clicking outside
-document.addEventListener('click', function () {
-menu.classList.remove('show');
-});
-// Account settings click
-menu.querySelector('#account-settings-link').onclick = function (e) {
-e.stopPropagation();
-menu.classList.remove('show');
-window.location.href = 'account-settings.html';
-};
-// Status click - PREVENT ACTION
-menu.querySelector('#status-link').onclick = function (e) {
-e.preventDefault();
-e.stopPropagation();
-menu.classList.remove('show');
-return false;
-};
-// Sign out click
-menu.querySelector('#signout-link').onclick = function (e) {
-e.stopPropagation();
-localStorage.removeItem('google_credential');
-window.location.href = 'index.html';
-};
-container.appendChild(img);
-container.appendChild(menu);
-document.body.appendChild(container);
-userEmail = payload.email;
-userName = payload.name;
-userPicture = payload.picture;
-}
-}
-const feedContainer = document.getElementById('feed-container');
-// Load authorized emails
-let authorizedEmails = []; // Define authorizedEmails here
-// Add Admin Dashboard Button if Authorized
-let isAuthorized = false;
-let adminButton; // define adminButton
-// Post Submission
-// Function to handle file selection
-window.handleFileChange = function (event) {
-const file = event.target.files[0];
-const previewContainer = document.getElementById('preview-container');
-const maxFileSize = document.getElementById('max-file-size').value;
-const fileInput = document.getElementById('file-input');
-if (file) {
-if (file.size > maxFileSize) {
-alert("File size exceeds the maximum limit.");
-fileInput.value = ''; // Clear the file input
-previewContainer.innerHTML = '';
-mediaUrl = null;
-fileType = null;
-return;
-}
-fileType = file.type;
-if (fileType.startsWith('image/') || fileType.startsWith('video/')) {
-const reader = new FileReader();
-reader.onload = function (e) {
-mediaUrl = e.target.result;
-let previewContent = '';
-if (fileType.startsWith('image/')) {
-previewContent = `<img src="${mediaUrl}" alt="Post Image" id="preview-image">`;
-} else if (fileType.startsWith('video/')) {
-previewContent = `<video src="${mediaUrl}" alt="Post Video" controls></video>`;
-}
-previewContainer.innerHTML = previewContent;
-};
-reader.readAsDataURL(file); // Read file as Data URL
-} else {
-alert('Invalid file type. Only images and videos are allowed.');
-fileInput.value = '';
-previewContainer.innerHTML = '';
-mediaUrl = null;
-fileType = null;
-return;
-}
-} else {
-previewContainer.innerHTML = '';
-mediaUrl = null;
-fileType = null;
-}
-}
-const postForm = document.getElementById('post-form');
-async function deletePost(postId) {
-try {
-const { data, error } = await supabase
-.from('posts')
-.delete()
-.eq('id', postId)
-if (error) {
-console.error('Error deleting post from Supabase:', error);
-} else {
-console.log('Post deleted from Supabase!');
-renderPostsContent(feedContainer, isAuthorized, userPicture, userName);
-}
-} catch (generalError) {
-console.error('General error during post deletion:', generalError);
-}
-}
-// Function to render posts from API
-async function renderPostsContent(feedContainer, isAuthorized, userPicture, userName) {
-try {
-const { data: posts, error } = await supabase
-.from('posts')
-.select('*')
-.order('created_at', { ascending: false });
-if (error) {
-console.error('Error fetching posts from Supabase:', error);
-feedContainer.innerHTML = '<p>Error loading posts.</p>';
-} else {
-let postsHTML = '';
-posts.forEach(post => {
-const postElement = document.createElement('div');
-postElement.className = 'post';
-let postHeader = `<div class="post-header">
-<img src="${post.userPicture}" alt="${post.userName}'s Profile Picture">
-<p>${post.userName}</p>
-</div>`;
-let postContent = '';
-if (post.title) {
-postContent += `<div class="post-content">${post.title}</div>`;
-}
-if (post.content) {
-if (post.mediaType && post.mediaType.startsWith('image/')) {
-postContent += `<img src="${post.content}" alt="Post Image" class="post-image">`;
-} else if (post.mediaType && post.mediaType.startsWith('video/')) {
-postContent += `<video src="${post.content}" alt="Post Video" controls class="post-video"></video>`;
-} else {
-postContent += `<div class="post-content">${post.content}</div>`;
-}
-}
-let deleteButtonHTML = '';
-if (isAuthorized) {
-deleteButtonHTML = `<button class="delete-btn" data-id="${post.id}" onclick="deletePost('${post.id}')">x</button>`;
-}
-postElement.innerHTML = postHeader + postContent + deleteButtonHTML;
-postsHTML += postElement.outerHTML;
-});
-feedContainer.innerHTML = postsHTML;
-}
-} catch (generalError) {
-console.error('General error during initial load:', generalError);
-}
-}
-// Add the 'loaded' class to the body and hide the loading screen after the content loads
-async function loadContent() {
-let loadingMessages = [
-"Warming up the servers...",
-"Pouring a cup of coffee...",
-"Telling tells to fix all his bugs...",
-"Fetching the latest crazy person...",
-"Counting to infinity...",
-"Reticulating splines...",
-"Almost done..."
-];
-loadingText = document.getElementById('loading-text');
-try {
-let i = 0;
-const changeLoadingText = () => {
-  loadingText.textContent = loadingMessages[i];
-  i = (i + 1) % loadingMessages.length;
-};
+    // Check if the user is logged in
+    if (!localStorage.getItem('google_credential')) {
+      window.location.href = 'index.html';
+      return;
+    }
 
-// Change loading text every 1.5 seconds
-const loadingTextInterval = setInterval(changeLoadingText, 1500);
-changeLoadingText();
+    let img;
+    let menu;
+    let container;
+    let userEmail;
+    let userName;
+    let userPicture;
+    const credential = localStorage.getItem('google_credential');
+    if (credential) {
+      const payload = parseJwt(credential);
+      if (payload.picture) {
+        // Create profile container
+        container = document.createElement('div');
+        container.id = 'profile-container';
+        // Create profile icon
+        img = document.createElement('img');
+        img.id = 'profile-icon';
+        img.src = payload.picture;
+        img.alt = 'Google Profile';
+        img.tabIndex = 0;
+        // Create dropdown menu
+        menu = document.createElement('div');
+        menu.className = 'dropdown-menu';
+        menu.innerHTML = `
+          <div class="dropdown-item" id="account-settings-link">Account settings</div>
+          <div class="dropdown-item">Profile</div>
+          <div class="dropdown-item">Friends</div>
+          <div class="dropdown-item disabled" id="status-link">Status</div>
+          <div class="dropdown-item signout" id="signout-link">Sign Out</div>
+        `;
+        // Toggle menu on icon click
+        img.onclick = function (e) {
+          e.stopPropagation();
+          menu.classList.toggle('show');
+        };
+        img.onblur = function () {
+          setTimeout(() => menu.classList.remove('show'), 150);
+        };
+        // Hide menu when clicking outside
+        document.addEventListener('click', function () {
+          menu.classList.remove('show');
+        });
+        // Account settings click
+        menu.querySelector('#account-settings-link').onclick = function (e) {
+          e.stopPropagation();
+          menu.classList.remove('show');
+          window.location.href = 'account-settings.html';
+        };
+        // Status click - PREVENT ACTION
+        menu.querySelector('#status-link').onclick = function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          menu.classList.remove('show');
+          return false;
+        };
+        // Sign out click
+        menu.querySelector('#signout-link').onclick = function (e) {
+          e.stopPropagation();
+          localStorage.removeItem('google_credential');
+          window.location.href = 'index.html';
+        };
+        container.appendChild(img);
+        container.appendChild(menu);
+        document.body.appendChild(container);
+        userEmail = payload.email;
+        userName = payload.name;
+        userPicture = payload.picture;
+      }
+    }
 
-// Load authorized emails and render posts in parallel
-await fetchAuthorizedEmails();
-isAuthorized = authorizedEmails.includes(userEmail);
-if (isAuthorized) {
-if (!adminButton) {
-adminButton = document.createElement('a');
-adminButton.id = 'adminDashboardButton'; // Add an ID to the button
-adminButton.href = 'Dashboard.html'; // Replace with the actual URL
-adminButton.textContent = 'Admin Dashboard';
-adminButton.style.cssText = `
-background-color: var(--accent);
-color: #fff;
-padding: 12px 20px;
-border-radius: 10px;
-text-decoration: none;
-margin-left: 20px;
-transition: background-color 0.2s, transform 0.1s;
-box-shadow: 0 4px 12px rgba(96, 165, 250, 0.4);
-display: inline-block;
-`;
-adminButton.onmouseover = function () {
-this.style.backgroundColor = 'var(--accent-hover)';
-this.style.transform = 'translateY(-2px) scale(1.03)';
-this.style.boxShadow = '0 6px 18px rgba(59, 130, 246, 0.5)';
-};
-adminButton.onmouseout = function () {
-this.style.backgroundColor = 'var(--accent)';
-this.style.transform = 'none';
-this.style.boxShadow = '0 4px 12px rgba(96, 165, 250, 0.4)';
-};
-document.querySelector('header').appendChild(adminButton);
-}
-} else {
-// Remove the button if the user is not authorized
-if (adminButton) {
-adminButton.remove();
-}
-}
-let formHTML = '';
-if (isAuthorized) {
-formHTML = `
-<form id="post-form">
-<textarea id="post-text" placeholder="What's on your mind?" rows="4"></textarea>
-<div id="preview-container"></div>
-<div class="file-input-wrapper">
-<button class="file-input-button" type="button" onclick="document.getElementById('file-input').click()">Upload File</button>
-<input type="file" id="file-input" accept="image/*, video/*" onchange="handleFileChange(event)" style="display:none;">
-<input type="hidden" id="max-file-size" value="104857600"> <!-- 10MB in bytes -->
-</div>
-<button type="submit" id="post-button">Post</button>
-</form>
-`;
-} else {
-formHTML = `<p style="font-size: 1.2rem; text-align: center; padding: 15px;">Official UCH Staff may post.</p>`;
-}
-feedContainer.innerHTML = `
-<h1 style="text-align: center; margin-bottom: 25px; font-size: 2.2rem; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);">Welcome to the UCH Feed!</h1>
-${formHTML}
-`;
+    const feedContainer = document.getElementById('feed-container');
+    // Load authorized emails
+    let authorizedEmails = []; // Define authorizedEmails here
+    // Add Admin Dashboard Button if Authorized
+    let isAuthorized = false;
+    let adminButton; // define adminButton
 
-if (postForm) {
-const previewContainer = document.getElementById('preview-container');
-const postText = document.getElementById('post-text');
-postForm.addEventListener('submit', async function (e) {
-e.preventDefault();
-const text = postText.value.trim();
-const fileInput = document.getElementById('file-input'); // Get file input inside the submit handler
-const file = fileInput.files[0];
-if (text !== '' || file) { // Check if there's text or a file
-const newPost = {
-title: text || '',
-content: mediaUrl || 'No media Provided',
-mediaType: fileType,
-userName: userName,
-userPicture: userPicture
-};
-try {
-const { data, error } = await supabase
-.from('posts')
-.insert([newPost]);
-if (error) {
-console.error('Error adding post to Supabase:', error.message);
-} else {
-console.log('Post added to Supabase!');
-postText.value = ''; // Clear the text input
-fileInput.value = ''; // Clear the file input
-previewContainer.innerHTML = ''; // Clear the preview
-mediaUrl = null;
-fileType = null;
-renderPostsContent(feedContainer, isAuthorized, userPicture, userName);
-}
-} catch (generalError){
-console.error('General error during post submission:', generalError)
-}
-}
-});
-}
-await renderPostsContent(feedContainer, isAuthorized, userPicture, userName);
-} catch (error) {
-console.error("Error during initial load:", error);
-// Optionally handle the error, e.g., display an error message
-loadingText.textContent = "Failed to load content. Please refresh.";
-loadingText.style.color = "red";
-} finally {
-// Ensure the loading screen is hidden after the content loads
-clearInterval(loadingTextInterval);
-setTimeout(() => {
-document.body.classList.add('loaded');
-document.getElementById('loading-screen').classList.add('hidden');
-// Update loading text after loading screen is hidden
-setTimeout(() => {
-loadingText.textContent = "Welcome to the Unightly Club Hangout!";
-}, 500); // A short delay to make sure the loading screen is fully hidden
-}, 3000); // 3000 milliseconds = 3 seconds
-}
-}
-async function fetchAuthorizedEmails() {
-try {
-const response = await fetch(GITHUB_RAW_URL);
-if (!response.ok) {
-throw new Error(`HTTP error! Status: ${response.status}`);
-}
-authorizedEmails = await response.json();
-console.log("Authorized emails fetched successfully:", authorizedEmails);
-} catch (error) {
-console.error('Failed to fetch authorized emails:', error);
-authorizedEmails = []; // Ensure authorizedEmails is an array even on failure
-}
-}
-function parseJwt(token) {
-var base64Url = token.split('.')[1];
-var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-var jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
-return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-}).join(''));
-return JSON.parse(jsonPayload);
-}
+    // Post Submission
+    // Function to handle file selection
+    window.handleFileChange = function (event) {
+      const file = event.target.files[0];
+      const previewContainer = document.getElementById('preview-container');
+      const maxFileSize = document.getElementById('max-file-size').value;
+      const fileInput = document.getElementById('file-input');
 
-window.addEventListener('online', updateOnlineStatus);
+      if (file) {
+        if (file.size > maxFileSize) {
+          alert("File size exceeds the maximum limit.");
+          fileInput.value = ''; // Clear the file input
+          previewContainer.innerHTML = '';
+          mediaUrl = null;
+          fileType = null;
+          return;
+        }
+
+        fileType = file.type;
+
+        if (fileType.startsWith('image/') || fileType.startsWith('video/')) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            mediaUrl = e.target.result;
+            let previewContent = '';
+            if (fileType.startsWith('image/')) {
+              previewContent = `<img src="${mediaUrl}" alt="Post Image" id="preview-image">`;
+            } else if (fileType.startsWith('video/')) {
+              previewContent = `<video src="${mediaUrl}" alt="Post Video" controls></video>`;
+            }
+            previewContainer.innerHTML = previewContent;
+          };
+          reader.readAsDataURL(file); // Read file as Data URL
+        } else {
+          alert('Invalid file type. Only images and videos are allowed.');
+          fileInput.value = '';
+          previewContainer.innerHTML = '';
+          mediaUrl = null;
+          fileType = null;
+          return;
+        }
+      } else {
+        previewContainer.innerHTML = '';
+        mediaUrl = null;
+        fileType = null;
+      }
+    }
+
+    const postForm = document.getElementById('post-form');
+
+    async function deletePost(postId) {
+      try {
+        const { data, error } = await supabase
+          .from('posts')
+          .delete()
+          .eq('id', postId)
+
+        if (error) {
+          console.error('Error deleting post from Supabase:', error);
+        } else {
+          console.log('Post deleted from Supabase!');
+          renderPostsContent(feedContainer, isAuthorized, userPicture, userName);
+        }
+      } catch (generalError) {
+        console.error('General error during post deletion:', generalError);
+      }
+    }
+
+    // Function to render posts from API
+    async function renderPostsContent(feedContainer, isAuthorized, userPicture, userName) {
+      try {
+        const { data: posts, error } = await supabase
+          .from('posts')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (error) {
+          console.error('Error fetching posts from Supabase:', error);
+          feedContainer.innerHTML = '<p>Error loading posts.</p>';
+        } else {
+          let postsHTML = '';
+          posts.forEach(post => {
+            const postElement = document.createElement('div');
+            postElement.className = 'post';
+
+            let postHeader = `<div class="post-header">
+              <img src="${post.userPicture}" alt="${post.userName}'s Profile Picture">
+              <p>${post.userName}</p>
+            </div>`;
+
+            let postContent = '';
+            if (post.title) {
+              postContent += `<div class="post-content">${post.title}</div>`;
+            }
+            if (post.content) {
+              if (post.mediaType && post.mediaType.startsWith('image/')) {
+                postContent += `<img src="${post.content}" alt="Post Image" class="post-image">`;
+              } else if (post.mediaType && post.mediaType.startsWith('video/')) {
+                postContent += `<video src="${post.content}" alt="Post Video" controls class="post-video"></video>`;
+              } else {
+                postContent += `<div class="post-content">${post.content}</div>`;
+              }
+            }
+
+            let deleteButtonHTML = '';
+            if (isAuthorized) {
+              deleteButtonHTML = `<button class="delete-btn" data-id="${post.id}" onclick="deletePost('${post.id}')">x</button>`;
+            }
+
+            postElement.innerHTML = postHeader + postContent + deleteButtonHTML;
+            postsHTML += postElement.outerHTML;
+          });
+          feedContainer.innerHTML = postsHTML;
+        }
+      } catch (generalError) {
+        console.error('General error during initial load:', generalError);
+      }
+    }
+
+    // Add the 'loaded' class to the body and hide the loading screen after the content loads
+    async function loadContent() {
+      let loadingMessages = [
+        "Warming up the servers...",
+        "Pouring a cup of coffee...",
+        "Telling tells to fix all his bugs...",
+        "Fetching the latest crazy person...",
+        "Counting to infinity...",
+        "Reticulating splines...",
+        "Almost done..."
+      ];
+
+      loadingText = document.getElementById('loading-text');
+
+      try {
+        let i = 0;
+        const changeLoadingText = () => {
+          loadingText.textContent = loadingMessages[i];
+          i = (i + 1) % loadingMessages.length;
+        };
+
+        // Change loading text every 1.5 seconds
+        const loadingTextInterval = setInterval(changeLoadingText, 1500);
+        changeLoadingText();
+
+        // Load authorized emails and render posts in parallel
+        await fetchAuthorizedEmails();
+        isAuthorized = authorizedEmails.includes(userEmail);
+
+        if (isAuthorized) {
+          if (!adminButton) {
+            adminButton = document.createElement('a');
+            adminButton.id = 'adminDashboardButton'; // Add an ID to the button
+            adminButton.href = 'Dashboard.html'; // Replace with the actual URL
+            adminButton.textContent = 'Admin Dashboard';
+            adminButton.style.cssText = `
+              background-color: var(--accent);
+              color: #fff;
+              padding: 12px 20px;
+              border-radius: 10px;
+              text-decoration: none;
+              margin-left: 20px;
+              transition: background-color 0.2s, transform 0.1s;
+              box-shadow: 0 4px 12px rgba(96, 165, 250, 0.4);
+              display: inline-block;
+            `;
+
+            adminButton.onmouseover = function () {
+              this.style.backgroundColor = 'var(--accent-hover)';
+              this.style.transform = 'translateY(-2px) scale(1.03)';
+              this.style.boxShadow = '0 6px 18px rgba(59, 130, 246, 0.5)';
+            };
+
+            adminButton.onmouseout = function () {
+              this.style.backgroundColor = 'var(--accent)';
+              this.style.transform = 'none';
+              this.style.boxShadow = '0 4px 12px rgba(96, 165, 250, 0.4)';
+            };
+
+            document.querySelector('header').appendChild(adminButton);
+          }
+        } else {
+          // Remove the button if the user is not authorized
+          if (adminButton) {
+            adminButton.remove();
+          }
+        }
+        let formHTML = '';
+        if (isAuthorized) {
+          formHTML = `
+            <form id="post-form">
+              <textarea id="post-text" placeholder="What's on your mind?" rows="4"></textarea>
+              <div id="preview-container"></div>
+              <div class="file-input-wrapper">
+                <button class="file-input-button" type="button" onclick="document.getElementById('file-input').click()">Upload File</button>
+                <input type="file" id="file-input" accept="image/*, video/*" onchange="handleFileChange(event)" style="display:none;">
+                <input type="hidden" id="max-file-size" value="104857600"> <!-- 10MB in bytes -->
+              </div>
+              <button type="submit" id="post-button">Post</button>
+            </form>
+          `;
+        } else {
+          formHTML = `<p style="font-size: 1.2rem; text-align: center; padding: 15px;">Official UCH Staff may post.</p>`;
+        }
+
+        feedContainer.innerHTML = `
+          <h1 style="text-align: center; margin-bottom: 25px; font-size: 2.2rem; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);">Welcome to the UCH Feed!</h1>
+          ${formHTML}
+        `;
+        if (postForm) {
+          const previewContainer = document.getElementById('preview-container');
+          const postText = document.getElementById('post-text');
+
+          postForm.addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const text = postText.value.trim();
+            const fileInput = document.getElementById('file-input'); // Get file input inside the submit handler
+            const file = fileInput.files[0];
+
+            if (text !== '' || file) { // Check if there's text or a file
+              const newPost = {
+                title: text || '',
+                content: mediaUrl || 'No media Provided',
+                mediaType: fileType,
+                userName: userName,
+                userPicture: userPicture
+              };
+
+              try {
+                const { data, error } = await supabase
+                  .from('posts')
+                  .insert([newPost]);
+
+                if (error) {
+                  console.error('Error adding post to Supabase:', error.message);
+                } else {
+                  console.log('Post added to Supabase!');
+                  postText.value = ''; // Clear the text input
+                  fileInput.value = ''; // Clear the file input
+                  previewContainer.innerHTML = ''; // Clear the preview
+                  mediaUrl = null;
+                  fileType = null;
+                  renderPostsContent(feedContainer, isAuthorized, userPicture, userName);
+                }
+              } catch (generalError) {
+                console.error('General error during post submission:', generalError)
+              }
+            }
+          });
+        }
+
+        await renderPostsContent(feedContainer, isAuthorized, userPicture, userName);
+      } catch (error) {
+        console.error("Error during initial load:", error);
+        // Optionally handle the error, e.g., display an error message
+        loadingText.textContent = "Failed to load content. Please refresh.";
+        loadingText.style.color = "red";
+      } finally {
+        // Ensure the loading screen is hidden after the content loads
+        clearInterval(loadingTextInterval);
+
+        setTimeout(() => {
+          document.body.classList.add('loaded');
+          document.getElementById('loading-screen').classList.add('hidden');
+
+          // Update loading text after loading screen is hidden
+          setTimeout(() => {
+            loadingText.textContent = "Welcome to the Unightly Club Hangout!";
+          }, 500); // A short delay to make sure the loading screen is fully hidden
+        }, 3000); // 3000 milliseconds = 3 seconds
+      }
+    }
+
+    async function fetchAuthorizedEmails() {
+      try {
+        const response = await fetch(GITHUB_RAW_URL);
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        authorizedEmails = await response.json();
+        console.log("Authorized emails fetched successfully:", authorizedEmails);
+      } catch (error) {
+        console.error('Failed to fetch authorized emails:', error);
+        authorizedEmails = []; // Ensure authorizedEmails is an array even on failure
+      }
+    }
+
+    function parseJwt(token) {
+      var base64Url = token.split('.')[1];
+      var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      var jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+
+      return JSON.parse(jsonPayload);
+    }
+
+    window.addEventListener('online', updateOnlineStatus);
 window.addEventListener('offline', updateOnlineStatus);
 function updateOnlineStatus() {
 if (navigator.onLine) {
