@@ -708,11 +708,12 @@ mediaType: fileType,
 userName: userName,
 userPicture: userPicture
 };
+try {
 const { data, error } = await supabase
 .from('posts')
 .insert([newPost]);
 if (error) {
-console.error('Error adding post to Supabase:', error);
+console.error('Error adding post to Supabase:', error.message);
 } else {
 console.log('Post added to Supabase!');
 postText.value = ''; // Clear the text input
@@ -722,23 +723,31 @@ mediaUrl = null;
 fileType = null;
 renderPostsContent(feedContainer, isAuthorized, userPicture, userName);
 }
+} catch (generalError){
+ console.error('General error during post submission:', generalError)
+}
 }
 });
 }
 async function deletePost(postId) {
-const { error } = await supabase
+try {
+const { data, error } = await supabase
 .from('posts')
 .delete()
-.eq('id', postId);
+.eq('id', postId)
 if (error) {
 console.error('Error deleting post from Supabase:', error);
 } else {
 console.log('Post deleted from Supabase!');
 renderPostsContent(feedContainer, isAuthorized, userPicture, userName);
 }
+} catch (generalError) {
+ console.error('General error during post deletion:', generalError);
+}
 }
 // Function to render posts from API
 async function renderPostsContent(feedContainer, isAuthorized, userPicture, userName) {
+try {
 const { data: posts, error } = await supabase
 .from('posts')
 .select('*')
@@ -777,6 +786,9 @@ postsHTML += postElement.outerHTML;
 });
 feedContainer.innerHTML = postsHTML;
 }
+} catch (generalError) {
+ console.error('General error during initial load:', generalError);
+}
 }
 // Add the 'loaded' class to the body and hide the loading screen after the content loads
 async function loadContent() {
@@ -790,8 +802,7 @@ let loadingMessages = [
 "Almost done..."
 ];
 loadingText = document.getElementById('loading-text');
-try {
-loadingText.textContent = loadingMessages[Math.floor(Math.random() * loadingMessages.length)];
+try {loadingText.textContent = loadingMessages[Math.floor(Math.random() * loadingMessages.length)];
 // Load authorized emails and render posts in parallel
 await Promise.all([fetchAuthorizedEmails()].map(fn => fn()));
 await renderPostsContent(feedContainer, isAuthorized, userPicture, userName);
@@ -849,4 +860,3 @@ class="header-icon">
 </footer>
 </body>
 </html>
-Okay, I think there was still some local storage that was persistent in the javascript. Here it is with that local storage stuff removed. Let me know if there are still errors!
