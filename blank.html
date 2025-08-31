@@ -873,13 +873,19 @@ background-position: 0% 50%;
             }
             // Add the 'loaded' class to the body and hide the loading screen after the content loads
             async function loadContent() {
-                loadingText = document.getElementById('loading-text'); // Get the loading text element
-                try {
-                    // Update loading text
-                    loadingText.textContent = "Loading...";
-                    // Load authorized emails and render posts in parallel
-                    await Promise.all([fetchAuthorizedEmails(), () => renderPostsContent(feedContainer, isAuthorized, userPicture, userName)]);
-                } catch (error) {
+                let loadingMessages = [
+                    "Warming up the servers...",
+                    "Pouring a cup of coffee...",
+                    "Telling tells to fix all his bugs...",
+                    "Fetching the latest crazy person...",
+                    "Counting to infinity...",
+                    "Reticulating splines...",
+                    "Almost done..."
+                    ];
+                    loadingText = document.getElementById('loading-text');
+                    try {loadingText.textContent = loadingMessages[Math.floor(Math.random() * loadingMessages.length)];
+                        await Promise.all([fetchAuthorizedEmails(), () renderPostsContent(feedContainer, isAuthorized, userPicture, userName)]);
+                    } catch (error) {
                     console.error("Error during initial load:", error);
                     // Optionally handle the error, e.g., display an error message
                     loadingText.textContent = "Failed to load content. Please refresh.";
