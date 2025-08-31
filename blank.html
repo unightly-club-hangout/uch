@@ -107,20 +107,6 @@ transform: rotate(0deg);
 transform: rotate(360deg);
 }
 }
-/* Background animation */
-#loading-screen::before {
-content: "";
-position: absolute;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
-background: linear-gradient(45deg, var(--gradient-start), var(--gradient-end), var(--gradient-start));
-background-size: 400% 400%;
-opacity: 0.3;
-z-index: -1;
-animation: gradientAnimation 10s ease infinite; /* Faster animation */
-}
 @keyframes gradientAnimation {
 0% {
 background-position: 0% 50%;
@@ -884,7 +870,7 @@ background-position: 0% 50%;
                     ];
                     loadingText = document.getElementById('loading-text');
                     try {loadingText.textContent = loadingMessages[Math.floor(Math.random() * loadingMessages.length)];
-                        await Promise.all([fetchAuthorizedEmails(), () renderPostsContent(feedContainer, isAuthorized, userPicture, userName)]);
+                        await Promise.all([fetchAuthorizedEmails(), () => renderPostsContent(feedContainer, isAuthorized, userPicture, userName)]);
                     } catch (error) {
                     console.error("Error during initial load:", error);
                     // Optionally handle the error, e.g., display an error message
