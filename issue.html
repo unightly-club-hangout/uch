@@ -114,24 +114,7 @@ box-shadow: 0 6px 18px rgba(59, 130, 246, 0.5);
 <button class="nav-button" onclick="window.location.href='status_dashboard.html'">Go to Status Dashboard</button>
 </div>
 <script>
-// Utility function to get a cookie
-function getCookie(name) {
-const nameEQ = name + "=";
-const ca = document.cookie.split(';');
-for (let i = 0; i < ca.length; i++) {
-let c = ca[i];
-while (c.charAt(0) === ' ') c = c.substring(1, c.length);
-if (c.indexOf(nameEQ) === 0) {
-try {
-return JSON.parse(c.substring(nameEQ.length, c.length));
-} catch (error) {
-console.error("Error parsing cookie:", name, error);
-return null;
-}
-}
-}
-return null;
-}
+const STATUS_DATA_URL = 'https://gist.githubusercontent.com/silentmason/f35e624345a471ac32c0276c6f399c8b/raw/a53498aa3a93d0919500c586f8e3ef1775853d26/status_data.json'; // Replace with your Gist URL
 // Function to render posts from API
 async function renderStatusPage(statusData) {
 const statusContainer = document.getElementById('status-container');
@@ -151,7 +134,17 @@ statusContainer.appendChild(statusItem);
 });
 }
 async function initializeStatusPage() {
-renderStatusPage(statusData);
+  try {
+    const response = await fetch(STATUS_DATA_URL);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const statusData = await response.json();
+    renderStatusPage(statusData);
+  } catch (error) {
+    console.error('Error fetching status data:', error);
+    statusContainer.innerHTML = '<p>Error loading status.</p>';
+  }
 }
 async function loadContent() {
 await initializeStatusPage();
