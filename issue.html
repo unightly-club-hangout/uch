@@ -131,14 +131,7 @@ renderStatusPage(statusData);
 async function loadContent() {
 await initializeStatusPage();
 }
-// Function to check if the user is authorized
-async function checkAuthorization() {
-try {
-const response = await fetch('https://raw.githubusercontent.com/silentmason/Unightly-Club-Hangout/refs/heads/main/UCHstaff.json');
-if (!response.ok) {
-throw new Error(`HTTP error! Status: ${response.status}`);
-}
-const authorizedEmails = await response.json();
+    //Utility function
 function parseJwt(token) {
 var base64Url = token.split('.')[1];
 var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -147,11 +140,20 @@ return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
 }).join(''));
 return JSON.parse(jsonPayload);
 }
+// Function to check if the user is authorized
+async function checkAuthorization() {
+try {
+const response = await fetch('https://raw.githubusercontent.com/silentmason/Unightly-Club-Hangout/refs/heads/main/UCHstaff.json');
+if (!response.ok) 
+{
+throw new Error(`HTTP error! Status: ${response.status}`);
+}
+const authorizedEmails = await response.json();
 const credential = localStorage.getItem('google_credential');
 if (!credential) {
 return false;
 }
-const payload = parseJwt(token);
+const payload = parseJwt(credential);
 const userEmail = payload.email;
 return authorizedEmails.includes(userEmail);
 } catch (error) {
